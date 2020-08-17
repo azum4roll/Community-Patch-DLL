@@ -656,6 +656,8 @@ public:
 	void ChangeGreatWorksTourismModifierGlobal(int iChange);
 	int GetGreatWorksTourismModifierGlobal() const;
 #endif
+	bool IsEmpireInBadShapeForWar(PlayerTypes eEvaluatingPlayer = NO_PLAYER) const;
+
 	int GetHappinessForGAP() const;
 	int GetExcessHappiness() const;
 	bool IsEmpireUnhappy() const;
@@ -2456,6 +2458,8 @@ public:
 	bool IsCityAlreadyTargeted(CvCity* pCity, DomainTypes eDomain = NO_DOMAIN, int iPercentToTarget = 100, int iIgnoreOperationID = -1, AIOperationTypes eAlreadyActiveOperation = AI_OPERATION_TYPE_INVALID) const;
 
 	int GetNumOffensiveOperations(DomainTypes eDomain);
+
+	bool HasAnyOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps);
 
 	bool StopAllLandDefensiveOperationsAgainstPlayer(PlayerTypes ePlayer, AIOperationAbortReason eReason);
 	bool StopAllLandOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps, AIOperationAbortReason eReason);

@@ -20642,6 +20642,91 @@ void CvPlayer::ChangeGreatWorksTourismModifierGlobal(int iChange)
 }
 
 //	--------------------------------------------------------------------------------
+/// Can we see if another player is unhappy (without cheating)
+bool CvPlayer::CanSeeIfOtherPlayerUnhappy(PlayerTypes eOtherPlayer)
+{
+	if (!isMajorCiv() || !isAlive() || !GET_PLAYER(eOtherPlayer).isMajorCiv())
+		return false;
+
+	if (!GET_TEAM(getTeam()).isHasMet(GET_PLAYER(eOtherPlayer).getTeam()))
+		return false;
+
+	// At war with them
+	if (IsAtWarWith(eOtherPlayer))
+		return true;
+
+	// Spying on them
+	if (GetEspionage()->IsAnySurveillanceEstablished(eOtherPlayer))
+		return true;
+
+	// They are the highest (or lowest) in demographics
+	int iBest = 0;
+	int iWorst = 100;
+	int iHappiness;
+
+	for (int iPlayerLoop = 0; iPlayerLoop < MAX_MAJOR_CIVS; iPlayerLoop++)
+	{
+		PlayerTypes eLoopPlayer = (PlayerTypes) iPlayerLoop;
+
+		// Not the guy we're looking at
+		if (eLoopPlayer == eOtherPlayer)
+			continue;
+
+		iHappiness = min(GET_PLAYER(eLoopPlayer).GetExcessHappiness(), 100);
+		if (iHappiness > iBest)
+		{
+			iBest = iHappiness;
+		}
+		if (iHappiness < iWorst)
+		{
+			iWorst = iHappiness;
+		}
+	}
+
+	iHappiness = min(GET_PLAYER(eOtherPlayer).GetExcessHappiness(), 100);
+	if (iHappiness > iBest || iHappiness < iWorst)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//	--------------------------------------------------------------------------------
+/// Are we in bad shape to start a war?
+bool CvPlayer::IsEmpireInBadShapeForWar(PlayerTypes eEvaluatingPlayer) const
+{
+	// Losing all our wars?
+	if (GetDiplomacyAI()->GetStateAllWars() == STATE_ALL_WARS_LOSING)
+		return true;
+
+	// Bankrupt?
+	if (GetTreasury()->GetGold() <= 0 && calculateGoldRate() <= 0)
+		return true;
+
+	// Lost our capital?
+	if (IsHasLostCapital())
+		return true;
+
+	// Very unhappy?
+	if (IsEmpireVeryUnhappy())
+	{
+		// Self-evaluation
+		if (eEvaluatingPlayer == NO_PLAYER)
+		{
+			return true;
+		}
+		// Other player evaluating
+		else if (GET_PLAYER(eEvaluatingPlayer).CanSeeIfOtherPlayerUnhappy(GetID()))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//	--------------------------------------------------------------------------------
 int CvPlayer::GetHappinessForGAP() const
 {
 	if (MOD_BALANCE_CORE_HAPPINESS)
@@ -20660,6 +20745,7 @@ int CvPlayer::GetHappinessForGAP() const
 	}
 	return GetExcessHappiness();
 }
+
 /// How much over our Happiness limit are we?
 int CvPlayer::GetExcessHappiness() const
 {
@@ -41350,28 +41436,56 @@ void CvPlayer::deleteAIOperation(int iID)
 	}
 }
 
-bool CvPlayer::StopAllLandOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps, AIOperationAbortReason eReason)
+bool CvPlayer::HasAnyOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps)
 {
-	bool bFoundOne = false;
+	// Ignore Barbarians
+	if (ePlayer == NO_PLAYER || ePlayer == BARBARIAN_PLAYER)
+		return false;
 
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
-	for(iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
+	std::map<int, CvAIOperation*>::iterator iter;
+	for (iter = m_AIOperations.begin(); iter != m_AIOperations.end(); iter++)
 	{
 		CvAIOperation* pThisOperation = iter->second;
 
-		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH)
+		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH || pThisOperation->GetOperationState() == AI_OPERATION_STATE_ABORTED)
 			continue;
 
-		if(pThisOperation->IsOffensive() && !pThisOperation->IsNavalOperation() && pThisOperation->GetOperationState() != AI_OPERATION_STATE_ABORTED)
+		if (pThisOperation->IsOffensive() && pThisOperation->GetEnemy() == ePlayer)
 		{
-			if( (ePlayer == NO_PLAYER && pThisOperation->GetEnemy() != BARBARIAN_PLAYER) || ePlayer == pThisOperation->GetEnemy())
+			if (bIncludeSneakOps || !pThisOperation->IsAllowedDuringPeace())
 			{
-				if (bIncludeSneakOps || !pThisOperation->IsAllowedDuringPeace())
-				{
-					bFoundOne = true;
-					pThisOperation->SetToAbort(eReason);
-				}
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CvPlayer::StopAllLandOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps, AIOperationAbortReason eReason)
+{
+	// Ignore Barbarians
+	if (ePlayer == NO_PLAYER || ePlayer == BARBARIAN_PLAYER)
+		return false;
+
+	bool bFoundOne = false;
+
+	// loop through all entries looking for match
+	std::map<int, CvAIOperation*>::iterator iter;
+	for (iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
+	{
+		CvAIOperation* pThisOperation = iter->second;
+
+		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH || pThisOperation->GetOperationState() == AI_OPERATION_STATE_ABORTED)
+			continue;
+
+		if (pThisOperation->IsOffensive() && !pThisOperation->IsNavalOperation() && pThisOperation->GetEnemy() == ePlayer)
+		{
+			if (bIncludeSneakOps || !pThisOperation->IsAllowedDuringPeace())
+			{
+				bFoundOne = true;
+				pThisOperation->SetToAbort(eReason);
 			}
 		}
 	}
@@ -41383,7 +41497,7 @@ int CvPlayer::GetNumOffensiveOperations(DomainTypes eDomain)
 {
 	int iNum = 0;
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
+	std::map<int, CvAIOperation*>::iterator iter;
 	for (iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
 	{
 		CvAIOperation* pThisOperation = iter->second;
@@ -41401,24 +41515,24 @@ int CvPlayer::GetNumOffensiveOperations(DomainTypes eDomain)
 
 bool CvPlayer::StopAllLandDefensiveOperationsAgainstPlayer(PlayerTypes ePlayer, AIOperationAbortReason eReason)
 {
+	if (ePlayer == NO_PLAYER)
+		return false;
+
 	bool bFoundOne = false;
 
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
-	for(iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
+	std::map<int, CvAIOperation*>::iterator iter;
+	for (iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
 	{
 		CvAIOperation* pThisOperation = iter->second;
 
-		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH)
+		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH || pThisOperation->GetOperationState() == AI_OPERATION_STATE_ABORTED)
 			continue;
 
-		if(pThisOperation->IsDefensive() && !pThisOperation->IsNavalOperation() && pThisOperation->GetOperationState() != AI_OPERATION_STATE_ABORTED)
+		if (pThisOperation->IsDefensive() && !pThisOperation->IsNavalOperation() && pThisOperation->GetEnemy() == ePlayer)
 		{
-			if(ePlayer == NO_PLAYER || ePlayer == pThisOperation->GetEnemy())
-			{
-				bFoundOne = true;
-				pThisOperation->SetToAbort(eReason);
-			}
+			bFoundOne = true;
+			pThisOperation->SetToAbort(eReason);
 		}
 	}
 
@@ -41427,26 +41541,27 @@ bool CvPlayer::StopAllLandDefensiveOperationsAgainstPlayer(PlayerTypes ePlayer, 
 
 bool CvPlayer::StopAllSeaOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, bool bIncludeSneakOps, AIOperationAbortReason eReason)
 {
+	// Ignore Barbarians
+	if (ePlayer == NO_PLAYER || ePlayer == BARBARIAN_PLAYER)
+		return false;
+
 	bool bFoundOne = false;
 
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
+	std::map<int, CvAIOperation*>::iterator iter;
 	for(iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
 	{
 		CvAIOperation* pThisOperation = iter->second;
 
-		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH)
+		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH || pThisOperation->GetOperationState() == AI_OPERATION_STATE_ABORTED)
 			continue;
 
-		if(pThisOperation->IsOffensive() && pThisOperation->IsNavalOperation() && pThisOperation->GetOperationState() != AI_OPERATION_STATE_ABORTED)
+		if (pThisOperation->IsOffensive() && pThisOperation->IsNavalOperation() && pThisOperation->GetEnemy() == ePlayer)
 		{
-			if( (ePlayer == NO_PLAYER && pThisOperation->GetEnemy() != BARBARIAN_PLAYER) || ePlayer == pThisOperation->GetEnemy())
+			if (bIncludeSneakOps || !pThisOperation->IsAllowedDuringPeace())
 			{
-				if (bIncludeSneakOps || !pThisOperation->IsAllowedDuringPeace())
-				{
-					bFoundOne = true;
-					pThisOperation->SetToAbort(eReason);
-				}
+				bFoundOne = true;
+				pThisOperation->SetToAbort(eReason);
 			}
 		}
 	}
@@ -41456,24 +41571,24 @@ bool CvPlayer::StopAllSeaOffensiveOperationsAgainstPlayer(PlayerTypes ePlayer, b
 
 bool CvPlayer::StopAllSeaDefensiveOperationsAgainstPlayer(PlayerTypes ePlayer, AIOperationAbortReason eReason)
 {
+	if (ePlayer == NO_PLAYER)
+		return false;
+
 	bool bFoundOne = false;
 
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
-	for(iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
+	std::map<int, CvAIOperation*>::iterator iter;
+	for (iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
 	{
 		CvAIOperation* pThisOperation = iter->second;
 
-		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH)
+		if (pThisOperation->GetOperationState() == AI_OPERATION_STATE_SUCCESSFUL_FINISH || pThisOperation->GetOperationState() == AI_OPERATION_STATE_ABORTED)
 			continue;
 
-		if(pThisOperation->IsDefensive() && pThisOperation->IsNavalOperation() && pThisOperation->GetOperationState() != AI_OPERATION_STATE_ABORTED)
+		if (pThisOperation->IsDefensive() && pThisOperation->IsNavalOperation() && pThisOperation->GetEnemy() == ePlayer)
 		{
-			if(ePlayer == NO_PLAYER || ePlayer == pThisOperation->GetEnemy())
-			{
-				bFoundOne = true;
-				pThisOperation->SetToAbort(eReason);
-			}
+			bFoundOne = true;
+			pThisOperation->SetToAbort(eReason);
 		}
 	}
 
@@ -41484,7 +41599,7 @@ bool CvPlayer::StopAllSeaDefensiveOperationsAgainstPlayer(PlayerTypes ePlayer, A
 bool CvPlayer::haveAIOperationOfType(int iOperationType, int* piID /* optional return argument */, PlayerTypes eTargetPlayer /* optional additional match criteria */, CvPlot* pTarget /* optional additional match criteria */)
 {
 	// loop through all entries looking for match
-	std::map<int , CvAIOperation*>::iterator iter;
+	std::map<int, CvAIOperation*>::iterator iter;
 	for(iter = m_AIOperations.begin(); iter != m_AIOperations.end(); ++iter)
 	{
 		CvAIOperation* pThisOperation = iter->second;

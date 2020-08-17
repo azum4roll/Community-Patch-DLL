@@ -1442,6 +1442,40 @@ void CvTeam::DoDeclareWar(TeamTypes eTeam, bool bDefensivePact, bool bMinorAllyP
 	}
 #endif
 
+	// anyone who WANTED to declare war becomes aggressive now
+	for (int iPlayerLoop = 0; iPlayerLoop < MAX_MAJOR_CIVS; iPlayerLoop++)
+	{
+		PlayerTypes eLoopPlayer = (PlayerTypes) iPlayerLoop;
+		if (GET_PLAYER(eLoopPlayer).getTeam() == m_eID && GET_PLAYER(eLoopPlayer).isAlive() && GET_PLAYER(eLoopPlayer).isMajorCiv())
+		{
+			for (int iPlayerLoop2 = 0; iPlayerLoop2 < MAX_MAJOR_CIVS; iPlayerLoop2++)
+			{
+				PlayerTypes eLoopTargetPlayer = (PlayerTypes) iPlayerLoop2;
+				if (GET_PLAYER(eLoopTargetPlayer).getTeam() == eTeam && GET_PLAYER(eLoopTargetPlayer).isAlive() && GET_PLAYER(eLoopTargetPlayer).isMajorCiv())
+				{
+					if (bAggressor && !bDefensivePact)
+					{
+						GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->SetAggressor(eLoopTargetPlayer, true);
+					}
+					else
+					{
+						CvAIOperation* pOurOperation = GET_PLAYER(eLoopPlayer).GetMilitaryAI()->GetSneakAttackOperation(eLoopTargetPlayer);
+						if (pOurOperation != NULL || GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->GetGlobalCoopWarAgainstState(eLoopTargetPlayer) >= COOP_WAR_STATE_SOON)
+						{
+							GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->SetAggressor(eLoopTargetPlayer, true);
+						}
+					}
+
+					CvAIOperation* pTheirOperation = GET_PLAYER(eLoopTargetPlayer).GetMilitaryAI()->GetSneakAttackOperation(eLoopPlayer);
+					if (pTheirOperation != NULL || GET_PLAYER(eLoopTargetPlayer).GetDiplomacyAI()->GetGlobalCoopWarAgainstState(eLoopPlayer) >= COOP_WAR_STATE_SOON)
+					{
+						GET_PLAYER(eLoopTargetPlayer).GetDiplomacyAI()->SetAggressor(eLoopPlayer, true);
+					}
+				}
+			}
+		}
+	}
+
 	//first cancel open borders and other diplomatic agreements
 	GET_TEAM(eTeam).SetAllowsOpenBordersToTeam(m_eID, false);
 	SetAllowsOpenBordersToTeam(eTeam, false);

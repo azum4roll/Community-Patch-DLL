@@ -499,10 +499,13 @@ public:
 	void DoCancelWantsResearchAgreementWithPlayer(PlayerTypes ePlayer);
 	bool IsCanMakeResearchAgreementRightNow(PlayerTypes ePlayer);
 
-#if defined(MOD_BALANCE_CORE_DEALS)
+	bool IsAggressor(PlayerTypes ePlayer) const;
+	void SetAggressor(PlayerTypes ePlayer, bool bValue);
+
 	bool IsWantsSneakAttack(PlayerTypes ePlayer) const;
 	void SetWantsSneakAttack(PlayerTypes ePlayer, bool bValue);
 
+	bool IsPhonyWar(PlayerTypes ePlayer, bool bFromApproachSelection = false) const;
 	bool IsWantsToConquer(PlayerTypes ePlayer) const;
 	bool IsPotentialMilitaryTargetOrThreat(PlayerTypes ePlayer, bool bFromApproachSelection = false) const;
 	
@@ -521,7 +524,7 @@ public:
 	bool IsCanMakeDefensivePactRightNow(PlayerTypes ePlayer);
 
 	bool IsGoodChoiceForDefensivePact(PlayerTypes ePlayer);
-#endif
+
 	/////////////////////////////////////////////////////////
 	// Issues of Dispute
 	/////////////////////////////////////////////////////////
@@ -1759,6 +1762,7 @@ private:
 #if defined(MOD_BALANCE_CORE_DEALS)
 		bool m_abWantsDoFWithPlayer[MAX_MAJOR_CIVS];
 		bool m_abWantsDefensivePactWithPlayer[MAX_MAJOR_CIVS];
+		bool m_abAggressor[MAX_MAJOR_CIVS];
 		bool m_abWantsSneakAttack[MAX_MAJOR_CIVS];
 #endif
 		bool m_abWantToRouteToMinor[REALLY_MAX_PLAYERS-MAX_MAJOR_CIVS];
@@ -2097,6 +2101,7 @@ private:
 #if defined(MOD_BALANCE_CORE_DEALS)
 	bool* m_pabWantsDoFWithPlayer;
 	bool* m_pabWantsDefensivePactWithPlayer;
+	bool* m_pabAggressor;
 	bool* m_pabWantsSneakAttack;
 
 	short* m_paiDefensivePactValue;
