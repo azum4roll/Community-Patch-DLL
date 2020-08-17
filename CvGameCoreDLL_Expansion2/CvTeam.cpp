@@ -1446,30 +1446,61 @@ void CvTeam::DoDeclareWar(TeamTypes eTeam, bool bDefensivePact, bool bMinorAllyP
 	for (int iPlayerLoop = 0; iPlayerLoop < MAX_MAJOR_CIVS; iPlayerLoop++)
 	{
 		PlayerTypes eLoopPlayer = (PlayerTypes) iPlayerLoop;
-		if (GET_PLAYER(eLoopPlayer).getTeam() == m_eID && GET_PLAYER(eLoopPlayer).isAlive() && GET_PLAYER(eLoopPlayer).isMajorCiv())
+		if (GET_PLAYER(eLoopPlayer).getTeam() == m_eID && GET_PLAYER(eLoopPlayer).isAlive())
 		{
-			for (int iPlayerLoop2 = 0; iPlayerLoop2 < MAX_MAJOR_CIVS; iPlayerLoop2++)
+			for (int iTargetLoop = 0; iTargetLoop < MAX_MAJOR_CIVS; iTargetLoop++)
 			{
-				PlayerTypes eLoopTargetPlayer = (PlayerTypes) iPlayerLoop2;
-				if (GET_PLAYER(eLoopTargetPlayer).getTeam() == eTeam && GET_PLAYER(eLoopTargetPlayer).isAlive() && GET_PLAYER(eLoopTargetPlayer).isMajorCiv())
+				PlayerTypes eLoopTarget = (PlayerTypes) iTargetLoop;
+				if (GET_PLAYER(eLoopTarget).getTeam() == eTeam && GET_PLAYER(eLoopTarget).isAlive())
 				{
 					if (bAggressor && !bDefensivePact)
 					{
-						GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->SetAggressor(eLoopTargetPlayer, true);
+						GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->SetAggressor(eLoopTarget, true);
 					}
 					else
 					{
-						CvAIOperation* pOurOperation = GET_PLAYER(eLoopPlayer).GetMilitaryAI()->GetSneakAttackOperation(eLoopTargetPlayer);
-						if (pOurOperation != NULL || GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->GetMajorCivApproach(eLoopTargetPlayer) == MAJOR_CIV_APPROACH_WAR || GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->GetGlobalCoopWarAgainstState(eLoopTargetPlayer) >= COOP_WAR_STATE_SOON)
+						CvDiplomacyAI* pDiplo = GET_PLAYER(eLoopPlayer).GetDiplomacyAI();
+
+						if (GET_PLAYER(eLoopTarget).isMajorCiv())
 						{
-							GET_PLAYER(eLoopPlayer).GetDiplomacyAI()->SetAggressor(eLoopTargetPlayer, true);
+							CvAIOperation* pOurOperation = GET_PLAYER(eLoopPlayer).GetMilitaryAI()->GetSneakAttackOperation(eLoopTarget);
+							if (!pOurOperation)
+							{
+								pOurOperation = GET_PLAYER(eLoopPlayer).GetMilitaryAI()->GetShowOfForceOperation(eLoopTarget);
+							}
+
+							if (pOurOperation != NULL || pDiplo->IsArmyInPlaceForAttack(eLoopTarget) || pDiplo->GetMajorCivApproach(eLoopTarget) == MAJOR_CIV_APPROACH_WAR || pDiplo->GetGlobalCoopWarAgainstState(eLoopTarget) >= COOP_WAR_STATE_SOON)
+							{
+								pDiplo->SetAggressor(eLoopTarget, true);
+							}
+						}
+						else if (GET_PLAYER(eLoopTarget).isMinorCiv() && pDiplo->GetMinorCivApproach(eLoopTarget) == MINOR_CIV_APPROACH_CONQUEST)
+						{
+							pDiplo->SetAggressor(eLoopTarget, true);
 						}
 					}
 
-					CvAIOperation* pTheirOperation = GET_PLAYER(eLoopTargetPlayer).GetMilitaryAI()->GetSneakAttackOperation(eLoopPlayer);
-					if (pTheirOperation != NULL || GET_PLAYER(eLoopTargetPlayer).GetDiplomacyAI()->GetMajorCivApproach(eLoopPlayer) == MAJOR_CIV_APPROACH_WAR || GET_PLAYER(eLoopTargetPlayer).GetDiplomacyAI()->GetGlobalCoopWarAgainstState(eLoopPlayer) >= COOP_WAR_STATE_SOON)
+					if (GET_PLAYER(eLoopTarget).isMajorCiv())
 					{
-						GET_PLAYER(eLoopTargetPlayer).GetDiplomacyAI()->SetAggressor(eLoopPlayer, true);
+						CvDiplomacyAI* pDiplo = GET_PLAYER(eLoopTarget).GetDiplomacyAI();
+
+						if (GET_PLAYER(eLoopPlayer).isMajorCiv())
+						{
+							CvAIOperation* pTheirOperation = GET_PLAYER(eLoopTarget).GetMilitaryAI()->GetSneakAttackOperation(eLoopPlayer);
+							if (!pTheirOperation)
+							{
+								pTheirOperation = GET_PLAYER(eLoopTarget).GetMilitaryAI()->GetShowOfForceOperation(eLoopPlayer);
+							}
+
+							if (pTheirOperation != NULL || pDiplo->IsArmyInPlaceForAttack(eLoopPlayer) || pDiplo->GetMajorCivApproach(eLoopPlayer) == MAJOR_CIV_APPROACH_WAR || pDiplo->GetGlobalCoopWarAgainstState(eLoopPlayer) >= COOP_WAR_STATE_SOON)
+							{
+								pDiplo->SetAggressor(eLoopPlayer, true);
+							}
+						}
+						else if (GET_PLAYER(eLoopPlayer).isMinorCiv() && pDiplo->GetMinorCivApproach(eLoopPlayer) == MINOR_CIV_APPROACH_CONQUEST)
+						{
+							pDiplo->SetAggressor(eLoopPlayer, true);
+						}
 					}
 				}
 			}
