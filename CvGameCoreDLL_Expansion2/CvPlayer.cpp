@@ -20648,6 +20648,9 @@ bool CvPlayer::CanSeeIfOtherPlayerUnhappy(PlayerTypes eOtherPlayer)
 	if (!isMajorCiv() || !isAlive() || !GET_PLAYER(eOtherPlayer).isMajorCiv())
 		return false;
 
+	if (eOtherPlayer == GetID())
+		return true;
+
 	if (!GET_TEAM(getTeam()).isHasMet(GET_PLAYER(eOtherPlayer).getTeam()))
 		return false;
 
@@ -20712,7 +20715,7 @@ bool CvPlayer::IsEmpireInBadShapeForWar(PlayerTypes eEvaluatingPlayer) const
 	if (IsEmpireVeryUnhappy())
 	{
 		// Self-evaluation
-		if (eEvaluatingPlayer == NO_PLAYER)
+		if (eEvaluatingPlayer == NO_PLAYER || eEvaluatingPlayer == GetID())
 		{
 			return true;
 		}
