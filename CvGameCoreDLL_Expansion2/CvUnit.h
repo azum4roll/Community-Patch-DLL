@@ -737,16 +737,11 @@ public:
 
 	int GetResistancePower(const CvUnit* pOtherUnit) const;
 
-	int GetCombatLimit() const;
-	int GetRangedCombatLimit() const;
-
 	bool isWaiting() const;
 	bool IsEverFortifyable() const;
 	int fortifyModifier() const;
 
 	int experienceNeeded() const;
-	int attackXPValue() const;
-	int defenseXPValue() const;
 	int maxXPValue() const;
 
 	bool ignoreBuildingDefense() const;
@@ -801,9 +796,6 @@ public:
 	void ChangePillageBonusStrengthPercent(int iBonus);
 	int getStackedGreatGeneralExperience() const;
 	void ChangeStackedGreatGeneralExperience(int iExperience);
-	void ChangeIsHighSeaRaider(int iValue);
-	int GetIsHighSeaRaider() const;
-	bool isHighSeaRaider() const;
 	int getWonderProductionModifier() const;
 	void ChangeWonderProductionModifier(int iValue);
 	int getMilitaryProductionModifier() const;
@@ -2203,7 +2195,6 @@ protected:
 	int m_iNearbyEnemyCityCombatMod;
 	int m_iPillageBonusStrengthPercent;
 	int m_iStackedGreatGeneralExperience;
-	int m_iIsHighSeaRaider;
 	int m_iWonderProductionModifier;
 	int m_iUnitProductionModifier;
 	int m_iNearbyEnemyDamage;
@@ -2321,8 +2312,6 @@ protected:
 	bool m_bInfoBarDirty;
 	bool m_bNotConverting;
 	bool m_bAirCombat;
-	//to be removed
-		bool m_bSetUpForRangedAttack;
 	bool m_bEmbarked;
 	bool m_bPromotedFromGoody;
 	bool m_bAITurnProcessed;
@@ -2340,7 +2329,7 @@ protected:
 	GreatPeopleDirectiveTypes m_eGreatPeopleDirectiveType;
 	CvUnitEntry* m_pUnitInfo;
 
-	bool m_bWaitingForMove;			///< If true, the unit is busy visualizing its move.
+	bool m_bWaitingForMove; ///< If true, the unit is busy visualizing its move.
 
 	IDInfo m_combatUnit;
 	IDInfo m_combatCity;
@@ -2357,7 +2346,7 @@ protected:
 	CvString m_strScriptData;
 	int m_iScenarioData;
 
-	CvUnitPromotions  m_Promotions;
+	CvUnitPromotions m_Promotions;
 	CvUnitReligion m_Religion;
 
 #if defined(MOD_CIV6_WORKER)
@@ -2647,7 +2636,6 @@ SYNC_ARCHIVE_VAR(int, m_iNearbyFriendlyCityCombatMod)
 SYNC_ARCHIVE_VAR(int, m_iNearbyEnemyCityCombatMod)
 SYNC_ARCHIVE_VAR(int, m_iPillageBonusStrengthPercent)
 SYNC_ARCHIVE_VAR(int, m_iStackedGreatGeneralExperience)
-SYNC_ARCHIVE_VAR(int, m_iIsHighSeaRaider)
 SYNC_ARCHIVE_VAR(int, m_iWonderProductionModifier)
 SYNC_ARCHIVE_VAR(int, m_iUnitProductionModifier)
 SYNC_ARCHIVE_VAR(int, m_iNearbyEnemyDamage)
@@ -2749,7 +2737,6 @@ SYNC_ARCHIVE_VAR(bool, m_bCombatFocus)
 SYNC_ARCHIVE_VAR(bool, m_bInfoBarDirty)
 SYNC_ARCHIVE_VAR(bool, m_bNotConverting)
 SYNC_ARCHIVE_VAR(bool, m_bAirCombat)
-SYNC_ARCHIVE_VAR(bool, m_bSetUpForRangedAttack)
 SYNC_ARCHIVE_VAR(bool, m_bEmbarked)
 SYNC_ARCHIVE_VAR(bool, m_bPromotedFromGoody)
 SYNC_ARCHIVE_VAR(bool, m_bAITurnProcessed)
