@@ -311,7 +311,6 @@ CvCity::CvCity() :
 	, m_paiNumResourcesLocal()
 	, m_paiNumUnimprovedResourcesLocal()
 	, m_paiProjectProduction()
-	, m_paiSpecialistProduction()
 	, m_paiUnitProduction()
 	, m_paiUnitProductionTime()
 	, m_paiSpecialistCount()
@@ -1779,14 +1778,9 @@ void CvCity::reset(int iID, PlayerTypes eOwner, int iX, int iY, bool bConstructo
 		}
 
 		int iNumSpecialistInfos = GC.getNumSpecialistInfos();
-		m_paiSpecialistProduction.clear();
-		m_paiSpecialistProduction.resize(iNumSpecialistInfos);
 		for (iI = 0; iI < GC.getNumSpecialistInfos(); iI++)
 		{
-			m_paiSpecialistProduction[iI] = 0;
-#if defined(MOD_BALANCE_CORE)
 			m_aiSpecialistRateModifier[iI] = 0;
-#endif
 		}
 
 		m_pCityBuildings->Init(GC.GetGameBuildings(), this);
@@ -9430,41 +9424,6 @@ bool CvCity::canCreate(ProjectTypes eProject, bool bContinue, bool bTestVisible,
 	return true;
 }
 
-
-//	--------------------------------------------------------------------------------
-bool CvCity::canPrepare(SpecialistTypes eSpecialist, bool bContinue) const
-{
-	VALIDATE_OBJECT
-
-	if (!(GET_PLAYER(getOwner()).canPrepare(eSpecialist, bContinue)))
-	{
-		return false;
-	}
-
-	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
-	if (pkScriptSystem)
-	{
-		CvLuaArgsHandle args;
-		args->Push(getOwner());
-		args->Push(GetID());
-		args->Push(eSpecialist);
-
-		// Attempt to execute the game events.
-		// Will return false if there are no registered listeners.
-		bool bResult = false;
-		if (LuaSupport::CallTestAll(pkScriptSystem, "CityCanPrepare", args.get(), bResult))
-		{
-			// Check the result.
-			if (!bResult)
-			{
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
-
 //	--------------------------------------------------------------------------------
 bool CvCity::canMaintain(ProcessTypes eProcess, bool bContinue) const
 {
@@ -10826,9 +10785,6 @@ bool CvCity::isProductionLimited() const
 			return isLimitedProject((ProjectTypes)(pOrderNode->iData1));
 			break;
 
-		case ORDER_PREPARE:
-			break;
-
 		case ORDER_MAINTAIN:
 			break;
 
@@ -10885,22 +10841,6 @@ bool CvCity::isProductionProject() const
 	return false;
 }
 
-
-//	--------------------------------------------------------------------------------
-bool CvCity::isProductionSpecialist() const
-{
-	VALIDATE_OBJECT
-	const OrderData* pOrderNode = headOrderQueueNode();
-
-	if (pOrderNode != NULL)
-	{
-		return (pOrderNode->eOrderType == ORDER_PREPARE);
-	}
-
-	return false;
-}
-
-
 //	--------------------------------------------------------------------------------
 bool CvCity::isProductionProcess() const
 {
@@ -10932,10 +10872,6 @@ bool CvCity::canContinueProduction(OrderData order)
 
 	case ORDER_CREATE:
 		return canCreate((ProjectTypes)(order.iData1), true);
-		break;
-
-	case ORDER_PREPARE:
-		return canPrepare((SpecialistTypes)(order.iData1), true);
 		break;
 
 	case ORDER_MAINTAIN:
@@ -11059,7 +10995,6 @@ UnitTypes CvCity::getProductionUnit() const
 
 		case ORDER_CONSTRUCT:
 		case ORDER_CREATE:
-		case ORDER_PREPARE:
 		case ORDER_MAINTAIN:
 			break;
 
@@ -11090,7 +11025,6 @@ UnitAITypes CvCity::getProductionUnitAI() const
 
 		case ORDER_CONSTRUCT:
 		case ORDER_CREATE:
-		case ORDER_PREPARE:
 		case ORDER_MAINTAIN:
 			break;
 
@@ -11122,7 +11056,6 @@ BuildingTypes CvCity::getProductionBuilding() const
 			break;
 
 		case ORDER_CREATE:
-		case ORDER_PREPARE:
 		case ORDER_MAINTAIN:
 			break;
 
@@ -11154,7 +11087,6 @@ ProjectTypes CvCity::getProductionProject() const
 			return ((ProjectTypes)(pOrderNode->iData1));
 			break;
 
-		case ORDER_PREPARE:
 		case ORDER_MAINTAIN:
 			break;
 
@@ -11165,38 +11097,6 @@ ProjectTypes CvCity::getProductionProject() const
 	}
 
 	return NO_PROJECT;
-}
-
-
-//	--------------------------------------------------------------------------------
-SpecialistTypes CvCity::getProductionSpecialist() const
-{
-	VALIDATE_OBJECT
-	const OrderData* pOrderNode = headOrderQueueNode();
-
-	if (pOrderNode != NULL)
-	{
-		switch (pOrderNode->eOrderType)
-		{
-		case ORDER_TRAIN:
-		case ORDER_CONSTRUCT:
-		case ORDER_CREATE:
-			break;
-
-		case ORDER_PREPARE:
-			return ((SpecialistTypes)(pOrderNode->iData1));
-			break;
-
-		case ORDER_MAINTAIN:
-			break;
-
-		default:
-			CvAssertMsg(false, "pOrderNode->eOrderType failed to match a valid option");
-			break;
-		}
-	}
-
-	return NO_SPECIALIST;
 }
 
 //	--------------------------------------------------------------------------------
@@ -11212,7 +11112,6 @@ ProcessTypes CvCity::getProductionProcess() const
 		case ORDER_TRAIN:
 		case ORDER_CONSTRUCT:
 		case ORDER_CREATE:
-		case ORDER_PREPARE:
 			break;
 
 		case ORDER_MAINTAIN:
@@ -11269,16 +11168,6 @@ const char* CvCity::getProductionName() const
 		}
 		break;
 
-		case ORDER_PREPARE:
-		{
-			CvSpecialistInfo* pkSpecialistInfo = GC.getSpecialistInfo((SpecialistTypes)pOrderNode->iData1);
-			if (pkSpecialistInfo)
-			{
-				return pkSpecialistInfo->GetDescription();
-			}
-		}
-		break;
-
 		case ORDER_MAINTAIN:
 		{
 			CvProcessInfo* pkProcessInfo = GC.getProcessInfo((ProcessTypes)pOrderNode->iData1);
@@ -11319,10 +11208,6 @@ int CvCity::getGeneralProductionTurnsLeft() const
 
 		case ORDER_CREATE:
 			return getProductionTurnsLeft((ProjectTypes)pOrderNode->iData1, 0);
-			break;
-
-		case ORDER_PREPARE:
-			return getProductionTurnsLeft((SpecialistTypes)pOrderNode->iData1, 0);
 			break;
 
 		case ORDER_MAINTAIN:
@@ -11379,16 +11264,6 @@ const char* CvCity::getProductionNameKey() const
 			if (pkProjectInfo)
 			{
 				return pkProjectInfo->GetTextKey();
-			}
-		}
-		break;
-
-		case ORDER_PREPARE:
-		{
-			CvSpecialistInfo* pkSpecialistInfo = GC.getSpecialistInfo((SpecialistTypes)pOrderNode->iData1);
-			if (pkSpecialistInfo)
-			{
-				return pkSpecialistInfo->GetTextKey();
 			}
 		}
 		break;
@@ -11468,7 +11343,6 @@ bool CvCity::isFoodProduction() const
 
 		case ORDER_CONSTRUCT:
 		case ORDER_CREATE:
-		case ORDER_PREPARE:
 		case ORDER_MAINTAIN:
 			break;
 
@@ -11578,32 +11452,6 @@ int CvCity::getFirstProjectOrder(ProjectTypes eProject) const
 	return -1;
 }
 
-
-//	--------------------------------------------------------------------------------
-int CvCity::getFirstSpecialistOrder(SpecialistTypes eSpecialist) const
-{
-	VALIDATE_OBJECT
-	int iCount = 0;
-	const OrderData* pOrderNode = headOrderQueueNode();
-
-	while (pOrderNode != NULL)
-	{
-		if (pOrderNode->eOrderType == ORDER_PREPARE)
-		{
-			if (pOrderNode->iData1 == eSpecialist)
-			{
-				return iCount;
-			}
-		}
-
-		iCount++;
-
-		pOrderNode = nextOrderQueueNode(pOrderNode);
-	}
-
-	return -1;
-}
-
 //	--------------------------------------------------------------------------------
 int CvCity::getNumTrainUnitAI(UnitAITypes eUnitAI) const
 {
@@ -11650,10 +11498,6 @@ int CvCity::getProduction() const
 			return getProjectProduction((ProjectTypes)(pOrderNode->iData1));
 			break;
 
-		case ORDER_PREPARE:
-			return getSpecialistProduction((SpecialistTypes)(pOrderNode->iData1));
-			break;
-
 		case ORDER_MAINTAIN:
 #if defined(MOD_PROCESS_STOCKPILE)
 			return getProcessProduction((ProcessTypes)(pOrderNode->iData1));
@@ -11692,10 +11536,6 @@ int CvCity::getProductionTimes100() const
 			return getProjectProductionTimes100((ProjectTypes)(pOrderNode->iData1));
 			break;
 
-		case ORDER_PREPARE:
-			return getSpecialistProductionTimes100((SpecialistTypes)(pOrderNode->iData1));
-			break;
-
 		case ORDER_MAINTAIN:
 #if defined(MOD_PROCESS_STOCKPILE)
 			return getProcessProductionTimes100((ProcessTypes)(pOrderNode->iData1));
@@ -11732,10 +11572,6 @@ int CvCity::getProductionNeeded() const
 
 		case ORDER_CREATE:
 			return getProductionNeeded((ProjectTypes)(pOrderNode->iData1));
-			break;
-
-		case ORDER_PREPARE:
-			return getProductionNeeded((SpecialistTypes)(pOrderNode->iData1));
 			break;
 
 		case ORDER_MAINTAIN:
@@ -11883,15 +11719,6 @@ int CvCity::getProductionNeeded(ProjectTypes eProject) const
 }
 
 //	--------------------------------------------------------------------------------
-int CvCity::getProductionNeeded(SpecialistTypes eSpecialist) const
-{
-	VALIDATE_OBJECT
-	int iNumProductionNeeded = GET_PLAYER(getOwner()).getProductionNeeded(eSpecialist);
-
-	return max(1, iNumProductionNeeded);
-}
-
-//	--------------------------------------------------------------------------------
 int CvCity::getProductionTurnsLeft() const
 {
 	VALIDATE_OBJECT
@@ -11911,10 +11738,6 @@ int CvCity::getProductionTurnsLeft() const
 
 		case ORDER_CREATE:
 			return getProductionTurnsLeft(((ProjectTypes)(pOrderNode->iData1)), 0);
-			break;
-
-		case ORDER_PREPARE:
-			return getProductionTurnsLeft(((SpecialistTypes)(pOrderNode->iData1)), 0);
 			break;
 
 		case ORDER_MAINTAIN:
@@ -11999,25 +11822,6 @@ int CvCity::getProductionTurnsLeft(ProjectTypes eProject, int iNum) const
 
 	int iProductionNeeded = getProductionNeeded(eProject) * 100;
 	int iProductionModifier = getProductionModifier(eProject);
-
-	return getProductionTurnsLeft(iProductionNeeded, iProduction, getProductionDifferenceTimes100(iProductionNeeded, iProduction, iProductionModifier, false, (iNum == 0)), getProductionDifferenceTimes100(iProductionNeeded, iProduction, iProductionModifier, false, false));
-}
-
-
-//	--------------------------------------------------------------------------------
-int CvCity::getProductionTurnsLeft(SpecialistTypes eSpecialist, int iNum) const
-{
-	VALIDATE_OBJECT
-	int iProduction = 0;
-	int iFirstSpecialistOrder = getFirstSpecialistOrder(eSpecialist);
-
-	if ((iFirstSpecialistOrder == -1) || (iFirstSpecialistOrder == iNum))
-	{
-		iProduction += getSpecialistProductionTimes100(eSpecialist);
-	}
-
-	int iProductionNeeded = getProductionNeeded(eSpecialist) * 100;
-	int iProductionModifier = getProductionModifier(eSpecialist);
 
 	return getProductionTurnsLeft(iProductionNeeded, iProduction, getProductionDifferenceTimes100(iProductionNeeded, iProduction, iProductionModifier, false, (iNum == 0)), getProductionDifferenceTimes100(iProductionNeeded, iProduction, iProductionModifier, false, false));
 }
@@ -12890,10 +12694,6 @@ void CvCity::setProduction(int iNewValue)
 	{
 		setProjectProduction(getProductionProject(), iNewValue);
 	}
-	else if (isProductionSpecialist())
-	{
-		setSpecialistProduction(getProductionSpecialist(), iNewValue);
-	}
 }
 
 
@@ -12912,10 +12712,6 @@ void CvCity::changeProduction(int iChange)
 	else if (isProductionProject())
 	{
 		changeProjectProduction(getProductionProject(), iChange);
-	}
-	else if (isProductionSpecialist())
-	{
-		changeSpecialistProduction(getProductionSpecialist(), iChange);
 	}
 #if defined(MOD_BALANCE_CORE)
 	else
@@ -12948,10 +12744,6 @@ void CvCity::setProductionTimes100(int iNewValue)
 	{
 		setProjectProductionTimes100(getProductionProject(), iNewValue);
 	}
-	else if (isProductionSpecialist())
-	{
-		setSpecialistProductionTimes100(getProductionSpecialist(), iNewValue);
-	}
 }
 
 //	--------------------------------------------------------------------------------
@@ -12969,10 +12761,6 @@ void CvCity::changeProductionTimes100(int iChange)
 	else if (isProductionProject())
 	{
 		changeProjectProductionTimes100(getProductionProject(), iChange);
-	}
-	else if (isProductionSpecialist())
-	{
-		changeSpecialistProductionTimes100(getProductionSpecialist(), iChange);
 	}
 	else if (isProductionProcess())
 	{
@@ -13198,22 +12986,6 @@ void CvCity::changeProductionTimes100(int iChange)
 										localizedText << GC.getProjectInfo(eProject)->GetTextKey() << getNameKey();
 									}
 								}
-								else if (isProductionSpecialist())
-								{
-									// siphon production to the required specialist in the origin
-									SpecialistTypes eSpecialist = getProductionSpecialist();
-									pOriginCity->changeSpecialistProductionTimes100(this->getProductionSpecialist(), iSiphonAmount);
-
-									// check if the origin have completed production
-									iProductionNeeded = pOriginCity->getProductionNeeded(eSpecialist) * 100;
-									iOverflow = pOriginCity->getSpecialistProductionTimes100(eSpecialist) - iProductionNeeded;
-
-									// if origin has completed production (code below is a brief version of popOrder())
-									if (iOverflow >= 0)
-									{
-										pOriginCity->produce(eSpecialist, false);
-									}
-								}
 #if defined(MOD_BALANCE_CORE)
 								else if (isProductionProcess())
 								{
@@ -13269,10 +13041,6 @@ int CvCity::getProductionModifier(CvString* toolTipSink) const
 
 		case ORDER_CREATE:
 			iMultiplier += getProductionModifier((ProjectTypes)(pOrderNode->iData1), toolTipSink);
-			break;
-
-		case ORDER_PREPARE:
-			iMultiplier += getProductionModifier((SpecialistTypes)(pOrderNode->iData1), toolTipSink);
 			break;
 
 		case ORDER_MAINTAIN:
@@ -13976,16 +13744,6 @@ int CvCity::getProductionModifier(ProjectTypes eProject, CvString* toolTipSink) 
 		const char* szTurnsRemaining = strMessage.GetCString();
 		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST", iTempMod, szTurnsRemaining);
 	}
-
-	return iMultiplier;
-}
-
-
-//	--------------------------------------------------------------------------------
-int CvCity::getProductionModifier(SpecialistTypes eSpecialist, CvString* toolTipSink) const
-{
-	VALIDATE_OBJECT
-	int iMultiplier = getGeneralProductionModifiers(toolTipSink) + GET_PLAYER(getOwner()).getProductionModifier(eSpecialist, toolTipSink);
 
 	return iMultiplier;
 }
@@ -28194,74 +27952,6 @@ void CvCity::changeProjectProductionTimes100(ProjectTypes eIndex, int iChange)
 	setProjectProductionTimes100(eIndex, (getProjectProductionTimes100(eIndex) + iChange));
 }
 
-
-//	--------------------------------------------------------------------------------
-int CvCity::getSpecialistProduction(SpecialistTypes eIndex) const
-{
-	VALIDATE_OBJECT
-	CvAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	CvAssertMsg(eIndex < GC.getNumSpecialistInfos(), "eIndex expected to be < GC.getNumSpecialistInfos()");
-	return m_paiSpecialistProduction[eIndex] / 100;
-}
-
-
-//	--------------------------------------------------------------------------------
-void CvCity::setSpecialistProduction(SpecialistTypes eIndex, int iNewValue)
-{
-	VALIDATE_OBJECT
-	setSpecialistProductionTimes100(eIndex, iNewValue * 100);
-}
-
-
-//	--------------------------------------------------------------------------------
-void CvCity::changeSpecialistProduction(SpecialistTypes eIndex, int iChange)
-{
-	VALIDATE_OBJECT
-	changeSpecialistProductionTimes100(eIndex, iChange * 100);
-}
-
-//	--------------------------------------------------------------------------------
-int CvCity::getSpecialistProductionTimes100(SpecialistTypes eIndex) const
-{
-	VALIDATE_OBJECT
-	CvAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	CvAssertMsg(eIndex < GC.getNumSpecialistInfos(), "eIndex expected to be < GC.getNumSpecialistInfos()");
-	return m_paiSpecialistProduction[eIndex];
-}
-
-
-//	--------------------------------------------------------------------------------
-void CvCity::setSpecialistProductionTimes100(SpecialistTypes eIndex, int iNewValue)
-{
-	VALIDATE_OBJECT
-	CvAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	CvAssertMsg(eIndex < GC.getNumSpecialistInfos(), "eIndex expected to be < GC.getNumSpecialistInfos()");
-
-	if (getSpecialistProductionTimes100(eIndex) != iNewValue)
-	{
-		m_paiSpecialistProduction[eIndex] = iNewValue;
-		CvAssert(getSpecialistProductionTimes100(eIndex) >= 0);
-
-		if ((getOwner() == GC.getGame().getActivePlayer()) && isCitySelected())
-		{
-			DLLUI->setDirty(CityScreen_DIRTY_BIT, true);
-		}
-
-		CvInterfacePtr<ICvCity1> pCity = GC.WrapCityPointer(this);
-		DLLUI->SetSpecificCityInfoDirty(pCity.get(), CITY_UPDATE_TYPE_BANNER);
-	}
-}
-
-
-//	--------------------------------------------------------------------------------
-void CvCity::changeSpecialistProductionTimes100(SpecialistTypes eIndex, int iChange)
-{
-	VALIDATE_OBJECT
-	CvAssertMsg(eIndex >= 0, "eIndex expected to be >= 0");
-	CvAssertMsg(eIndex < GC.getNumSpecialistInfos(), "eIndex expected to be < GC.getNumSpecialistInfos()");
-	setSpecialistProductionTimes100(eIndex, (getSpecialistProductionTimes100(eIndex) + iChange));
-}
-
 #if defined(MOD_PROCESS_STOCKPILE)
 //	--------------------------------------------------------------------------------
 int CvCity::getProcessProduction(ProcessTypes eIndex) const
@@ -30284,13 +29974,6 @@ void CvCity::pushOrder(OrderTypes eOrder, int iData1, int iData2, bool bSave, bo
 		}
 		break;
 
-	case ORDER_PREPARE:
-		if (canPrepare((SpecialistTypes)iData1))
-		{
-			bValid = true;
-		}
-		break;
-
 	case ORDER_MAINTAIN:
 		if (canMaintain((ProcessTypes)iData1))
 		{
@@ -30376,7 +30059,6 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose)
 	CvPlayerAI& kOwner = GET_PLAYER(getOwner());	//Used often later on
 
 	OrderData* pOrderNode = NULL;
-	SpecialistTypes eSpecialist;
 	ProjectTypes eCreateProject;
 	BuildingTypes eConstructBuilding;
 	UnitTypes eTrainUnit;
@@ -30422,7 +30104,6 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose)
 	eTrainUnit = NO_UNIT;
 	eConstructBuilding = NO_BUILDING;
 	eCreateProject = NO_PROJECT;
-	eSpecialist = NO_SPECIALIST;
 
 	switch (pOrderNode->eOrderType)
 	{
@@ -30468,16 +30149,6 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose)
 		{
 			produce(eCreateProject);
 		}
-		break;
-
-	case ORDER_PREPARE:
-
-		if (bFinish)
-		{
-			eSpecialist = (SpecialistTypes)(pOrderNode->iData1);
-			produce(eSpecialist);
-		}
-
 		break;
 
 	case ORDER_MAINTAIN:
@@ -31170,33 +30841,6 @@ void CvCity::produce(ProjectTypes eCreateProject, bool bCanOverflow)
 	else
 	{
 		changeProjectProductionTimes100(eCreateProject, -iProductionNeeded);
-	}
-}
-
-//	--------------------------------------------------------------------------------
-/// Create specialist by completing production in city, separated out from popOrder() so other functions can call this
-void CvCity::produce(SpecialistTypes eSpecialist, bool bCanOverflow)
-{
-	m_iThingsProduced++;
-
-	int iProductionNeeded = getProductionNeeded(eSpecialist) * 100;
-
-	if (bCanOverflow)
-	{
-		// max overflow is the value of the item produced (to eliminate prebuild exploits)
-		int iOverflow = getSpecialistProductionTimes100(eSpecialist) - iProductionNeeded;
-		int iMaxOverflow = std::max(iProductionNeeded, getCurrentProductionDifferenceTimes100(false, false));
-		iOverflow = std::min(iMaxOverflow, iOverflow);
-		if (iOverflow > 0)
-		{
-			changeOverflowProductionTimes100(iOverflow);
-		}
-
-		setSpecialistProduction(eSpecialist, 0);
-	}
-	else
-	{
-		changeSpecialistProductionTimes100(eSpecialist, -iProductionNeeded);
 	}
 }
 
@@ -33452,7 +33096,6 @@ void CvCity::Serialize(City& city, Visitor& visitor)
 	visitor(city.m_paiNumResourcesLocal);
 	visitor(city.m_paiNumUnimprovedResourcesLocal);
 	visitor(city.m_paiProjectProduction);
-	visitor(city.m_paiSpecialistProduction);
 	visitor(city.m_paiUnitProduction);
 	visitor(city.m_paiUnitProductionTime);
 	visitor(city.m_paiSpecialistCount);
@@ -33567,11 +33210,6 @@ void CvCity::Serialize(City& city, Visitor& visitor)
 				visitor(order.iData2);
 				break;
 
-			case ORDER_PREPARE:
-				visitor.template as<SpecialistTypes>(order.iData1);
-				visitor(order.iData2);
-				break;
-
 			case ORDER_MAINTAIN:
 				visitor.template as<ProcessTypes>(order.iData1);
 				visitor(order.iData2);
@@ -33605,10 +33243,6 @@ void CvCity::Serialize(City& city, Visitor& visitor)
 
 				case ORDER_CREATE:
 					bIsValid = GC.getProjectInfo(ProjectTypes(order.iData1)) != NULL;
-					break;
-
-				case ORDER_PREPARE:
-					bIsValid = GC.getSpecialistInfo(SpecialistTypes(order.iData1)) != NULL;
 					break;
 
 				case ORDER_MAINTAIN:
