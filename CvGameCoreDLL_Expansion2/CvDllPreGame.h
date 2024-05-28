@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	Â© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -25,7 +25,6 @@ public:
 	/************************************************************************/
 
 	PlayerTypes DLLCALL activePlayer();
-	int DLLCALL advancedStartPoints();
 	bool DLLCALL autorun();
 	float DLLCALL autorunTurnDelay();
 	int DLLCALL autorunTurnLimit();
@@ -124,7 +123,6 @@ public:
 	SeaLevelTypes DLLCALL seaLevel();
 	void DLLCALL setActivePlayer(PlayerTypes p);
 	void DLLCALL setAdminPassword(const CvString& p);
-	void DLLCALL setAdvancedStartPoints(int a);
 	void DLLCALL setAlias(const CvString& a);
 	void DLLCALL setAutorun(bool isAutoStart);
 	void DLLCALL setAutorunTurnDelay(float turnDelay);
