@@ -1715,29 +1715,6 @@ public:
 	const std::vector<int>& GetAttachedUnits() const;
 #endif
 
-#if defined(MOD_BALANCE_CORE_JFD)
-	bool IsColony() const;
-	void SetColony(bool bValue);
-
-	int GetProvinceLevel() const;
-	void SetProvinceLevel(int iValue);
-
-	int GetOrganizedCrime() const;
-	void SetOrganizedCrime(int iValue);
-	bool HasOrganizedCrime();
-
-	void ChangeResistanceCounter(int iValue);
-	void SetResistanceCounter(int iValue);
-	int GetResistanceCounter() const;
-
-	void ChangePlagueCounter(int iValue);
-	void SetPlagueCounter(int iValue);
-	int GetPlagueCounter() const;
-
-	int GetPlagueTurns() const;
-	void ChangePlagueTurns(int iValue); //Set in city::doturn
-	void SetPlagueTurns(int iValue);
-
 	int GetSappedTurns() const;
 	void SetSappedTurns(int iValue);
 	void ChangeSappedTurns(int iValue);
@@ -1749,46 +1726,6 @@ public:
 	int GetNoTourismTurns() const;
 	void SetNoTourismTurns(int iValue);
 	void ChangeNoTourismTurns(int iValue);
-
-	int GetPlagueType() const;
-	void SetPlagueType(int iValue);
-	bool HasPlague();
-
-	void ChangeLoyaltyCounter(int iValue);
-	void SetLoyaltyCounter(int iValue);
-	int GetLoyaltyCounter() const;
-
-	void ChangeDisloyaltyCounter(int iValue);
-	void SetDisloyaltyCounter(int iValue);
-	int GetDisloyaltyCounter() const;
-
-	int GetLoyaltyState() const;
-	void SetLoyaltyState(int iLoyalty);
-
-	void SetYieldModifierFromHappiness(YieldTypes eYield, int iValue);
-	int GetYieldModifierFromHappiness(YieldTypes eYield) const;
-
-	void SetYieldModifierFromHealth(YieldTypes eYield, int iValue);
-	int GetYieldModifierFromHealth(YieldTypes eYield) const;
-
-	void SetYieldModifierFromCrime(YieldTypes eYield, int iValue);
-	int GetYieldModifierFromCrime(YieldTypes eYield) const;
-
-	void SetYieldModifierFromDevelopment(YieldTypes eYield, int iValue);
-	int GetYieldModifierFromDevelopment(YieldTypes eYield) const;
-
-	void SetYieldFromHappiness(YieldTypes eYield, int iValue);
-	int GetYieldFromHappiness(YieldTypes eYield) const;
-
-	void SetYieldFromHealth(YieldTypes eYield, int iValue);
-	int GetYieldFromHealth(YieldTypes eYield) const;
-
-	void SetYieldFromCrime(YieldTypes eYield, int iValue);
-	int GetYieldFromCrime(YieldTypes eYield) const;
-
-	void SetYieldFromDevelopment(YieldTypes eYield, int iValue);
-	int GetYieldFromDevelopment(YieldTypes eYield) const;
-#endif
 
 	void ChangeVassalLevyEra(int iChange);
 	int GetVassalLevyEra() const;
@@ -2120,32 +2057,13 @@ protected:
 	vector<SCityEventYields> m_eventYields; //[NUM_YIELD_TYPES]
 #endif
 
-#if defined(MOD_BALANCE_CORE)
-	bool m_bIsColony;
-	int m_iProvinceLevel;
-	int m_iOrganizedCrime;
-	int m_iResistanceCounter;
-	int m_iPlagueCounter;
-	int m_iPlagueTurns;
-	int m_iPlagueType;
 	int m_iSappedTurns;
 	int m_iBuildingProductionBlockedTurns;
 	int m_iNoTourismTurns;
-	int m_iLoyaltyCounter;
-	int m_iDisloyaltyCounter;
-	int m_iLoyaltyStateType;
-	std::vector<int> m_aiYieldModifierFromHappiness;
-	std::vector<int> m_aiYieldModifierFromHealth;
-	std::vector<int> m_aiYieldModifierFromCrime;
-	std::vector<int> m_aiYieldModifierFromDevelopment;
-	std::vector<int> m_aiYieldFromHappiness;
-	std::vector<int> m_aiYieldFromHealth;
-	std::vector<int> m_aiYieldFromCrime;
-	std::vector<int> m_aiYieldFromDevelopment;
+
 	std::vector<int> m_aiTempCaptureData;
 	std::vector<bool> m_abTempCaptureData;
 	bool m_bIsPendingCapture;
-#endif
 
 	CvCityBuildings* m_pCityBuildings;
 	CvCityStrategyAI* m_pCityStrategyAI;
@@ -2472,26 +2390,8 @@ SYNC_ARCHIVE_VAR(std::vector<int>, m_aiEventCityYield)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiEventCityYieldModifier)
 SYNC_ARCHIVE_VAR(int, m_iEventHappiness)
 SYNC_ARCHIVE_VAR(int, m_iCityEventCooldown)
-SYNC_ARCHIVE_VAR(bool, m_bIsColony)
-SYNC_ARCHIVE_VAR(int, m_iProvinceLevel)
-SYNC_ARCHIVE_VAR(int, m_iOrganizedCrime)
-SYNC_ARCHIVE_VAR(int, m_iResistanceCounter)
-SYNC_ARCHIVE_VAR(int, m_iPlagueCounter)
-SYNC_ARCHIVE_VAR(int, m_iPlagueTurns)
-SYNC_ARCHIVE_VAR(int, m_iPlagueType)
 SYNC_ARCHIVE_VAR(int, m_iSappedTurns)
 SYNC_ARCHIVE_VAR(int, m_iBuildingProductionBlockedTurns)
-SYNC_ARCHIVE_VAR(int, m_iLoyaltyCounter)
-SYNC_ARCHIVE_VAR(int, m_iDisloyaltyCounter)
-SYNC_ARCHIVE_VAR(int, m_iLoyaltyStateType)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldModifierFromHappiness)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldModifierFromHealth)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldModifierFromCrime)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldModifierFromDevelopment)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldFromHappiness)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldFromHealth)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldFromCrime)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldFromDevelopment)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiTempCaptureData)
 SYNC_ARCHIVE_VAR(std::vector<bool>, m_abTempCaptureData)
 SYNC_ARCHIVE_VAR(bool, m_bIsPendingCapture)

@@ -6999,62 +6999,6 @@ CvString CvCityCulture::GetTourismTooltip()
 		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_CORPORATION", iTempMod);
 	}
 
-	iTempMod = m_pCity->GetYieldModifierFromHappiness(YIELD_TOURISM);
-	if (iTempMod != 0)
-	{
-		if (!bHasCityModTooltip)
-		{
-			if (!szRtnValue.empty())
-			{
-				szRtnValue += "[NEWLINE]";
-			}
-			bHasCityModTooltip = true;
-		}
-		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MODIFIER_HAPPINESS", iTempMod);
-	}
-
-	iTempMod = m_pCity->GetYieldModifierFromHealth(YIELD_TOURISM);
-	if (iTempMod != 0)
-	{
-		if (!bHasCityModTooltip)
-		{
-			if (!szRtnValue.empty())
-			{
-				szRtnValue += "[NEWLINE]";
-			}
-			bHasCityModTooltip = true;
-		}
-		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MODIFIER_HEALTH", iTempMod);
-	}
-
-	iTempMod = m_pCity->GetYieldModifierFromDevelopment(YIELD_TOURISM);
-	if (iTempMod != 0)
-	{
-		if (!bHasCityModTooltip)
-		{
-			if (!szRtnValue.empty())
-			{
-				szRtnValue += "[NEWLINE]";
-			}
-			bHasCityModTooltip = true;
-		}
-		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MODIFIER_CRIME", iTempMod);
-	}
-
-	iTempMod = m_pCity->GetYieldModifierFromDevelopment(YIELD_TOURISM);
-	if (iTempMod != 0)
-	{
-		if (!bHasCityModTooltip)
-		{
-			if (!szRtnValue.empty())
-			{
-				szRtnValue += "[NEWLINE]";
-			}
-			bHasCityModTooltip = true;
-		}
-		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MODIFIER_DEVELOPMENT", iTempMod);
-	}
-
 	iTempMod = min(20, (GET_PLAYER(m_pCity->getOwner()).getYieldModifierFromGreatWorks(YIELD_TOURISM) * m_pCity->GetCityBuildings()->GetNumGreatWorks()));
 	if (iTempMod != 0)
 	{
