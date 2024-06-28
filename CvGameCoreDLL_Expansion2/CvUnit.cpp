@@ -9250,7 +9250,7 @@ bool CvUnit::createGreatWork()
 	GreatWorkClass eClass = CultureHelpers::GetGreatWorkClass(eGreatWorkType);
 	GreatWorkSlotType eGreatWorkSlot = CultureHelpers::GetGreatWorkSlot(eGreatWorkType);
 	
-	CvCity *pCity = kPlayer.GetCulture()->GetClosestAvailableGreatWorkSlot(getX(), getY(), eGreatWorkSlot, &eBuildingClass, &iSlot);
+	CvCity *pCity = kPlayer.GetCulture()->GetClosestAvailableGreatWorkSlot(getX(), getY(), eGreatWorkSlot, eBuildingClass, iSlot);
 	if (pCity)
 	{
 		int iGWindex = pCulture->CreateGreatWork(eGreatWorkType, eClass, m_eOwner, kPlayer.GetCurrentEra(), getName());

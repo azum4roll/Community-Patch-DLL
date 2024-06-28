@@ -232,7 +232,6 @@ void CvLuaCity::PushMethods(lua_State* L, int t)
 	Method(SetHighestPopulation);
 	//Method(GetWorkingPopulation);
 	//Method(GetSpecialistPopulation);
-	Method(GetNumGreatPeople);
 	Method(GetBaseGreatPeopleRate);
 	Method(GetGreatPeopleRate);
 	Method(GetEventGPPFromSpecialists);
@@ -1137,30 +1136,12 @@ int CvLuaCity::lGetPurchaseUnitTooltip(lua_State* L)
 		}
 	}
 
-#if defined(MOD_BALANCE_CORE)
-	if(MOD_BALANCE_CORE)
+	if (GC.getUnitInfo(eUnit)->GetCombat() > 0 || GC.getUnitInfo(eUnit)->GetRangedCombat() > 0)
 	{
-		if (GC.getUnitInfo(eUnit)->GetCombat() > 0 || GC.getUnitInfo(eUnit)->GetRangedCombat() > 0)
-		{
-			if (pkCity->GetUnitPurchaseCooldown() > 0)
-			{
-				Localization::String localizedText = Localization::Lookup("TXT_KEY_COOLDOWN_X_TURNS_REMAINING");
-				localizedText << pkCity->GetUnitPurchaseCooldown();
-
-				const char* const localized = localizedText.toUTF8();
-				if (localized)
-				{
-					if (!toolTip.IsEmpty())
-						toolTip += "[NEWLINE]";
-
-					toolTip += localized;
-				}
-			}
-		}
-		else if(pkCity->GetUnitPurchaseCooldown(true) > 0)
+		if (pkCity->GetUnitPurchaseCooldown() > 0)
 		{
 			Localization::String localizedText = Localization::Lookup("TXT_KEY_COOLDOWN_X_TURNS_REMAINING");
-			localizedText << pkCity->GetUnitPurchaseCooldown(true);
+			localizedText << pkCity->GetUnitPurchaseCooldown();
 
 			const char* const localized = localizedText.toUTF8();
 			if (localized)
@@ -1172,6 +1153,21 @@ int CvLuaCity::lGetPurchaseUnitTooltip(lua_State* L)
 			}
 		}
 	}
+	else if(pkCity->GetUnitPurchaseCooldown(true) > 0)
+	{
+		Localization::String localizedText = Localization::Lookup("TXT_KEY_COOLDOWN_X_TURNS_REMAINING");
+		localizedText << pkCity->GetUnitPurchaseCooldown(true);
+
+		const char* const localized = localizedText.toUTF8();
+		if (localized)
+		{
+			if (!toolTip.IsEmpty())
+				toolTip += "[NEWLINE]";
+
+			toolTip += localized;
+		}
+	}
+
 	if(eUnit != NO_UNIT)
 	{
 		CvUnitEntry* thisUnitInfo = GC.getUnitInfo(eUnit);
@@ -1181,34 +1177,12 @@ int CvLuaCity::lGetPurchaseUnitTooltip(lua_State* L)
 		for(int iBuildingClassLoop = 0; iBuildingClassLoop < iNumBuildingClassInfos; iBuildingClassLoop++)
 		{
 			const BuildingClassTypes eBuildingClass = (BuildingClassTypes) iBuildingClassLoop;
-			CvBuildingClassInfo* pkBuildingClassInfo = GC.getBuildingClassInfo(eBuildingClass);
-			if(!pkBuildingClassInfo)
-			{
-				continue;
-			}
 
 			// Requires Building
 			if(thisUnitInfo->GetBuildingClassPurchaseRequireds(eBuildingClass))
 			{
-				BuildingTypes ePrereqBuilding = NO_BUILDING;
-
-				if (MOD_BUILDINGS_THOROUGH_PREREQUISITES)
-				{
-					if (pkCity->HasBuildingClass(eBuildingClass))
-					{
-						ePrereqBuilding = pkCity->GetCityBuildings()->GetBuildingTypeFromClass(eBuildingClass);
-					}
-					else
-					{
-						ePrereqBuilding = (BuildingTypes)(thisCivilization.getCivilizationBuildings(eBuildingClass));
-					}
-				}
-				else
-				{
-					ePrereqBuilding = (BuildingTypes)(thisCivilization.getCivilizationBuildings(eBuildingClass));
-				}
-
-				if(ePrereqBuilding != NO_BUILDING && pkCity->GetCityBuildings()->GetNumBuilding(ePrereqBuilding) == 0)
+				BuildingTypes ePrereqBuilding = pkCity->GetBuildingTypeFromClass(eBuildingClass, true);
+				if (ePrereqBuilding != NO_BUILDING && !pkCity->HasBuilding(ePrereqBuilding))
 				{
 					CvBuildingEntry* pkBuildingInfo = GC.getBuildingInfo(ePrereqBuilding);
 					if(pkBuildingInfo)
@@ -1228,9 +1202,7 @@ int CvLuaCity::lGetPurchaseUnitTooltip(lua_State* L)
 				}
 			}
 		}
-#endif
 
-#if defined(MOD_BALANCE_CORE_UNIT_INVESTMENTS)
 		//Have we already invested here?
 		const UnitClassTypes eUnitClass = (UnitClassTypes)thisUnitInfo->GetUnitClassType();
 		if (pkCity->IsUnitInvestment(eUnitClass))
@@ -1250,7 +1222,6 @@ int CvLuaCity::lGetPurchaseUnitTooltip(lua_State* L)
 			}
 		}
 	}
-#endif
 
 	// Already a unit here
 	if(!pkCity->CanPlaceUnitHere(eUnit))
@@ -2388,55 +2359,30 @@ int CvLuaCity::lIsHasBuilding(lua_State* L)
 //int getNumBuildingClass(BuildingClassTypes eBuildingClassType);
 int CvLuaCity::lGetNumBuildingClass(lua_State* L)
 {
-	CvCity* pkCity = GetInstance(L);
-	const BuildingClassTypes eBuildingClassType = (BuildingClassTypes)lua_tointeger(L, 2);
-	if(eBuildingClassType != NO_BUILDINGCLASS)
+	CvCity* pCity = GetInstance(L);
+	const BuildingClassTypes eBuildingClass = static_cast<BuildingClassTypes>(lua_tointeger(L, 2));
+	int iResult = 0;
+	if (eBuildingClass != NO_BUILDINGCLASS)
 	{
-		const CvCivilizationInfo& playerCivilizationInfo = GET_PLAYER(pkCity->getOwner()).getCivilizationInfo();
-		BuildingTypes eBuilding = NO_BUILDING;
-		int iResult = 0;
-		if (MOD_BUILDINGS_THOROUGH_PREREQUISITES)
-		{
-			iResult = pkCity->GetCityBuildings()->GetNumBuildingClass(eBuildingClassType);
-		}
-		else
-		{
-			eBuilding = (BuildingTypes)playerCivilizationInfo.getCivilizationBuildings(eBuildingClassType);
-			iResult = pkCity->GetCityBuildings()->GetNumBuilding(eBuilding);
-		}
-		lua_pushinteger(L, iResult);
+		iResult = pCity->GetCityBuildings()->GetNumBuildingClass(eBuildingClass);
 	}
-	else
-	{
-		lua_pushinteger(L, 0);
-	}
+
+	lua_pushinteger(L, iResult);
 	return 1;
 }
 //------------------------------------------------------------------------------
 //bool isHasBuildingClass(BuildingClassTypes eBuildingClassType);
 int CvLuaCity::lIsHasBuildingClass(lua_State* L)
 {
-	CvCity* pkCity = GetInstance(L);
-	const BuildingClassTypes eBuildingClassType = (BuildingClassTypes)lua_tointeger(L, 2);
-	if(eBuildingClassType != NO_BUILDINGCLASS)
+	CvCity* pCity = GetInstance(L);
+	const BuildingClassTypes eBuildingClass = static_cast<BuildingClassTypes>(lua_tointeger(L, 2));
+	bool bResult = false;
+	if(eBuildingClass != NO_BUILDINGCLASS)
 	{
-		if (MOD_BUILDINGS_THOROUGH_PREREQUISITES)
-		{
-			const bool bResult = pkCity->HasBuildingClass(eBuildingClassType);
-			lua_pushboolean(L, bResult);
-		}
-		else
-		{
-			const CvCivilizationInfo& playerCivilizationInfo = GET_PLAYER(pkCity->getOwner()).getCivilizationInfo();
-			BuildingTypes eBuilding = (BuildingTypes)playerCivilizationInfo.getCivilizationBuildings(eBuildingClassType);
-			const bool bResult = pkCity->GetCityBuildings()->GetNumBuilding(eBuilding);
-			lua_pushboolean(L, bResult);
-		}
+		bResult = pCity->HasBuildingClass(eBuildingClass);
 	}
-	else
-	{
-		lua_pushboolean(L, false);
-	}
+
+	lua_pushboolean(L, bResult);
 	return 1;
 }
 //------------------------------------------------------------------------------
@@ -2793,12 +2739,6 @@ int CvLuaCity::lSetAutomatons(lua_State* L)
 	return BasicLuaMethod(L, &CvCity::setAutomatons);
 }
 #endif
-//------------------------------------------------------------------------------
-//int getNumGreatPeople();
-int CvLuaCity::lGetNumGreatPeople(lua_State* L)
-{
-	return BasicLuaMethod(L, &CvCity::getNumGreatPeople);
-}
 //------------------------------------------------------------------------------
 //int getBaseGreatPeopleRate();
 int CvLuaCity::lGetBaseGreatPeopleRate(lua_State* L)
@@ -5324,12 +5264,8 @@ int CvLuaCity::lSetNumRealBuilding(lua_State* L)
 	if(iIndex != NO_BUILDING)
 	{
 		const int iNewValue = lua_tointeger(L, 3);
-#if defined(MOD_BALANCE_CORE)
 		const bool bNoBonus = luaL_optbool(L, 4, true);
 		pkCity->GetCityBuildings()->SetNumRealBuilding(iIndex, iNewValue, bNoBonus);
-#else
-		pkCity->GetCityBuildings()->SetNumRealBuilding(iIndex, iNewValue);
-#endif
 	}
 
 	return 1;
@@ -5352,18 +5288,23 @@ int CvLuaCity::lGetNumFreeBuilding(lua_State* L)
 	return 1;
 }
 //------------------------------------------------------------------------------
-//void SetNumFreeBuilding(BuildingTypes iIndex, int iNewValue);
+//bool SetNumFreeBuilding(BuildingTypes iIndex, int iNewValue, bool bRefund = false, bool bValidate = false);
 int CvLuaCity::lSetNumFreeBuilding(lua_State* L)
 {
-	CvCity* pkCity = GetInstance(L);
-	const BuildingTypes iIndex = toValue<BuildingTypes>(L, 2);
-	if(iIndex != NO_BUILDING)
+	CvCity* pCity = GetInstance(L);
+	const BuildingTypes eBuilding = toValue<BuildingTypes>(L, 2);
+	bool bResult = false;
+
+	if (eBuilding != NO_BUILDING)
 	{
 		const int iNewValue = lua_tointeger(L, 3);
-		pkCity->GetCityBuildings()->SetNumFreeBuilding(iIndex, iNewValue);
+		const bool bRefund = luaL_optbool(L, 4, false);
+		const bool bValidate = luaL_optbool(L, 5, false);
+		bResult = pCity->SetNumFreeBuilding(eBuilding, iNewValue, bRefund, bValidate);
 	}
 
-	return 0;
+	lua_pushboolean(L, bResult);
+	return 1;
 }
 //------------------------------------------------------------------------------
 //bool IsBuildingSellable(BuildingTypes iIndex);

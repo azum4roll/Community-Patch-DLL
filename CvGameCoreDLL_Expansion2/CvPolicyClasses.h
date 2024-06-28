@@ -214,7 +214,6 @@ public:
 	bool IsMinorScienceAllies() const;
 	bool IsMinorResourceBonus() const;
 	int GetPolicyBranchType() const;
-	int GetNumExtraBranches() const;
 	int GetHappinessToCulture() const;
 	int GetHappinessToScience() const;
 	int GetNumCitiesFreeCultureBuilding() const;
@@ -278,7 +277,7 @@ public:
 	int* GetGreatWorkYieldChangeArray() const;
 	int GetSpecialistExtraYield(int i) const;
 	int* GetSpecialistExtraYieldArray() const;
-	int IsFreePromotion(int i) const;
+	bool IsFreePromotion(int i) const;
 	bool IsFreePromotionUnitCombat(const int promotionID, const int unitCombatID) const;
 #if defined(MOD_RELIGION_POLICY_BRANCH_FAITH_GP)
 	bool HasFaithPurchaseUnitClasses() const;
@@ -651,7 +650,6 @@ private:
 	bool m_bMinorResourceBonus;
 	int m_iFreeSpecialist;
 	int m_iPolicyBranchType;
-	int m_iNumExtraBranches;
 	int m_iWoundedUnitDamageMod;
 	int m_iUnitUpgradeCostMod;
 	int m_iBarbarianCombatBonus;
@@ -1162,13 +1160,6 @@ public:
 	bool IsPolicyBranchFinished(PolicyBranchTypes eBranchType) const;
 	bool WillFinishBranchIfAdopted(PolicyTypes eType) const;
 
-	PolicyBranchTypes GetPolicyBranchChosen(int iID) const;
-	void SetPolicyBranchChosen(int iID, PolicyBranchTypes eBranchType);
-	int GetNumPolicyBranchesAllowed() const;
-
-	int GetNumExtraBranches() const;
-	void ChangeNumExtraBranches(int iChange);
-
 	// Below is used to determine the "title" for the player
 	void DoNewPolicyPickedForHistory(PolicyTypes ePolicy);
 	PolicyBranchTypes GetDominantPolicyBranchForTitle() const;
@@ -1223,13 +1214,10 @@ private:
 	bool* m_pabPolicyBranchFinished;
 	int* m_paiPolicyBranchBlockedCount;
 	int* m_paiPolicyBlockedCount;
-	PolicyBranchTypes* m_paePolicyBranchesChosen;
 	PolicyBranchTypes* m_paePolicyBlockedBranchCheck;
 	CvPolicyXMLEntries* m_pPolicies;
 	CvPolicyAI* m_pPolicyAI;
 	CvPlayer* m_pPlayer;
-
-	int m_iNumExtraBranches;
 
 	PolicyBranchTypes m_eBranchPicked1;
 	PolicyBranchTypes m_eBranchPicked2;

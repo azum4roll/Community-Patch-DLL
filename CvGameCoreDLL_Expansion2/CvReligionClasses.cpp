@@ -18,6 +18,7 @@
 #include "cvStopWatch.h"
 #include "CvTacticalAI.h"
 #include "CvTacticalAnalysisMap.h"
+#include "CvInternalGameCoreUtils.h"
 
 #include "LintFree.h"
  
@@ -8898,7 +8899,6 @@ int CvReligionAI::ScoreBeliefAtCity(CvBeliefEntry* pEntry, CvCity* pCity) const
 	iTempValue = 0;
 	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
 	{
-#if defined(MOD_BALANCE_CORE_BELIEFS)		
 		if (pEntry->GetYieldPerBirth(iI) > 0)
 		{
 			int iEvaluator = 400;
@@ -8981,12 +8981,9 @@ int CvReligionAI::ScoreBeliefAtCity(CvBeliefEntry* pEntry, CvCity* pCity) const
 				iTempValue += pCity->GetYieldFromWLTKD((YieldTypes)iI);
 			}
 		}
-#endif
 	}
 
 	iTotalRtnValue += iTempValue;
-
-
 
 	int iEraBonus = (GC.getNumEraInfos() - (int)m_pPlayer->GetCurrentEra());
 	iEraBonus /= 2;
@@ -8996,8 +8993,14 @@ int CvReligionAI::ScoreBeliefAtCity(CvBeliefEntry* pEntry, CvCity* pCity) const
 	}
 
 	iTempValue = 0;
-	for(int iI = 0; iI < NUM_YIELD_TYPES; iI++)
+	for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
 	{
+		YieldTypes eYield = static_cast<YieldTypes>(iI);
+
+		// Skip errata yields
+		if (!MOD_BALANCE_CORE_JFD && eYield >= YIELD_JFD_HEALTH)
+			break;
+
 		iRtnValue = 0;
 
 		// City yield change
@@ -9008,103 +9011,72 @@ int CvReligionAI::ScoreBeliefAtCity(CvBeliefEntry* pEntry, CvCity* pCity) const
 		}
 		iRtnValue += iTempValue;
 
-		if (pCity->isCapital()) {
+		if (pCity->isCapital())
+		{
 			iTempValue = pEntry->GetCapitalYieldChange(iI) * iEraBonus;
-			if(iMinPop > 0)
+			if (iMinPop > 0 && pCity->getPopulation() >= iMinPop)
 			{
-				if(pCity->getPopulation() >= iMinPop)
-				{
-					iTempValue *= 2;
-				}
+				iTempValue *= 2;
 			}
 			iRtnValue += iTempValue;
 		}
 
-		if (pCity->isCoastal()) {
+		if (pCity->isCoastal())
+		{
 			iTempValue = pEntry->GetCoastalCityYieldChange(iI) * iEraBonus;
-			if(iMinPop > 0)
+			if (iMinPop > 0 && pCity->getPopulation() >= iMinPop)
 			{
-				if(pCity->getPopulation() >= iMinPop)
-				{
-					iTempValue *= 3;
-				}
+				iTempValue *= 2;
 			}
 			iRtnValue += iTempValue;
 		}
+
 		// Trade route yield change
 		iTempValue = pEntry->GetYieldChangeTradeRoute(iI) * iEraBonus;
-		if(iMinPop > 0)
+		if (iMinPop > 0 && pCity->getPopulation() >= iMinPop)
 		{
-			if(pCity->getPopulation() >= iMinPop)
-			{
-				iTempValue *= 5;
-			}
+			iTempValue *= 2;
 		}
-		if(pCity->IsRouteToCapitalConnected())
+
+		if (pCity->IsRouteToCapitalConnected())
 		{
 			iTempValue *= 5;
 		}
 		iRtnValue += iTempValue;
 
 		// Specialist yield change
-		int iSpecialistValue = pEntry->GetYieldChangeAnySpecialist(iI) * iEraBonus;
-		if (iSpecialistValue > 0)  // Like it more with large cities
+		iTempValue = pEntry->GetYieldChangeAnySpecialist(iI) * iEraBonus;
+		if (iTempValue > 0) // Like it more with large cities
 		{
-			iSpecialistValue += pCity->getPopulation();
+			iTempValue += pCity->getPopulation();
 		}
 
 		if (pCity->GetCityCitizens()->GetSpecialistSlotsTotal() > 0)
 		{
 			iTempValue *= 2;
 		}
-
 		iRtnValue += iTempValue;
 
-
 		// Building class yield change
-		for(int jJ = 0; jJ < GC.getNumBuildingClassInfos(); jJ++)
+		for (int iJ = 0; iJ < GC.getNumBuildingClassInfos(); iJ++)
 		{
-			CvBuildingClassInfo* pkBuildingClassInfo = GC.getBuildingClassInfo((BuildingClassTypes)jJ);
-			if(!pkBuildingClassInfo)
-			{
-				continue;
-			}
+			BuildingClassTypes eBuildingClass = static_cast<BuildingClassTypes>(iJ);
+			const CvBuildingClassInfo* pkBuildingClassInfo = GC.getBuildingClassInfo(eBuildingClass);
 
-			iTempValue = pEntry->GetBuildingClassYieldChange(jJ, iI) * iEraBonus;
-			if(iMinFollowers > 0)
-			{
-				if(pCity->getPopulation() < iMinFollowers)
-				{
-					iTempValue /= 2;
-				}
-			}
-
-			BuildingTypes eBuilding = NO_BUILDING;
-
-			if (MOD_BUILDINGS_THOROUGH_PREREQUISITES)
-			{
-				eBuilding = pCity->GetCityBuildings()->GetBuildingTypeFromClass((BuildingClassTypes)jJ);
-			}
-			else
-			{
-				eBuilding = (BuildingTypes)m_pPlayer->getCivilizationInfo().getCivilizationBuildings((BuildingClassTypes)jJ);
-			}
-			if (eBuilding != NO_BUILDING)
-			{
-				if (pCity->GetCityBuildings()->GetNumBuilding(eBuilding) > 0)
-				{
-					iTempValue *= 2;
-				}
-			}
-
-			if(pkBuildingClassInfo->getMaxPlayerInstances() == 1 || pkBuildingClassInfo->getMaxGlobalInstances() == 1)
+			iTempValue = pEntry->GetBuildingClassYieldChange(iJ, iI) * iEraBonus;
+			if (iMinFollowers > 0 && pCity->getPopulation() < iMinFollowers)
 			{
 				iTempValue /= 2;
 			}
 
-			if (m_pPlayer->GetPlayerTraits()->IsPermanentYieldsDecreaseEveryEra() && (YieldTypes)iI == YIELD_SCIENCE)
+			if (pCity->HasBuildingClass(eBuildingClass))
 			{
-				iTempValue = 0;
+				iTempValue *= 2;
+			}
+
+			if (pkBuildingClassInfo && (isWorldWonderClass(*pkBuildingClassInfo) || isNationalWonderClass(*pkBuildingClassInfo)))
+			{
+				iTempValue /= 2;
 			}
 
 			iRtnValue += iTempValue;
@@ -10998,46 +10970,24 @@ bool CvReligionAI::AreAllOurCitiesHaveFaithBuilding(ReligionTypes eReligion, boo
 	if (m_pPlayer->GetPlayerTraits()->IsNoAnnexing())
 		bIncludePuppets = true;
 
-	bool bRtnValue = true;
-	BuildingClassTypes eFaithBuildingClass = NO_BUILDINGCLASS;
-
 	int iLoop = 0;
-	for(CvCity* pLoopCity = m_pPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = m_pPlayer->nextCity(&iLoop))
+	for (CvCity* pLoopCity = m_pPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = m_pPlayer->nextCity(&iLoop))
 	{
-		if(pLoopCity->GetCityReligions()->GetReligiousMajority() == eReligion)
+		if (pLoopCity->GetCityReligions()->GetReligiousMajority() == eReligion)
 		{
-			if(bIncludePuppets || !pLoopCity->IsPuppet())
+			if (bIncludePuppets || !pLoopCity->IsPuppet())
 			{
-				eFaithBuildingClass = FaithBuildingAvailable(eReligion, pLoopCity);
-				BuildingTypes eFaithBuilding = (BuildingTypes)m_pPlayer->getCivilizationInfo().getCivilizationBuildings(eFaithBuildingClass);
-
+				BuildingClassTypes eFaithBuildingClass = FaithBuildingAvailable(eReligion, pLoopCity);
 				if (eFaithBuildingClass == NO_BUILDINGCLASS)
-				{
 					continue;
-				}
 
-				//Exception if the option to check for all buildings in a class is enabled
-				if (MOD_BUILDINGS_THOROUGH_PREREQUISITES)
-				{
-					if (!pLoopCity->HasBuildingClass(eFaithBuildingClass))
-					{
-						bRtnValue = false;
-						break;
-					}
-				}
-				else if (eFaithBuilding != NO_BUILDING)
-				{
-					if (pLoopCity->GetCityBuildings()->GetNumBuilding(eFaithBuilding) < 1)
-					{
-						bRtnValue = false;
-						break;
-					}
-				}
+				if (!pLoopCity->HasBuildingClass(eFaithBuildingClass))
+					return false;
 			}
 		}
 	}
 
-	return bRtnValue;
+	return true;
 }
 
 // Is there a civ nearby that isn't pressing religion?

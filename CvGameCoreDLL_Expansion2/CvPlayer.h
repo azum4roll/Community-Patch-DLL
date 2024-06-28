@@ -132,12 +132,10 @@ public:
 #if defined(MOD_BALANCE_CORE_EVENTS)
 	void DoEvents(bool bEspionageOnly = false);
 	void DoCancelEventChoice(EventChoiceTypes eChosenEventChoice);
-	void CheckActivePlayerEvents(CvCity* pCity);
 	bool IsEventValid(EventTypes eEvent);
 	bool IsEventChoiceValid(EventChoiceTypes eChosenEventChoice, EventTypes eParentEvent);
 	void DoStartEvent(EventTypes eChosenEvent, bool bSendMsg);
 	void DoEventChoice(EventChoiceTypes eEventChoice, EventTypes eEvent = NO_EVENT, bool bSendMsg = true, bool bEspionage = false);
-	void DoEventSyncChoices(EventChoiceTypes eEventChoice, CvCity* pCity);
 	CvString GetScaledHelpText(EventChoiceTypes eEventChoice, bool bYieldsOnly);
 	CvString GetDisabledTooltip(EventChoiceTypes eChosenEventChoice);
 
@@ -545,7 +543,7 @@ public:
 	void DoHealGlobal(int iHealPercent);
 	void DoHealLocal(int iHealPercent, CvPlot* pPlot);
 #if defined(MOD_BALANCE_CORE)
-	void DoFreeGreatWorkOnConquest(PlayerTypes ePlayer, CvCity* pCity);
+	void DoFreeGreatWorkOnConquest(CvCity* pCity);
 	void DoWarVictoryBonuses();
 	void DoDifficultyBonus(HistoricEventTypes eHistoricEvent);
 #endif
@@ -2582,8 +2580,6 @@ public:
 	void ChangeNumWonders(int iValue);
 	int GetNumPolicies() const;
 	void ChangeNumPolicies(int iValue);
-	int GetNumGreatPeople() const;
-	void ChangeNumGreatPeople(int iValue);
 	// End New Victory Stuff
 
 #if defined(MOD_BALANCE_CORE)
@@ -3409,7 +3405,6 @@ protected:
 	int m_iHolyCityY;
 	int m_iNumWonders;
 	int m_iNumPolicies;
-	int m_iNumGreatPeople;
 	int m_iCityConnectionHappiness;
 	int m_iHolyCityID;
 	int m_iTurnsSinceSettledLastCity;
@@ -4225,7 +4220,6 @@ SYNC_ARCHIVE_VAR(int, m_iHolyCityX)
 SYNC_ARCHIVE_VAR(int, m_iHolyCityY)
 SYNC_ARCHIVE_VAR(int, m_iNumWonders)
 SYNC_ARCHIVE_VAR(int, m_iNumPolicies)
-SYNC_ARCHIVE_VAR(int, m_iNumGreatPeople)
 SYNC_ARCHIVE_VAR(int, m_iCityConnectionHappiness)
 SYNC_ARCHIVE_VAR(int, m_iHolyCityID)
 SYNC_ARCHIVE_VAR(int, m_iTurnsSinceSettledLastCity)
