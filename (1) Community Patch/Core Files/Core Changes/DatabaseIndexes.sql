@@ -34,9 +34,6 @@ ON Building_YieldChanges(BuildingType);
 CREATE INDEX IF NOT EXISTS idx_CitySpecialization_Flavors_ON_CitySpecializationType
 ON CitySpecialization_Flavors(CitySpecializationType);
 
-CREATE INDEX IF NOT EXISTS idx_CitySpecialization_TargetYields_ON_CitySpecializationType
-ON CitySpecialization_TargetYields(CitySpecializationType);
-
 -- Civilization
 
 CREATE INDEX IF NOT EXISTS idx_Civilization_BuildingClassOverrides_ON_CivilizationType
@@ -147,9 +144,6 @@ CREATE INDEX IF NOT EXISTS idx_Resource_YieldChanges_ON_ResourceType
 ON Resource_YieldChanges(ResourceType);
 
 -- Specialist
-
-CREATE INDEX IF NOT EXISTS idx_SpecialistFlavors_ON_SpecialistType
-ON SpecialistFlavors(SpecialistType);
 
 CREATE INDEX IF NOT EXISTS idx_SpecialistYields_ON_SpecialistType
 ON SpecialistYields(SpecialistType);

@@ -12368,33 +12368,18 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 				{
 					CvPlot* pPlotToAcquire = pBestCity->GetNextBuyablePlot(false);
 					// maybe the player owns ALL of the plots or there are none available?
-					if(pPlotToAcquire)
+					if (pPlotToAcquire)
 					{
 						// Instant yield from tiles gained by culture bombing
 						for (int iI = 0; iI < NUM_YIELD_TYPES; iI++)
 						{
-							YieldTypes eYield = (YieldTypes)iI;
-
-							int iPassYield = 0;
-
-							if (eYield == NO_YIELD)
-								continue;
-
+							YieldTypes eYield = static_cast<YieldTypes>(iI);
 							TerrainTypes eTerrain = pPlotToAcquire->getTerrainType();
 
 							if (eTerrain == NO_TERRAIN)
 								continue;
 
-							// Stole foreign tiles
-							if (pPlotToAcquire->getOwner() != NO_PLAYER)
-							{
-								iPassYield += GetPlayerTraits()->GetYieldChangeFromTileStealCultureBomb(eTerrain, eYield);
-							}
-							// Obtained neutral tiles
-							else
-							{
-								iPassYield += GetPlayerTraits()->GetYieldChangeFromTileCultureBomb(eTerrain, eYield);
-							}
+							int iPassYield = GetPlayerTraits()->GetYieldChangeFromTileCultureBomb(eTerrain, eYield);
 
 							doInstantYield(INSTANT_YIELD_TYPE_CULTURE_BOMB, false, NO_GREATPERSON, NO_BUILDING, iPassYield, true, NO_PLAYER, NULL, false, pBestCity, false, true, false, eYield);
 						}

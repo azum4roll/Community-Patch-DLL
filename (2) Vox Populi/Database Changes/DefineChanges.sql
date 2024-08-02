@@ -442,8 +442,8 @@ UPDATE Defines SET Value = 2 WHERE Name = 'AI_TACTICAL_BARBARIAN_RELEASE_VARIATI
 UPDATE Defines SET Value = 20 WHERE Name = 'BARBARIAN_NAVAL_UNIT_START_TURN_SPAWN';
 
 -- Barbarian healing
-UPDATE Defines SET Value = 10 WHERE Name = 'BALANCE_BARBARIAN_HEAL_RATE' AND EXISTS (SELECT 1 FROM COMMUNITY WHERE Type = 'BARBARIAN_HEAL' AND Value = 1);
-UPDATE Defines SET Value = 15 WHERE Name = 'BALANCE_BARBARIAN_HEAL_RATE' AND EXISTS (SELECT 1 FROM COMMUNITY WHERE Type = 'BARBARIAN_HEAL' AND Value = 2);
+UPDATE Defines SET Value = 10 WHERE Name = 'BALANCE_BARBARIAN_HEAL_RATE' AND EXISTS (SELECT 1 FROM Community WHERE Type = 'BARBARIAN_HEAL' AND Value = 1);
+UPDATE Defines SET Value = 15 WHERE Name = 'BALANCE_BARBARIAN_HEAL_RATE' AND EXISTS (SELECT 1 FROM Community WHERE Type = 'BARBARIAN_HEAL' AND Value = 2);
 
 -------------------------------------------------------------------------------------------------------------------
 -- Trade Routes

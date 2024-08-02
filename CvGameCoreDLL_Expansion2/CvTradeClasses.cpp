@@ -1967,7 +1967,6 @@ bool CvGameTrade::MoveUnit (int iIndex)
 		//show the movement animation
 		pkUnit->finishMoves();
 
-#if defined(MOD_BALANCE_CORE)
 		//Free resources when your trade units move.
 		CvGameTrade* pTrade = GC.getGame().GetGameTrade();
 		int iTrIndex = pTrade->GetIndexFromUnitID(pkUnit->GetID(),pkUnit->getOwner());
@@ -1986,7 +1985,6 @@ bool CvGameTrade::MoveUnit (int iIndex)
 							INSTANT_YIELD_TYPE_TR_MOVEMENT, false, NO_GREATPERSON, NO_BUILDING, 0, true, 
 							NO_PLAYER, NULL, true, pCity, (pTradeConnection->m_eDomain == DOMAIN_SEA));
 
-#if defined(MOD_TRAITS_YIELD_FROM_ROUTE_MOVEMENT_IN_FOREIGN_TERRITORY)
 						if (MOD_TRAITS_YIELD_FROM_ROUTE_MOVEMENT_IN_FOREIGN_TERRITORY && pkUnit->IsInForeignOwnedTerritory())
 						{
 							GET_PLAYER(pCity->getOwner()).doInstantYield(
@@ -2008,12 +2006,10 @@ bool CvGameTrade::MoveUnit (int iIndex)
 								}
 							}
 						}
-#endif
 					}
 				}
 			}
 		}
-#endif
 	}
 
 	gDLL->TradeVisuals_UpdateRouteDirection(iIndex, kTradeConnection.m_bTradeUnitMovingForward);

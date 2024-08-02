@@ -275,7 +275,6 @@ public:
 	// Arrays
 	int getYieldChange(int i) const;
 	const int* getYieldChangeArray() const;
-	int getFlavorValue(int i) const;
 
 	const char* getTexture() const;
 	void setTexture(const char* szVal);
@@ -298,7 +297,6 @@ protected:
 	// Arrays
 
 	int* m_piYieldChange;
-	int* m_piFlavorValue;
 
 private:
 	CvSpecialistInfo(const CvSpecialistInfo&);
