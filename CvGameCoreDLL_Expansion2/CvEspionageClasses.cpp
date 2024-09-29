@@ -1513,7 +1513,7 @@ bool CvPlayerEspionage::TriggerSpyFocusSetup(CvCity* pCity, int uiSpyIndex)
 		for (int i = 0; i < GC.getNumCityEventChoiceInfos(); i++)
 		{
 			CvModEventCityChoiceInfo* pkMissionInfo = GC.getCityEventChoiceInfo((CityEventChoiceTypes)i);
-			if (pkMissionInfo->isCounterspyMission())
+			if (pkMissionInfo && pkMissionInfo->isCounterspyMission())
 			{
 				aCounterspyMissionList.push_back(i);
 			}
@@ -8032,7 +8032,7 @@ void CvEspionageAI::PerformSpyMissions()
 	for (int i = 0; i < GC.getNumCityEventChoiceInfos(); i++)
 	{
 		CvModEventCityChoiceInfo* pkMissionInfo = GC.getCityEventChoiceInfo((CityEventChoiceTypes)i);
-		if (pkMissionInfo->isEspionageMission())
+		if (pkMissionInfo && pkMissionInfo->isEspionageMission())
 		{
 			aSpyMissionList.push_back(i);
 		}
@@ -8448,7 +8448,7 @@ int CvEspionageAI::GetMissionScore(CvCity* pCity, CityEventChoiceTypes eMission,
 					for (int i = 0; i < GC.getNumCityEventChoiceInfos(); i++)
 					{
 						CvModEventCityChoiceInfo* pkLoopMissionInfo = GC.getCityEventChoiceInfo((CityEventChoiceTypes)i);
-						if (pkLoopMissionInfo->isEspionageMission())
+						if (pkLoopMissionInfo && pkLoopMissionInfo->isEspionageMission())
 						{
 							bNoOffensiveMissions = false;
 							break;
@@ -8983,7 +8983,7 @@ std::vector<ScoreCityEntry> CvEspionageAI::BuildOffenseCityList(bool bLogAllChoi
 		for (int i = 0; i < GC.getNumCityEventChoiceInfos(); i++)
 		{
 			CvModEventCityChoiceInfo* pkMissionInfo = GC.getCityEventChoiceInfo((CityEventChoiceTypes)i);
-			if (pkMissionInfo->isEspionageMission())
+			if (pkMissionInfo && pkMissionInfo->isEspionageMission())
 			{
 				aSpyMissionList.push_back(i);
 			}
@@ -9144,7 +9144,7 @@ std::vector<ScoreCityEntry> CvEspionageAI::BuildDefenseCityList(bool bLogAllChoi
 		for (int i = 0; i < GC.getNumCityEventChoiceInfos(); i++)
 		{
 			CvModEventCityChoiceInfo* pkMissionInfo = GC.getCityEventChoiceInfo((CityEventChoiceTypes)i);
-			if (pkMissionInfo->isCounterspyMission())
+			if (pkMissionInfo && pkMissionInfo->isCounterspyMission())
 			{
 				aCounterspyMissionList.push_back(i);
 			}
