@@ -2512,6 +2512,8 @@ void CvCityCitizens::DoAlterWorkingPlot(int iIndex)
 					return;
 
 				pPlot->setOwningCityOverride(GetCity());
+				// check if the city governor wants to work the new tile
+				DoReallocateCitizens(true);
 			}
 		}
 	}

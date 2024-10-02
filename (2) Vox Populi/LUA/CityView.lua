@@ -2295,7 +2295,7 @@ function OnEnterCityScreen()
 	
 	local pCity = UI.GetHeadSelectedCity();
 	
-	if (pCity ~= nil) then
+	if (pCity ~= nil and not pCity:IsPuppet()) then
 		Network.SendUpdateCityCitizens(pCity:GetID());
 	end
 
