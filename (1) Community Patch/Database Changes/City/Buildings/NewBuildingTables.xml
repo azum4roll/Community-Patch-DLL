@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- TODO: Documentation and sorting -->
+<!-- Unless otherwise stated, effects are applied to the city with the building. -->
 <GameData>
 	<Table name="Building_PlotYieldChanges">
 		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
@@ -299,10 +300,16 @@
 		<Column name="YieldType" type="text" reference="Yields(Type)"/>
 		<Column name="Yield" type="integer" notnull="true"/>
 	</Table>
-	<!-- BUILDING: Allows you to define a building yield that is gained when a unit levels up - only grants to unit's origin city -->
+	<!-- Instant yields to the city when a unit originated there is promoted, scaling with (new level - 1) ^ 2 -->
 	<Table name="Building_YieldFromUnitLevelUp">
 		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
 		<Column name="YieldType" type="text" reference="Yields(Type)"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city when any unit is promoted, scaling with (new level - 1) -->
+	<Table name="Building_YieldFromUnitLevelUpGlobal">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
 		<Column name="Yield" type="integer" notnull="true"/>
 	</Table>
 	<!-- BUILDING: Allows you to define a building yield that is gained when a unit gains experience in combat - only grants to unit's origin city - times 100 -->
@@ -426,40 +433,180 @@
 		<Column name="UnitType" type="text" reference="Units(Type)"/>
 		<Column name="NumUnits" type="integer" notnull="true"/>
 	</Table>
-	<!-- Allows the player to train the specified unit class, overriding tech restrictions-->
+	<!-- Allows the player to train the specified unit class, overriding tech restrictions -->
 	<Table name="Building_UnitClassTrainingAllowed">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="UnitClassType" type="text" reference="UnitClasses(Type)"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="UnitClassType" type="text" reference="UnitClasses(Type)" notnull="true"/>
 	</Table>
-	<!-- On building construction, claim all tiles within working range with the specified resource. If IncludeOwnedByOtherPlayer is true, also tiles owned by someone else are claimed and a diplomatic penalty is applied-->
+	<!-- On construction, claim all unowned tiles within working range with specified resources -->
+	<!-- If IncludeOwnedByOtherPlayer is true, tiles owned by other players are also claimed and a diplomatic penalty is applied -->
 	<Table name="Building_ResourceClaim">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="ResourceType" type="text" reference="Resources(Type)"/>
-		<Column name="IncludeOwnedByOtherPlayer" type="boolean" default="false"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="ResourceType" type="text" reference="Resources(Type)" notnull="true"/>
+		<Column name="IncludeOwnedByOtherPlayer" type="boolean" notnull="true" default="false"/>
 	</Table>
-	<!-- Gives yields to all lakes tiles in the empire-->
+	<!-- Yield boost to all lakes in empire -->
 	<Table name="Building_LakePlotYieldChangesGlobal">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="YieldType" type="text" reference="Yields(Type)"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
 		<Column name="Yield" type="integer" notnull="true"/>
 	</Table>
-	<!-- Gives instant yields to the city when the empire starts a golden age-->
+	<!-- Instant yields to the city when empire starts a golden age -->
 	<Table name="Building_YieldFromGoldenAgeStart">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="YieldType" type="text" reference="Yields(Type)"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
 		<Column name="Yield" type="integer" notnull="true"/>
 	</Table>
-	<!-- Yields permanently added to the city whenever the empire starts a golden age, capping at YieldCap-->
+	<!-- Yield boost to the city when empire starts a golden age, capping at YieldCap if not NULL -->
 	<Table name="Building_YieldChangesPerGoldenAge">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="YieldType" type="text" reference="Yields(Type)"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
 		<Column name="Yield" type="integer" notnull="true"/>
-		<Column name="YieldCap" type="integer" notnull="true"/>
+		<Column name="YieldCap" type="integer"/>
 	</Table>
-	<!-- Instant yield when purchasing a unit or a building in any city-->
+	<!-- Instant yields to the city when investing or purchasing buildings or units in any city -->
 	<Table name="Building_YieldFromPurchaseGlobal">
-		<Column name="BuildingType" type="text" reference="Buildings(Type)"/>
-		<Column name="YieldType" type="text" reference="Yields(Type)"/>
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
 		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant GPP of the specified great person equal to Value% of the production cost on building completion, if the building is unlocked on or later than EraType -->
+	<!-- It can trigger on its own completion -->
+	<Table name="Building_GreatPersonPointFromConstruction">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="GreatPersonType" type="text" reference="GreatPersons(Type)" notnull="true"/>
+		<Column name="EraType" type="text" reference="Eras(Type)" notnull="true" default="ERA_ANCIENT"/>
+		<Column name="Value" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per completed great work theme -->
+	<Table name="Building_YieldChangesPerLocalTheme">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city when any unit gift from the player reaches the target city state -->
+	<Table name="Building_YieldFromUnitGiftGlobal">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per city strength -->
+	<Table name="Building_YieldChangesPerCityStrengthTimes100">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city when a trade route originated from it is completed, scaling with era -->
+	<!-- Only counts international trade routes if IsInternational is true, and only counts internal trade routes otherwise -->
+	<Table name="Building_YieldFromTradeRouteEnd">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+		<Column name="IsInternational" type="boolean" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city at the start of every b'ak'tun, scaling with era -->
+	<Table name="Building_YieldFromLongCount">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per NumRequired (non-dummy) buildings in the city -->
+	<Table name="Building_YieldChangesPerXBuilding">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+		<Column name="NumRequired" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per NumRequired tiles owned by the city -->
+	<Table name="Building_YieldChangesPerXTiles">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+		<Column name="NumRequired" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per NumRequired strategic resources given by city state allies -->
+	<!-- Does not count the ones gained from policies -->
+	<Table name="Building_YieldChangesFromXCityStateStrategicResource">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+		<Column name="NumRequired" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per global monopoly owned by the player -->
+	<Table name="Building_YieldChangesFromMonopoly">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per trade route passing through the city -->
+	<Table name="Building_YieldChangesFromPassingTR">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to luxury resources -->
+	<Table name="Building_LuxuryYieldChanges">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city when it gains WLTKD turns, scaling with era -->
+	<Table name="Building_YieldFromWLTKD">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Gain WLTKD turns when the specified project is completed -->
+	<Table name="Building_WLTKDFromProject">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="ProjectType" type="text" reference="Projects(Type)" notnull="true"/>
+		<Column name="Turns" type="integer" notnull="true"/>
+	</Table>
+	<!-- Yield boost to the building per specified accomplishment that the player has achieved -->
+	<Table name="Building_YieldChangesFromAccomplishments">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="AccomplishmentType" type="text" reference="Accomplishments(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Bonuses to the city per specified accomplishment that the player has achieved -->
+	<Table name="Building_BonusFromAccomplishments">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="AccomplishmentType" type="text" reference="Accomplishments(Type)" notnull="true"/>
+		<Column name="Happiness" type="integer" notnull="true" default="0"/>
+		<!-- Extra XP for units of the specified domain -->
+		<Column name="DomainType" type="text" reference="Domains(Type)"/>
+		<Column name="DomainXP" type="integer" notnull="true" default="0"/>
+		<!-- Production modifier for units of the specified combat class -->
+		<Column name="UnitCombatType" type="text" reference="UnitCombatInfos(Type)"/>
+		<Column name="UnitProductionModifier" type="integer" notnull="true" default="0"/>
+	</Table>
+
+	<!-- Instant yields to the city when a great person spawns there, equal to Yield% of the writer bulb of this great person -->
+	<Table name="Building_YieldFromGPBirthScaledWithWriterBulb">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields to the city when a great person spawns there, equal to Yield% of the artist bulb of this great person -->
+	<Table name="Building_YieldFromGPBirthScaledWithArtistBulb">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="YieldType" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Yield" type="integer" notnull="true"/>
+	</Table>
+	<!-- Instant yields (of YieldOut) to the city when a specified great person spawns there, equal to Value% of YieldIn per turn -->
+	<Table name="Building_YieldFromGPBirthScaledWithPerTurnYield">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="GreatPersonType" type="text" reference="GreatPersons(Type)" notnull="true"/>
+		<Column name="YieldIn" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="YieldOut" type="text" reference="Yields(Type)" notnull="true"/>
+		<Column name="Value" type="integer" notnull="true"/>
+	</Table>
+
+	<!-- This building can be built ExtraInstances more times in the empire per specified accomplishment that the player has achieved -->
+	<Table name="Building_YieldChangesFromAccomplishments">
+		<Column name="BuildingType" type="text" reference="Buildings(Type)" notnull="true"/>
+		<Column name="AccomplishmentType" type="text" reference="Accomplishments(Type)" notnull="true"/>
+		<Column name="ExtraInstances" type="integer" notnull="true"/>
 	</Table>
 </GameData>
