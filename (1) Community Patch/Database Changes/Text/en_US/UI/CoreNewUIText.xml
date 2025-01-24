@@ -173,9 +173,45 @@
 			<Text>{1_Num} [ICON_GOLDEN_AGE] Golden Age Points</Text>
 		</Row>
 
+		<!-- Info tooltip -->
+		<!-- Common -->
+		<Row Tag="TXT_KEY_INVESTED">
+			<Text>[COLOR_POSITIVE_TEXT] (INVESTED)[ENDCOLOR]</Text>
+		</Row>
+		<!-- Units -->
+		<Row Tag="TXT_KEY_PRODUCTION_AIR_DEFENSE">
+			<Text>[ICON_AIRSTRIKE_DEFENSE] Air Strike Defense</Text>
+		</Row>
 		<!-- Buildings -->
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FOOD_MODIFIER">
+			<Text>[ICON_FOOD] Food: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_CULTURE_MODIFIER">
+			<Text>[ICON_CULTURE] Culture: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FAITH_MODIFIER">
+			<Text>[ICON_PEACE] Faith: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_DEFENSE_MODIFIER">
+			<Text>[ICON_STRENGTH] Defense: +{1_Num}%</Text>
+		</Row>
 		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_DAMAGE_REDUCTION">
 			<Text>Damage Reduction: +{1_Num}</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BUILDING_EVENT_MODIFIER">
+			<Text>{1_Num}% {2_Icon} {3_Name} from Active Events</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BUILDING_CORP_GP_CHANGE">
+			<Text>Additional +{1_Num}% [ICON_GREAT_PEOPLE] Great Person Rate from Corporation</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POLICY_NEEDED_LABEL">
+			<Text>Policies Required: [COLOR_MAGENTA]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POPULATION_NATIONAL_NEEDED_LABEL">
+			<Text>National Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POPULATION_LOCAL_NEEDED_LABEL">
+			<Text>Local Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
 		</Row>
 
 		<!-- City screen/banner -->
@@ -314,8 +350,20 @@
 		<Row Tag="TXT_KEY_GOLDMOD_YIELD_BLOCKADE">
 			<Text>[NEWLINE][ICON_BULLET]Modifier from Water Blockade (Enemy Naval Units adjacent to City): {1_Num}%</Text>
 		</Row>
+		<Row Tag="TXT_KEY_CULTURE_FROM_POPULATION">
+			<Text>{1_Num} [ICON_CULTURE] from [ICON_CITIZEN] Population</Text>
+		</Row>
 		<Row Tag="TXT_KEY_CULTURE_FROM_EMPIRE_POPULATION">
 			<Text>{1_Num} [ICON_CULTURE] from [ICON_CITIZEN] Population in Empire</Text>
+		</Row>
+		<Row Tag="TXT_KEY_CULTURE_FROM_PIETY">
+			<Text>{1_Num} [ICON_CULTURE] from following the [ICON_RELIGION] Majority Religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_CULTURE_FROM_CS_ALLIANCE">
+			<Text>{1_Num} [ICON_CULTURE] from City-States</Text>
+		</Row>
+		<Row Tag="TXT_KEY_CULTURE_FROM_CORPORATIONS">
+			<Text>{1_Num} [ICON_CULTURE] from Corporation</Text>
 		</Row>
 		<Row Tag="TXT_KEY_FAITH_FROM_EMPIRE_POP">
 			<Text>{1_Num} [ICON_PEACE] from [ICON_CITIZEN] Population in Empire</Text>
@@ -352,6 +400,12 @@
 		</Row>
 		<Row Tag="TXT_KEY_YIELD_FROM_EMPIRE_POP_EXTRA">
 			<Text>{1_Num} extra {2_IconString} from [ICON_CITIZEN] Population in Empire</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_PROCESS">
+			<Text>{1_Num} {2_IconString} from [ICON_SWAP] Process</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_TRADE_ROUTES">
+			<Text>{1_Num:number "#.##"} {2_IconString} from [ICON_INTERNATIONAL_TRADE] Trade Routes</Text>
 		</Row>
 		<Row Tag="TXT_KEY_RELIGIOUS_PRESSURE_STRING_EXTENDED">
 			<Text>({1_Pressure} Pressure, +{2_PressurePerTurn} per Turn)</Text>

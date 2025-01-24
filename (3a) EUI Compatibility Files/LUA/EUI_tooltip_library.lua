@@ -922,7 +922,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		if(city and building.GPRateModifierPerXFranchises ~= 0) then
 			local iCorpGPChange = city:GetGPRateModifierPerXFranchises();
 			if iCorpGPChange ~=0 then
-				tips:insert( L( "TXT_KEY_PEDIA_CORP_GP_CHANGE", iCorpGPChange))
+				tips:insert( L( "TXT_KEY_BUILDING_CORP_GP_CHANGE", iCorpGPChange))
 			end
 		end
 
@@ -1467,7 +1467,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		end
 		if(iNumPolicies > 0) then
 			local iNumHave = activePlayer:GetNumPolicies(true);
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POLICY_NEEDED_LABEL", iNumPolicies, iNumHave))
+			tips:insert(L("TXT_KEY_TT_NUM_POLICY_NEEDED_LABEL", iNumPolicies, iNumHave))
 		end
 	end
 
@@ -1476,14 +1476,14 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		local iNumNationalPop = activePlayer:GetScalingNationalPopulationRequired(buildingID);
 		if(iNumNationalPop > 0) then
 			local iNumHave = activePlayer:GetTotalPopulation();
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POPULATION_NATIONAL_NEEDED_LABEL", iNumNationalPop, iNumHave))
+			tips:insert(L("TXT_KEY_TT_NUM_POPULATION_NATIONAL_NEEDED_LABEL", iNumNationalPop, iNumHave))
 		end
 	end
 	local iNumLocalPop = building.LocalPopRequired;
 	if(iNumLocalPop > 0) then
 		if (city) then
 			local iNumHave = city:GetPopulation();
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POPULATION_LOCAL_NEEDED_LABEL", iNumLocalPop, iNumHave))
+			tips:insert(L("TXT_KEY_TT_NUM_POPULATION_LOCAL_NEEDED_LABEL", iNumLocalPop, iNumHave))
 		end
 	end
 
@@ -1810,7 +1810,7 @@ end
 -- ===========================================================================
 -- Help text for Projects
 -- ===========================================================================
-local function GetHelpTextForProject( projectID, city )
+local function GetHelpTextForProject( projectID, _, city )
 	local project = GameInfo.Projects[ projectID ]
 
 	local productionCost = 0;

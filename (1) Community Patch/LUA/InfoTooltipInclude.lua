@@ -1,10 +1,13 @@
+print("This is the modded InfoTooltipInclude from Community Patch");
+
 -------------------------------------------------
 -- Help text for Info Objects (Units, Buildings, etc.)
 -------------------------------------------------
-
+local MOD_BALANCE_VP = GameInfo.CustomModOptions("Name = 'BALANCE_VP'")().Value == 1;
+local MOD_BALANCE_CORE_BUILDING_INVESTMENTS = GameInfo.CustomModOptions("Name = 'BALANCE_CORE_BUILDING_INVESTMENTS'")().Value == 1;
 
 -- UNIT
-function GetHelpTextForUnit(iUnitID, bIncludeRequirementsInfo)
+function GetHelpTextForUnit(iUnitID, bIncludeRequirementsInfo, pCity)
 	local pUnitInfo = GameInfo.Units[iUnitID];
 	
 	local pActivePlayer = Players[Game.GetActivePlayer()];
@@ -14,14 +17,25 @@ function GetHelpTextForUnit(iUnitID, bIncludeRequirementsInfo)
 	
 	-- Name
 	strHelpText = strHelpText .. Locale.ToUpper(Locale.ConvertTextKey( pUnitInfo.Description ));
-	
+	if (pCity ~= nil) then
+		if(pCity:GetUnitInvestment(iUnitID) > 0) then
+		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_INVESTED");
+		end
+	end
+			
 	-- Cost
 	strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
 	
 	-- Skip cost if it's 0
 	if(pUnitInfo.Cost > 0) then
-		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_COST", pActivePlayer:GetUnitProductionNeeded(iUnitID));
-	end
+		local iCost = pActivePlayer:GetUnitProductionNeeded(iUnitID);
+		if (pCity ~= nil) then
+			if(pCity:GetUnitInvestment(iUnitID) > 0) then
+				iCost = pCity:GetUnitInvestment(iUnitID);
+			end
+		end
+		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_COST", iCost);
+	end			
 	
 	-- Moves
 	if pUnitInfo.Domain ~= "DOMAIN_AIR" then
@@ -48,6 +62,13 @@ function GetHelpTextForUnit(iUnitID, bIncludeRequirementsInfo)
 	if (iStrength ~= 0) then
 		strHelpText = strHelpText .. "[NEWLINE]";
 		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_STRENGTH", iStrength);
+	end
+
+	-- Air Strength
+	local iAirStrength = pUnitInfo.BaseLandAirDefense;
+	if (iAirStrength ~= 0) then
+		strHelpText = strHelpText .. "[NEWLINE]";
+		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_AIR_DEFENSE", iAirStrength);
 	end
 	
 	-- Resource Requirements
@@ -121,9 +142,14 @@ end
 -- BUILDING
 function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMaintenance, pCity)
 	local pBuildingInfo = GameInfo.Buildings[iBuildingID];
-	 
+
 	local pActivePlayer = Players[Game.GetActivePlayer()];
 	local pActiveTeam = Teams[Game.GetActiveTeam()];
+	-- when viewing a (foreign) city, always show tooltips as they are for the city owner
+	if (pCity ~= nil) then
+		pActivePlayer = Players[pCity:GetOwner()];
+		pActiveTeam = Teams[pActivePlayer:GetTeam()];
+	end
 	
 	local buildingClass = GameInfo.Buildings[iBuildingID].BuildingClass;
 	local buildingClassID = GameInfo.BuildingClasses[buildingClass].ID;
@@ -131,11 +157,19 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 	local strHelpText = "";
 	
 	local lines = {};
+	local bFirst = true;
 	if (not bExcludeHeader) then
 		
 		if (not bExcludeName) then
 			-- Name
 			strHelpText = strHelpText .. Locale.ToUpper(Locale.ConvertTextKey( pBuildingInfo.Description ));
+-- CBP
+			if pCity and MOD_BALANCE_CORE_BUILDING_INVESTMENTS then
+				if(pCity:GetBuildingInvestment(iBuildingID) > 0) then
+				strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_INVESTED");
+				end
+			end
+-- END
 			strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
 		end
 		
@@ -143,7 +177,15 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 		--Only show cost info if the cost is greater than 0.
 		if(pBuildingInfo.Cost > 0) then
 			local iCost = pActivePlayer:GetBuildingProductionNeeded(iBuildingID);
+-- CBP
+			if (pCity ~= nil) then
+				if(pCity:GetBuildingInvestment(iBuildingID) > 0) then
+					iCost = pCity:GetBuildingInvestment(iBuildingID);
+				end
+			end
+-- END
 			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_COST", iCost));
+			bFirst = false;
 		end
 		
 		if(pBuildingInfo.UnlockedByLeague and Game.GetNumActiveLeagues() > 0 and not Game.IsOption("GAMEOPTION_NO_LEAGUES")) then
@@ -153,6 +195,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local sCostPerPlayer = Locale.ConvertTextKey("TXT_KEY_PEDIA_COST_LABEL");
 				sCostPerPlayer = sCostPerPlayer .. " " .. Locale.ConvertTextKey("TXT_KEY_LEAGUE_PROJECT_COST_PER_PLAYER", iCostPerPlayer);
 				table.insert(lines, sCostPerPlayer);
+				bFirst = false;
 			end
 		end
 		
@@ -161,9 +204,45 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			local iMaintenance = pBuildingInfo.GoldMaintenance;
 			if (iMaintenance ~= nil and iMaintenance ~= 0) then		
 				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_MAINTENANCE", iMaintenance));
+				bFirst = false;
 			end
 		end
 		
+		-- CBP Num Social Policies
+		if(pActivePlayer) then
+			local iNumPolicies = pBuildingInfo.NumPoliciesNeeded;
+			if(pCity ~= nil) then
+				iNumPolicies = pCity:GetNumPoliciesNeeded(iBuildingID)
+			end
+			if(iNumPolicies > 0) then
+				local iNumHave = pActivePlayer:GetNumPolicies(true);
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_TT_NUM_POLICY_NEEDED_LABEL", iNumPolicies, iNumHave));
+				bFirst = false;
+			end
+		end
+
+		--- National/Local Population
+		if(pActivePlayer) then
+			local iNumNationalPop = pActivePlayer:GetScalingNationalPopulationRequired(iBuildingID);
+			if(iNumNationalPop > 0) then
+				local iNumHave = pActivePlayer:GetTotalPopulation();
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_TT_NUM_POPULATION_NATIONAL_NEEDED_LABEL", iNumNationalPop, iNumHave));
+				bFirst = false;
+			end
+		end
+
+		local iNumLocalPop = pBuildingInfo.LocalPopRequired;
+		if(iNumLocalPop > 0) then
+			if (pCity) then
+				local iNumHave = pCity:GetPopulation();
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_TT_NUM_POPULATION_LOCAL_NEEDED_LABEL", iNumLocalPop, iNumHave));
+				bFirst = false;
+			end
+		end
+	end
+	
+	if(bFirst == false) then
+		table.insert(lines, "----------------");
 	end
 	
 	-- Happiness (from all sources)
@@ -183,12 +262,214 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 	if (iHappinessTotal ~= 0) then
 		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_HAPPINESS", iHappinessTotal));
 	end
+
+	-- Global median modifiers
+	if MOD_BALANCE_VP then
+		local iBasicNeedsMedianModifierBuilding = Game.GetBasicNeedsMedianModifierBuilding(iBuildingID); 
+		if (iBasicNeedsMedianModifierBuilding ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER", iBasicNeedsMedianModifierBuilding));
+		end
+		local iGoldMedianModifierBuilding = Game.GetGoldMedianModifierBuilding(iBuildingID); 
+		if (iGoldMedianModifierBuilding ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_GOLD_MEDIAN_MODIFIER", iGoldMedianModifierBuilding));
+		end
+		local iScienceMedianModifierBuilding = Game.GetScienceMedianModifierBuilding(iBuildingID); 
+		if (iScienceMedianModifierBuilding ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_SCIENCE_MEDIAN_MODIFIER", iScienceMedianModifierBuilding));
+		end
+		local iCultureMedianModifierBuilding = Game.GetCultureMedianModifierBuilding(iBuildingID); 
+		if (iCultureMedianModifierBuilding ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_CULTURE_MEDIAN_MODIFIER", iCultureMedianModifierBuilding));
+		end
+		local iReligiousUnrestModifierBuilding = Game.GetReligiousUnrestModifierBuilding(iBuildingID); 
+		if (iReligiousUnrestModifierBuilding ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_RELIGIOUS_UNREST_MODIFIER", iReligiousUnrestModifierBuilding));
+		end
+
+		local iBasicNeedsMedianModifierBuildingGlobal = Game.GetBasicNeedsMedianModifierBuildingGlobal(iBuildingID); 
+		if (iBasicNeedsMedianModifierBuildingGlobal ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER_GLOBAL", iBasicNeedsMedianModifierBuildingGlobal));
+		end
+		local iGoldMedianModifierBuildingGlobal = Game.GetGoldMedianModifierBuildingGlobal(iBuildingID); 
+		if (iGoldMedianModifierBuildingGlobal ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_GOLD_MEDIAN_MODIFIER_GLOBAL", iGoldMedianModifierBuildingGlobal));
+		end
+		local iScienceMedianModifierBuildingGlobal = Game.GetScienceMedianModifierBuildingGlobal(iBuildingID); 
+		if (iScienceMedianModifierBuildingGlobal ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_SCIENCE_MEDIAN_MODIFIER_GLOBAL", iScienceMedianModifierBuildingGlobal));
+		end
+		local iCultureMedianModifierBuildingGlobal = Game.GetCultureMedianModifierBuildingGlobal(iBuildingID); 
+		if (iCultureMedianModifierBuildingGlobal ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_CULTURE_MEDIAN_MODIFIER_GLOBAL", iCultureMedianModifierBuildingGlobal));
+		end
+		local iReligiousUnrestModifierBuildingGlobal = Game.GetReligiousUnrestModifierBuildingGlobal(iBuildingID); 
+		if (iReligiousUnrestModifierBuildingGlobal ~= 0) then
+			table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_RELIGIOUS_UNREST_MODIFIER_GLOBAL", iReligiousUnrestModifierBuildingGlobal));
+		end
+
+		if (not OptionsManager.IsNoBasicHelp()) then	
+			if (pCity ~= nil) then
+				local iBasicNeedsMedianModifier = iBasicNeedsMedianModifierBuilding + iBasicNeedsMedianModifierBuildingGlobal;
+				if (iBasicNeedsMedianModifier ~= 0) then
+					local iNewMedian = pCity:GetTheoreticalNewBasicNeedsMedian(iBuildingID) / 100;
+					local iOldMedian = pCity:GetBasicNeedsMedian() / 100;
+					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
+						table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_BASIC_NEEDS_NEW_MEDIAN", iNewMedian, iOldMedian));
+					end
+				end
+				local iGoldMedianModifier = iGoldMedianModifierBuilding + iGoldMedianModifierBuildingGlobal;
+				if (iGoldMedianModifier ~= 0) then
+					local iNewMedian = pCity:GetTheoreticalNewGoldMedian(iBuildingID) / 100;
+					local iOldMedian = pCity:GetGoldMedian() / 100;
+					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
+						table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_GOLD_NEW_MEDIAN", iNewMedian, iOldMedian));
+					end
+				end
+				local iScienceMedianModifier = iScienceMedianModifierBuilding + iScienceMedianModifierBuildingGlobal;
+				if (iScienceMedianModifier ~= 0) then
+					local iNewMedian = pCity:GetTheoreticalNewScienceMedian(iBuildingID) / 100;
+					local iOldMedian = pCity:GetScienceMedian() / 100;
+					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
+						table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_SCIENCE_NEW_MEDIAN", iNewMedian, iOldMedian));
+					end
+				end
+				local iCultureMedianModifier = iCultureMedianModifierBuilding + iCultureMedianModifierBuildingGlobal;
+				if (iCultureMedianModifier ~= 0) then
+					local iNewMedian = pCity:GetTheoreticalNewCultureMedian(iBuildingID) / 100;
+					local iOldMedian = pCity:GetCultureMedian() / 100;
+					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
+						table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_CULTURE_NEW_MEDIAN", iNewMedian, iOldMedian));
+					end
+				end
+				local iReligiousUnrestModifier = iReligiousUnrestModifierBuilding + iReligiousUnrestModifierBuildingGlobal;
+				if (iReligiousUnrestModifier ~= 0) then
+					local iNewUnhappyPerPop = pCity:GetTheoreticalNewReligiousUnrestPerMinorityFollower(iBuildingID) / 100;
+					local iOldUnhappyPerPop = pCity:GetReligiousUnrestPerMinorityFollower(iBuildingID) / 100;
+					if (iNewUnhappyPerPop ~= 0 and iOldUnhappyPerPop ~= 0) then
+						table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD", iNewUnhappyPerPop, iOldUnhappyPerPop));
+					end
+				end
+			end
+		end
+	end
+	
+	
+	-- Food
+	local iFood = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_FOOD);
+	if (pCity ~= nil) then
+		iFood = iFood + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD);
+		iFood = iFood + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD);
+-- CBP
+		iFood = iFood + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_FOOD);
+		iFood = iFood + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_FOOD);
+		iFood = iFood + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD);
+		-- Yield bonuses to World Wonders
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iFood = iFood + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_FOOD)
+		end
+-- END
+		-- Events
+		iFood = iFood + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_FOOD);
+		-- End 
+	end
+	if (iFood ~= nil and iFood ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_FOOD", iFood));
+	end
+	
+	-- Food Modifier
+	local iFoodMod = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_FOOD);
+	iFoodMod = iFoodMod + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_FOOD);
+	if (pCity ~= nil) then
+		iFoodMod = iFoodMod + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_FOOD);
+	end
+	if (iFoodMod ~= nil and iFoodMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_FOOD_MODIFIER", iFoodMod));
+	end
+	
+		-- Production Change
+	local iProd = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_PRODUCTION);
+	iProd = iProd + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+-- CBP
+	if (pCity ~= nil) then
+		iProd = iProd + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+		iProd = iProd + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+-- Start Vox Populi
+		-- Yield bonuses to World Wonders
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iProd = iProd + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_PRODUCTION)
+		end
+-- End Vox Populi
+	end
+-- END	
+	if (pCity ~= nil) then
+		iProd = iProd + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+		iProd = iProd + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+		-- Events
+		iProd = iProd + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+		-- End
+	end
+	if (iProd ~= nil and iProd ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_PRODUCTION_CHANGE", iProd));
+	end
+	
+	-- Production Modifier
+	local iProductionMod = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_PRODUCTION);
+	iProductionMod = iProductionMod + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+	
+	if (pCity ~= nil) then
+		iProductionMod = iProductionMod + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_PRODUCTION);
+	end
+
+	if (iProductionMod ~= nil and iProductionMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_PRODUCTION", iProductionMod));
+	end
+		
+	-- Gold Change
+	iGold = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_GOLD);
+	if (pCity ~= nil) then
+		iGold = iGold + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD);
+		iGold = iGold + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD);
+-- CBP	
+		iGold = iGold + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_GOLD);
+		iGold = iGold + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_GOLD);
+		iGold = iGold + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD);
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iGold = iGold + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_GOLD)
+		end
+-- END
+		-- Events
+		iGold = iGold + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_GOLD);
+		-- End 	
+	end
+	if (iGold ~= nil and iGold ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD_CHANGE", iGold));
+	end
+	
+	-- Gold Mod
+	local iGoldMod = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_GOLD);
+	iGoldMod = iGoldMod + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_GOLD);
+	if (pCity ~= nil) then
+		iGoldMod = iGoldMod + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_GOLD);
+	end
+	if (iGoldMod ~= nil and iGoldMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD", iGoldMod));
+	end
 	
 	-- Culture
 	local iCulture = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_CULTURE);
 	if (pCity ~= nil) then
 		iCulture = iCulture + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_CULTURE) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_CULTURE);
 		iCulture = iCulture + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_CULTURE);
+-- CBP
+		iCulture = iCulture + pCity:GetBuildingClassCultureChange(buildingClassID);
+		iCulture = iCulture + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_CULTURE);
+		iCulture = iCulture + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_CULTURE);
+		iCulture = iCulture + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_CULTURE);
+		-- Yield bonuses to World Wonders
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iCulture = iCulture + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_CULTURE)
+		end
+-- END
 		-- Events
 		iCulture = iCulture + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_CULTURE);
 		-- End 
@@ -196,12 +477,31 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 	if (iCulture ~= nil and iCulture ~= 0) then
 		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_CULTURE", iCulture));
 	end
+	
+	-- Culture Modifier
+	local iCultureMod = pBuildingInfo.CultureRateModifier;
+	iCultureMod = iCultureMod + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_CULTURE);
+	if (pCity ~= nil) then
+		iCultureMod = iCultureMod + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_CULTURE);
+	end
+	if (iCultureMod ~= nil and iCultureMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_CULTURE_MODIFIER", iCultureMod));
+	end
 
 	-- Faith
 	local iFaith = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_FAITH);
 	if (pCity ~= nil) then
 		iFaith = iFaith + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FAITH) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FAITH);
 		iFaith = iFaith + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FAITH);
+		iFaith = iFaith + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_FAITH);
+-- CBP
+		iFaith = iFaith + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_FAITH);
+		iFaith = iFaith + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FAITH);
+		-- Yield bonuses to World Wonders
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iFaith = iFaith + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_FAITH)
+		end
+-- END
 		-- Events
 		iFaith = iFaith + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_FAITH);
 		-- End 
@@ -210,10 +510,62 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_FAITH", iFaith));
 	end
 	
+	-- Faith Modifier
+	local iFaithMod = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_FAITH);
+	iFaithMod = iFaithMod + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_FAITH);
+	if (pCity ~= nil) then
+		iFaithMod = iFaithMod + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_FAITH);
+	end
+	
+	if (iFaithMod ~= nil and iFaithMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_FAITH_MODIFIER", iFaithMod));
+	end
+	
+	-- Science Change
+	local iScienceChange = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_SCIENCE);
+	if (pCity ~= nil) then
+		iScienceChange = iScienceChange + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
+		iScienceChange = iScienceChange + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
+-- Start Vox Populi
+
+		iScienceChange = iScienceChange + pCity:GetLocalBuildingClassYield(buildingClassID, YieldTypes.YIELD_SCIENCE);
+		iScienceChange = iScienceChange + pCity:GetBuildingYieldChangeFromCorporationFranchises(buildingClassID, YieldTypes.YIELD_SCIENCE);
+		iScienceChange = iScienceChange + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
+		-- Yield bonuses to World Wonders
+		if Game.IsWorldWonderClass(buildingClassID) then
+			iScienceChange = iScienceChange + pActivePlayer:GetExtraYieldWorldWonder(buildingID, YieldTypes.YIELD_SCIENCE)
+		end
+-- End Vox Populi
+		-- Events
+		iScienceChange = iScienceChange + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_SCIENCE);
+		-- End 
+	end
+	if (iScienceChange ~= nil and iScienceChange ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE_CHANGE", iScienceChange));
+	end
+	
+	-- Science Modifier
+	local iScience = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_SCIENCE);
+	iScience = iScience + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_SCIENCE);
+-- CBP
+	if (pCity ~= nil) then
+		iScience = iScience + pCity:GetReligionBuildingYieldRateModifier(buildingClassID, YieldTypes.YIELD_SCIENCE);
+	end
+-- END	
+	if (iScience ~= nil and iScience ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE", iScience));
+	end
+	
 	-- Defense
 	local iDefense = pBuildingInfo.Defense;
 	if (iDefense ~= nil and iDefense ~= 0) then
 		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_DEFENSE", iDefense / 100));
+	end
+	
+	-- Defense Modifier
+	local iDefenseMod = pBuildingInfo.BuildingDefenseModifier;
+	if (iDefenseMod ~= nil and iDefenseMod ~= 0) then
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_DEFENSE_MODIFIER", iDefenseMod));
 	end
 	
 	-- Hit Points
@@ -241,80 +593,6 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 	end
 	--END
 	
-	-- Food
-	local iFood = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_FOOD);
-	if (pCity ~= nil) then
-		iFood = iFood + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD);
-		iFood = iFood + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_FOOD);
-		-- Events
-		iFood = iFood + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_FOOD);
-		-- End 
-	end
-	if (iFood ~= nil and iFood ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_FOOD", iFood));
-	end
-	
-	-- Gold Mod
-	local iGold = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_GOLD);
-	iGold = iGold + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_GOLD);
-	
-	if (iGold ~= nil and iGold ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD", iGold));
-	end
-	
-	-- Gold Change
-	iGold = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_GOLD);
-	if (pCity ~= nil) then
-		iGold = iGold + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD);
-		iGold = iGold + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_GOLD);
-		-- Events
-		iGold = iGold + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_GOLD);
-		-- End 
-	end
-	if (iGold ~= nil and iGold ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD_CHANGE", iGold));
-	end
-	
-	-- Science
-	local iScience = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_SCIENCE);
-	iScience = iScience + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_SCIENCE);
-	if (iScience ~= nil and iScience ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE", iScience));
-	end
-	
-	-- Science
-	local iScienceChange = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_SCIENCE) + pActivePlayer:GetPolicyBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
-	if (pCity ~= nil) then
-		iScienceChange = iScienceChange + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
-		iScienceChange = iScienceChange + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_SCIENCE);
-		-- Events
-		iScienceChange = iScienceChange + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_SCIENCE);
-		-- End 
-	end
-	if (iScienceChange ~= nil and iScienceChange ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE_CHANGE", iScienceChange));
-	end
-	
-	-- Production
-	local iProduction = Game.GetBuildingYieldModifier(iBuildingID, YieldTypes.YIELD_PRODUCTION);
-	iProduction = iProduction + pActivePlayer:GetPolicyBuildingClassYieldModifier(buildingClassID, YieldTypes.YIELD_PRODUCTION);
-	if (iProduction ~= nil and iProduction ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_PRODUCTION", iProduction));
-	end
-
-	-- Production Change
-	local iProd = Game.GetBuildingYieldChange(iBuildingID, YieldTypes.YIELD_PRODUCTION);
-	if (pCity ~= nil) then
-		iProd = iProd + pCity:GetReligionBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION) + pActivePlayer:GetPlayerBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION);
-		iProd = iProd + pCity:GetLeagueBuildingClassYieldChange(buildingClassID, YieldTypes.YIELD_PRODUCTION);
-		-- Events
-		iProd = iProd + pCity:GetEventBuildingClassYield(buildingClassID, YieldTypes.YIELD_PRODUCTION);
-		-- End
-	end
-	if (iProd ~= nil and iProd ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_PRODUCTION_CHANGE", iProd));
-	end
-	
 	-- Great People
 	local specialistType = pBuildingInfo.SpecialistType;
 	if specialistType ~= nil then
@@ -330,7 +608,18 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			table.insert(lines, "[ICON_GREAT_PEOPLE] " .. Locale.ConvertTextKey(specialistSlotsKey) .. " " .. pBuildingInfo.SpecialistCount);
 		end
 	end
-	
+-- CBP
+	if(pCity ~= nil) then
+		local iCorpGPChange = pBuildingInfo.GPRateModifierPerXFranchises;
+		if iCorpGPChange ~=0 then
+			iCorpGPChange = pCity:GetGPRateModifierPerXFranchises();
+			if iCorpGPChange ~=0 then
+				local localizedText = Locale.ConvertTextKey("TXT_KEY_BUILDING_CORP_GP_CHANGE", iCorpGPChange);
+				table.insert(lines, localizedText);
+			end
+		end
+	end
+-- END
 	local iNumGreatWorks = pBuildingInfo.GreatWorkCount;
 	if(iNumGreatWorks > 0) then
 		local greatWorksSlotType = GameInfo.GreatWorkSlots[pBuildingInfo.GreatWorkSlotType];
@@ -344,7 +633,27 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_TOURISM", iTourism);
 			table.insert(lines, localizedText);
 		end
+-- CBP FIX
+		if(iTourism > 0 and pBuildingInfo.FaithCost > 0 and pBuildingInfo.PolicyType ~= nil and pBuildingInfo.Cost == -1) then
+			local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_TOURISM", iTourism);
+			table.insert(lines, localizedText);
+		end
+
+		iTourism = pCity:GetBuildingClassTourism(buildingClassID)
+		if iTourism ~= 0 then
+			local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_TOURISM", iTourism);
+			table.insert(lines, localizedText);
+		end
 	end
+	-- CBP
+	if (pCity ~= nil) then
+		local iTourism = pActivePlayer:GetExtraYieldWorldWonder(iBuildingID, YieldTypes.YIELD_TOURISM);
+		if(iTourism > 0) then
+			local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_TOURISM", iTourism);
+			table.insert(lines, localizedText);
+		end
+	end
+	-- END
 	
 	local iTechEnhancedTourism = pBuildingInfo.TechEnhancedTourism;
 	local iEnhancingTech = GameInfoTypes[pBuildingInfo.EnhancedYieldTech];
@@ -352,7 +661,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 		local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_TOURISM", iTechEnhancedTourism);
 		table.insert(lines, localizedText);
 	end	
-	
+
 	strHelpText = strHelpText .. table.concat(lines, "[NEWLINE]");
 	
 	-- Pre-written Help text
@@ -364,7 +673,33 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			strHelpText = strHelpText .. strWrittenHelpText;
 		end
 	end
-	
+
+-- CBP
+	if pCity and MOD_BALANCE_CORE_BUILDING_INVESTMENTS then
+		if(pCity:GetNumRealBuilding(iBuildingID) <= 0) then
+			if(pCity:GetNumFreeBuilding(iBuildingID) <= 0) then
+				local iAmount = GameDefines.BALANCE_BUILDING_INVESTMENT_BASELINE;
+				iAmount = (iAmount * -1);
+				local iWonderAmount = (iAmount / 2);
+				local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_INVESTMENT_BUILDING", iAmount, iWonderAmount);
+				-- Separator
+				strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
+				strHelpText = strHelpText .. localizedText;
+
+				if(pCity:IsWorldWonder(iBuildingID)) then
+					-- Separator
+					local iCost = pCity:GetWorldWonderCost(iBuildingID);
+					if(iCost > 0) then
+						local localizedText = Locale.ConvertTextKey("TXT_KEY_WONDER_COST_INCREASE_METRIC", iCost);
+						strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
+						strHelpText = strHelpText .. localizedText;
+					end
+				end
+			end
+		end
+	end
+-- END
+
 	return strHelpText;
 	
 end
@@ -419,7 +754,12 @@ function GetHelpTextForProject(iProjectID, bIncludeRequirementsInfo)
 	strHelpText = strHelpText .. Locale.ToUpper(Locale.ConvertTextKey( pProjectInfo.Description ));
 	
 	-- Cost
-	local iCost = pActivePlayer:GetProjectProductionNeeded(iProjectID);
+	local iCost = 0;
+	if(pCity ~= nil)then 
+		iCost = pCity:GetProjectProductionNeeded(iProjectID);
+	else
+		iCost = pActivePlayer:GetProjectProductionNeeded(iProjectID);
+	end
 	strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
 	strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_COST", iCost);
 	
@@ -505,6 +845,11 @@ function GetFoodTooltip(pCity)
 	
 	strFoodToolTip = strFoodToolTip .. "[NEWLINE][NEWLINE]";
 	strFoodToolTip = strFoodToolTip .. GetYieldTooltipHelper(pCity, iYieldType, "[ICON_FOOD]");
+
+	if MOD_BALANCE_VP then
+		strFoodToolTip = strFoodToolTip .. pCity:getPotentialUnhappinessWithGrowth();
+	end
+		
 	
 	return strFoodToolTip;
 end
@@ -551,6 +896,23 @@ end
 function GetProductionTooltip(pCity)
 
 	local iBaseProductionPT = pCity:GetBaseYieldRate(YieldTypes.YIELD_PRODUCTION);
+	local iYieldPerPop = pCity:GetYieldPerPopTimes100(YieldTypes.YIELD_PRODUCTION);
+	if (iYieldPerPop ~= 0) then
+		iYieldPerPop = iYieldPerPop * pCity:GetPopulation();
+		iYieldPerPop = iYieldPerPop / 100;
+		
+		iBaseProductionPT = iBaseProductionPT + iYieldPerPop;
+	end
+	local iYieldPerPopInEmpire = pCity:GetYieldPerPopInEmpireTimes100(YieldTypes.YIELD_PRODUCTION);
+	if (iYieldPerPopInEmpire ~= 0) then
+		iYieldPerPopInEmpire = iYieldPerPopInEmpire * Players[pCity:GetOwner()]:GetTotalPopulation();
+		iYieldPerPopInEmpire = iYieldPerPopInEmpire / 100;
+		
+		iBaseProductionPT = iBaseProductionPT + iYieldPerPopInEmpire;
+	end
+	if pCity:IsIndustrialConnectedToCapital() then
+		iBaseProductionPT = iBaseProductionPT + pCity:GetConnectionGoldTimes100() / 100
+	end
 	local iProductionPerTurn = pCity:GetCurrentProductionDifferenceTimes100(false, false) / 100;--pCity:GetYieldRate(YieldTypes.YIELD_PRODUCTION);
 	local strCodeToolTip = pCity:GetYieldModifierTooltip(YieldTypes.YIELD_PRODUCTION);
 	
@@ -573,6 +935,7 @@ end
 function GetCultureTooltip(pCity)
 	
 	local strCultureToolTip = "";
+	local iCulturePerTurn = pCity:GetJONSCulturePerTurn();
 	if (Game.IsOption(GameOptionTypes.GAMEOPTION_NO_POLICIES)) then
 		strCultureToolTip = Locale.ConvertTextKey("TXT_KEY_TOP_PANEL_POLICIES_OFF_TOOLTIP");
 	else
@@ -582,6 +945,20 @@ function GetCultureTooltip(pCity)
 		end
 		
 		local bFirst = true;
+		
+		-- Culture from Terrain
+		local iCultureFromTerrain = pCity:GetBaseYieldRateFromTerrain(YieldTypes.YIELD_CULTURE);
+		if (iCultureFromTerrain ~= 0) then
+			
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_TERRAIN", iCultureFromTerrain);
+		end
 		
 		-- Culture from Buildings
 		local iCultureFromBuildings = pCity:GetJONSCulturePerTurnFromBuildings();
@@ -614,7 +991,9 @@ function GetCultureTooltip(pCity)
 		-- Culture from Specialists
 		local iCultureFromSpecialists = pCity:GetJONSCulturePerTurnFromSpecialists();
 		if (iCultureFromSpecialists ~= 0) then
-			
+			--CBP
+			iCultureFromSpecialists = (iCultureFromSpecialists + pCity:GetBaseYieldRateFromSpecialists(YieldTypes.YIELD_CULTURE));
+			--END
 			-- Spacing
 			if (bFirst) then
 				bFirst = false;
@@ -652,7 +1031,91 @@ function GetCultureTooltip(pCity)
 			
 			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_RELIGION", iCultureFromReligion);
 		end
-		
+
+-- CBP
+
+		-- Base Yield from Pop
+		local iYieldPerPop = pCity:GetYieldPerPopTimes100(YieldTypes.YIELD_CULTURE);
+		if (iYieldPerPop ~= 0) then
+			iYieldPerPop = iYieldPerPop * pCity:GetPopulation();
+			iYieldPerPop = iYieldPerPop / 100;
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_POPULATION", iYieldPerPop);
+		end
+
+		-- Base Yield from Pop in Empire
+		local iYieldPerPopInEmpire = pCity:GetYieldPerPopInEmpireTimes100(YieldTypes.YIELD_CULTURE);
+		if (iYieldPerPopInEmpire ~= 0) then
+			iYieldPerPopInEmpire = iYieldPerPopInEmpire * Players[pCity:GetOwner()]:GetTotalPopulation();
+			iYieldPerPopInEmpire = iYieldPerPopInEmpire / 100;
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_EMPIRE_POPULATION", iYieldPerPopInEmpire);
+		end
+
+		-- Base Yield from Misc
+		local iYieldFromMisc = pCity:GetBaseYieldRateFromMisc(YieldTypes.YIELD_CULTURE);
+		if (iYieldFromMisc ~= 0) then
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_YIELD_FROM_MISC", iYieldFromMisc, GameInfo.Yields[YieldTypes.YIELD_CULTURE].IconString);
+		end
+-- END
+
+-- CBP -- Yield Increase from Piety
+		local iYieldFromPiety = pCity:GetReligionYieldRateModifier(YieldTypes.YIELD_CULTURE);
+		if ( iYieldFromPiety ~= 0) then
+			
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_PIETY", iYieldFromPiety);
+		end
+-- END
+-- CBP -- Yield Increase from CS Alliance
+		local iYieldFromCSAlliance = pCity:GetBaseYieldRateFromCSAlliance(YieldTypes.YIELD_CULTURE);
+		if ( iYieldFromCSAlliance ~= 0) then
+			
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_CS_ALLIANCE", iYieldFromCSAlliance);
+		end
+-- END
+-- CBP -- Culture from Corporations
+		local iYieldFromCorporations = pCity:GetYieldChangeFromCorporationFranchises(YieldTypes.YIELD_CULTURE);
+		if ( iYieldFromCorporations ~= 0) then
+			
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+			end
+			
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_CORPORATIONS", iYieldFromCorporations);
+		end
+-- END		
 		-- Culture from Leagues
 		local iCultureFromLeagues = pCity:GetJONSCulturePerTurnFromLeagues();
 		if ( iCultureFromLeagues ~= 0) then
@@ -666,23 +1129,10 @@ function GetCultureTooltip(pCity)
 			
 			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_LEAGUES", iCultureFromLeagues);
 		end
-		
-		-- Culture from Terrain
-		local iCultureFromTerrain = pCity:GetBaseYieldRateFromTerrain(YieldTypes.YIELD_CULTURE);
-		if (iCultureFromTerrain ~= 0) then
-			
-			-- Spacing
-			if (bFirst) then
-				bFirst = false;
-			else
-				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
-			end
-			
-			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_TERRAIN", iCultureFromTerrain);
-		end
 
 		-- Culture from Traits
 		local iCultureFromTraits = pCity:GetJONSCulturePerTurnFromTraits();
+		iCultureFromTraits = (iCultureFromTraits + pCity:GetYieldPerTurnFromTraits(YieldTypes.YIELD_CULTURE));
 		if (iCultureFromTraits ~= 0) then
 			
 			-- Spacing
@@ -710,51 +1160,78 @@ function GetCultureTooltip(pCity)
 			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_EVENTS", iCultureFromEvent);
 		end
 		-- END 
-		
-		-- Empire Culture modifier
-		local iAmount = Players[pCity:GetOwner()]:GetCultureCityModifier();
-		if (iAmount ~= 0) then
-			strCultureToolTip = strCultureToolTip .. "[NEWLINE][NEWLINE]";
-			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_PLAYER_MOD", iAmount);
-		end
-		
-		-- City Culture modifier
-		local iAmount = pCity:GetCultureRateModifier();
-		if (iAmount ~= 0) then
-			strCultureToolTip = strCultureToolTip .. "[NEWLINE][NEWLINE]";
-			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_CITY_MOD", iAmount);
-		end
-		
-		-- Culture Wonders modifier
-		if (pCity:GetNumWorldWonders() > 0) then
-			iAmount = Players[pCity:GetOwner()]:GetCultureWonderMultiplier();
-			
-			if (iAmount ~= 0) then
-				strCultureToolTip = strCultureToolTip .. "[NEWLINE][NEWLINE]";
-				strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_WONDER_BONUS", iAmount);
+
+		local iCultureFromYields = pCity:GetYieldFromCityYield(YieldTypes.YIELD_CULTURE);
+		if (iCultureFromYields ~= 0) then
+			-- Spacing
+			if (bFirst) then
+				bFirst = false;
+			else
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
 			end
+			
+			strCultureToolTip = strCultureToolTip .. "[ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_CULTURE_FROM_CITY_YIELDS", iCultureFromYields);
 		end
 		
+		-- Base Total
+		local baseCulturePerTurn = pCity:GetBaseJONSCulturePerTurn();
+		if(baseCulturePerTurn ~= iCulturePerTurn) then
+			strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------[NEWLINE]" .. Locale.ConvertTextKey("TXT_KEY_YIELD_BASE", baseCulturePerTurn, GameInfo.Yields[YieldTypes.YIELD_CULTURE].IconString);
+		end
+		
+		-- Yield modifiers string
+		local strCultureFromTR = pCity:GetYieldModifierTooltip(YieldTypes.YIELD_CULTURE);
+		if (strCultureFromTR ~= "") then		
+			strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------" .. strCultureFromTR;
+		end
+		-- END  
+	
 		-- Puppet modifier
 		if (pCity:IsPuppet()) then
-			iAmount = GameDefines.PUPPET_CULTURE_MODIFIER;
+			local puppetMod = Players[pCity:GetOwner()]:GetPuppetYieldPenalty(YieldTypes.YIELD_CULTURE);
 			
-			if (iAmount ~= 0) then
-				strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
-				strCultureToolTip = strCultureToolTip .. Locale.ConvertTextKey("TXT_KEY_PRODMOD_PUPPET", iAmount);
+			if (puppetMod ~= 0) then
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------" .. Locale.ConvertTextKey("TXT_KEY_PRODMOD_PUPPET", puppetMod);
 			end
 		end
+		
+		-- Trade Routes and Processes
+		local iYieldFromTrade = pCity:GetBaseYieldRateFromTradeRoutes(YieldTypes.YIELD_CULTURE)/100.0;
+		local iYieldFromProcess = pCity:GetBaseYieldRateFromProcess(YieldTypes.YIELD_CULTURE);
+		if(iYieldFromTrade ~= 0 or iYieldFromProcess ~=0) then
+			strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------";
+			if(iYieldFromTrade ~= 0) then
+				strCultureToolTip = strCultureToolTip .. "[NEWLINE][ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_YIELD_FROM_TRADE_ROUTES", iYieldFromTrade, GameInfo.Yields[YieldTypes.YIELD_CULTURE].IconString);
+			end
+			if(iYieldFromProcess ~= 0) then
+				strCultureToolTip = strCultureToolTip ..  "[NEWLINE][ICON_BULLET]" .. Locale.ConvertTextKey("TXT_KEY_YIELD_FROM_PROCESS", iYieldFromProcess, GameInfo.Yields[YieldTypes.YIELD_CULTURE].IconString);
+			end
+		end
+		
+		-- Total
+		strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------[NEWLINE]" ..
+		Locale.ConvertTextKey( "TXT_KEY_YIELD_TOTAL", iCulturePerTurn, GameInfo.Yields[YieldTypes.YIELD_CULTURE].IconString );
 	end
 	
-	
 	-- Tile growth
-	local iCulturePerTurn = pCity:GetJONSCulturePerTurn();
 	local iCultureStored = pCity:GetJONSCultureStored();
 	local iCultureNeeded = pCity:GetJONSCultureThreshold();
 	local borderGrowthRate = iCulturePerTurn + pCity:GetBaseYieldRate(YieldTypes.YIELD_CULTURE_LOCAL);
 	local borderGrowthRateIncrease = pCity:GetBorderGrowthRateIncreaseTotal();
 	borderGrowthRate = math.floor(borderGrowthRate * (100 + borderGrowthRateIncrease) / 100);
 
+	strCultureToolTip = strCultureToolTip .. "[NEWLINE]";
+	if pCity:GetBaseYieldRate(YieldTypes.YIELD_CULTURE_LOCAL) ~= 0 then
+		strCultureToolTip = strCultureToolTip .. "[NEWLINE][ICON_BULLET]" .. pCity:GetBaseYieldRate(YieldTypes.YIELD_CULTURE_LOCAL) .. " [ICON_CULTURE_LOCAL] " .. Locale.ConvertTextKey("TXT_KEY_YIELD_CULTURE_LOCAL")
+	end
+	if pCity:GetBorderGrowthRateIncreaseTotal() ~= 0 then
+		strCultureToolTip = strCultureToolTip .. "[NEWLINE][ICON_BULLET]+" .. pCity:GetBorderGrowthRateIncreaseTotal() .. "% [ICON_CULTURE_LOCAL] " .. Locale.ConvertTextKey("TXT_KEY_YIELD_CULTURE_LOCAL")
+	end
+	if borderGrowthRate > 0 and borderGrowthRate ~= iCulturePerTurn then
+		strCultureToolTip = strCultureToolTip .. "[NEWLINE]----------------[NEWLINE]" ..
+		Locale.ConvertTextKey( "TXT_KEY_YIELD_TOTAL", borderGrowthRate, GameInfo.Yields[YieldTypes.YIELD_CULTURE_LOCAL].IconString );
+	end
+	
 	strCultureToolTip = strCultureToolTip .. "[NEWLINE][NEWLINE]";
 	strCultureToolTip = strCultureToolTip .. Locale.ConvertTextKey("TXT_KEY_CULTURE_INFO", iCultureStored, iCultureNeeded);
 

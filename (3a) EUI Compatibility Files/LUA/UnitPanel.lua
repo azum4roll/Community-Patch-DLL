@@ -812,7 +812,7 @@ g_cities = g_RibbonManager( "CityInstance", Controls.CityStack, Controls.Scrap,
 
 			elseif orderID == OrderTypes.ORDER_CREATE then
 				itemInfo = GameInfo.Projects
-				strToolTip = GetHelpTextForProject( itemID, city, true )
+				strToolTip = GetHelpTextForProject( itemID, true, city )
 			elseif orderID == OrderTypes.ORDER_MAINTAIN then
 				itemInfo = GameInfo.Processes
 				strToolTip = GetHelpTextForProcess( itemID, true )

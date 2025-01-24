@@ -1125,12 +1125,6 @@
 		<Row Tag="TXT_KEY_CULTURE_FROM_CITY_YIELDS">
 			<Text>{1_Num} [ICON_CULTURE] from Yield Conversion</Text>
 		</Row>
-		<Row Tag="TXT_KEY_CULTURE_FROM_PIETY">
-			<Text>{1_Num} [ICON_CULTURE] from following the [ICON_RELIGION] Majority Religion</Text>
-		</Row>
-		<Row Tag="TXT_KEY_CULTURE_FROM_POPULATION">
-			<Text>{1_Num} [ICON_CULTURE] from [ICON_CITIZEN] Population</Text>
-		</Row>
 		<Row Tag="TXT_KEY_CULTURE_FROM_GWS">
 			<Text>+{1_Num}% [ICON_CULTURE] from [ICON_GREAT_WORK] Great Works</Text>
 		</Row>
@@ -1139,12 +1133,6 @@
 		</Row>
 		<Row Tag="TXT_KEY_CULTURE_FROM_CORPORATION">
 			<Text>+{1_Num}% [ICON_CULTURE] from Corporation</Text>
-		</Row>
-		<Row Tag="TXT_KEY_CULTURE_FROM_CORPORATIONS">
-			<Text>+{1_Num} [ICON_CULTURE] from Corporation</Text>
-		</Row>
-		<Row Tag="TXT_KEY_CULTURE_FROM_CS_ALLIANCE">
-			<Text>{1_Num} [ICON_CULTURE] from City-States</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CULTURE_FROM_EVENTS">
 			<Text>{1_Num} [ICON_CULTURE] from Active Events</Text>
@@ -1190,12 +1178,6 @@
 		</Row>
 		<Row Tag="TXT_KEY_YIELD_FROM_GOLDEN_AGE">
 			<Text>+{1_Num}% {2_IconString} from [ICON_GOLDEN_AGE] Golden Age</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_PROCESS">
-			<Text>{1_Num} {2_IconString} from [ICON_SWAP] Process</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_TRADE_ROUTES">
-			<Text>{1_Num:number "#.##"} {2_IconString} from [ICON_INTERNATIONAL_TRADE] Trade Routes</Text>
 		</Row>
 		<Row Tag="TXT_KEY_YIELD_FROM_EVENTS">
 			<Text>{1_Num} {2_IconString} from Active Events</Text>
@@ -1733,18 +1715,6 @@
 		</Row>
 
 		<!-- Buildings -->
-		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FOOD_MODIFIER">
-			<Text>[ICON_FOOD] Food: +{1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FAITH_MODIFIER">
-			<Text>[ICON_PEACE] Faith: +{1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_DEFENSE_MODIFIER">
-			<Text>[ICON_STRENGTH] Defense: +{1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_CULTURE_MODIFIER">
-			<Text>[ICON_CULTURE] Culture: +{1_Num}%</Text>
-		</Row>
 		<Row Tag="TXT_KEY_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER">
 			<Text>[ICON_FOOD] and [ICON_PRODUCTION] Basic Needs Median in this City: {1_num}%</Text>
 		</Row>
@@ -1790,38 +1760,17 @@
 		<Row Tag="TXT_KEY_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD">
 			<Text>[ICON_BULLET] New Religious Unrest: {1_Num} [ICON_HAPPINESS_3] per Religious Minority[NEWLINE][BULLET]Current Religious Unrest: {2_Num} [ICON_HAPPINESS_3] per Religious Minority</Text>
 		</Row>
-		<Row Tag="TXT_KEY_PRODUCTION_AIR_STRENGTH">
-			<Text>[ICON_AIRSTRIKE_DEFENSE] Air Strike Defense</Text>
-		</Row>
 		<Row Tag="TXT_KEY_PEDIA_DAMAGE_REDUCTION_LABEL">
 			<Text>Damage Reduction:</Text>
 		</Row>
-		<Row Tag="TXT_KEY_PEDIA_CORP_GP_CHANGE">
-			<Text>Additional +{1_Num}% [ICON_GREAT_PEOPLE] Great Person Rate from Corporation</Text>
-		</Row>
-		<Row Tag="TXT_KEY_BUILDING_EVENT_MODIFIER">
-			<Text>{1_Num}% {2_Icon} {3_Name} from Active Events</Text>
-		</Row>
 		<Row Tag="TXT_KEY_PEDIA_EXC_BLDG_LABEL">
 			<Text>Exclusive Buildings:</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PEDIA_NUM_POLICY_NEEDED_LABEL">
-			<Text>Policies Required: [COLOR_MAGENTA]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PEDIA_NUM_POPULATION_NATIONAL_NEEDED_LABEL">
-			<Text>National Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PEDIA_NUM_POPULATION_LOCAL_NEEDED_LABEL">
-			<Text>Local Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
 		</Row>
 		<Row Tag="TXT_KEY_PRODUCTION_INVESTMENT_BUILDING">
 			<Text>[COLOR_POSITIVE_TEXT]Investing [ICON_GOLD] Gold in a Building reduces its [ICON_PRODUCTION] Production cost by {1_Num}%, or {2_Num}% if a Wonder.[ENDCOLOR]</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WONDER_COST_INCREASE_METRIC">
 			<Text>Additional [ICON_PRODUCTION] Production cost due to owned World Wonders: [COLOR_POSITIVE_TEXT]{1_Num}%[ENDCOLOR].[NEWLINE][ICON_PRODUCTION] Production cost increase metric:[NEWLINE][ICON_BULLET] Wonders from the same Era: [COLOR_POSITIVE_TEXT]25%.[ENDCOLOR][NEWLINE][ICON_BULLET] Wonders from the previous Era: [COLOR_POSITIVE_TEXT]15%[ENDCOLOR].[NEWLINE][ICON_BULLET] Wonders from two Eras earlier: [COLOR_POSITIVE_TEXT]10%.[ENDCOLOR]</Text>
-		</Row>
-		<Row Tag="TXT_KEY_INVESTED">
-			<Text>[COLOR_POSITIVE_TEXT] (INVESTED) [ENDCOLOR]</Text>
 		</Row>
 
 		<!-- Victory overview -->
