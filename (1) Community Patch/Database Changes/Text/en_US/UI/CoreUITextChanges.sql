@@ -87,6 +87,15 @@ SET Text = 'The first Mongol incursion into Kyivan territory occurred in 1223, w
 WHERE Tag = 'TXT_KEY_CIV5_RUSSIA_TEXT_5';
 
 ------------------------------------------------
+-- Info tooltip
+------------------------------------------------
+
+-- Units
+UPDATE Language_en_US
+SET Text = '[ICON_BULLET] Required: {1_NumResource} {2_ResIcon} {3_Res:textkey}'
+WHERE Tag = 'TXT_KEY_PRODUCTION_RESOURCES_REQUIRED';
+
+------------------------------------------------
 -- City screen/banner
 ------------------------------------------------
 UPDATE Language_en_US
