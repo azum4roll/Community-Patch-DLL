@@ -12870,7 +12870,7 @@ int CvCity::getGeneralProductionModifiers(CvString* toolTipSink) const
 		iMultiplier += iTempMod;
 		if (toolTipSink && iTempMod != 0)
 		{
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_RAILROAD_CONNECTION", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_RAILROAD_CONNECTION", iTempMod);
 		}
 	}
 
@@ -12880,7 +12880,7 @@ int CvCity::getGeneralProductionModifiers(CvString* toolTipSink) const
 		iMultiplier += iTempLeagueMod;
 		if (toolTipSink && iTempLeagueMod)
 		{
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_LEAGUE", iTempLeagueMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_LEAGUE", iTempLeagueMod);
 		}
 	}
 
@@ -12891,7 +12891,7 @@ int CvCity::getGeneralProductionModifiers(CvString* toolTipSink) const
 		iMultiplier += iTempMod;
 		if (toolTipSink && iTempMod)
 		{
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_PUPPET_POLICY", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET_POLICY", iTempMod);
 		}
 	}
 	if (MOD_BALANCE_CORE_POLICIES && GET_PLAYER(getOwner()).IsOccupiedProdMod() && IsOccupied() && !IsNoOccupiedUnhappiness())
@@ -12900,7 +12900,7 @@ int CvCity::getGeneralProductionModifiers(CvString* toolTipSink) const
 		iMultiplier += iTempMod;
 		if (toolTipSink && iTempMod)
 		{
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_OCCUPIED_POLICY", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_OCCUPIED_POLICY", iTempMod);
 		}
 	}
 #endif
@@ -12913,7 +12913,7 @@ int CvCity::getGeneralProductionModifiers(CvString* toolTipSink) const
 			iMultiplier += iTempMod;
 			if (toolTipSink && iTempMod)
 			{
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_NUM_SPECIALISTS", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NUM_SPECIALISTS", iTempMod);
 			}
 		}
 	}
@@ -12959,9 +12959,7 @@ int CvCity::getProductionModifier(UnitTypes eUnit, CvString* toolTipSink, bool b
 		iTempMod = thisPlayer.GetPlayerTraits()->GetProductionBonusModifierConquest();
 		iMultiplier += iTempMod;
 		int iTurns = thisPlayer.GetProductionBonusTurnsConquest();
-		CvString strMessage = GetLocalizedText("TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST_TURNS", iTurns);
-		const char* szTurnsRemaining = strMessage.GetCString();
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST", iTempMod, szTurnsRemaining);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_CONQUEST", iTempMod, iTurns);
 	}
 #endif
 
@@ -13503,9 +13501,7 @@ int CvCity::getProductionModifier(BuildingTypes eBuilding, CvString* toolTipSink
 		iTempMod = GET_PLAYER(getOwner()).GetPlayerTraits()->GetProductionBonusModifierConquest();
 		iMultiplier += iTempMod;
 		int iTurns = GET_PLAYER(getOwner()).GetProductionBonusTurnsConquest();
-		CvString strMessage = GetLocalizedText("TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST_TURNS", iTurns);
-		const char* szTurnsRemaining = strMessage.GetCString();
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST", iTempMod, szTurnsRemaining);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_CONQUEST", iTempMod, iTurns);
 	}
 
 	return iMultiplier;
@@ -13532,9 +13528,7 @@ int CvCity::getProductionModifier(ProjectTypes eProject, CvString* toolTipSink) 
 		iTempMod = GET_PLAYER(getOwner()).GetPlayerTraits()->GetProductionBonusModifierConquest();
 		iMultiplier += iTempMod;
 		int iTurns = GET_PLAYER(getOwner()).GetProductionBonusTurnsConquest();
-		CvString strMessage = GetLocalizedText("TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST_TURNS", iTurns);
-		const char* szTurnsRemaining = strMessage.GetCString();
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST", iTempMod, szTurnsRemaining);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_CONQUEST", iTempMod, iTurns);
 	}
 
 	return iMultiplier;
@@ -16392,7 +16386,7 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 		if (iCapitalGrowthMod != 0)
 		{
 			iTotalMod += iCapitalGrowthMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_CAPITAL", iCapitalGrowthMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_CAPITAL", iCapitalGrowthMod);
 		}
 	}
 
@@ -16401,7 +16395,7 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 	if (iCityGrowthMod != 0)
 	{
 		iTotalMod += iCityGrowthMod;
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_PLAYER", iCityGrowthMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_PLAYER", iCityGrowthMod);
 	}
 
 	if (GET_PLAYER(getOwner()).isGoldenAge() && (GetGoldenAgeYieldMod(YIELD_FOOD) != 0))
@@ -16409,21 +16403,21 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 		int iBuildingMod = GetGoldenAgeYieldMod(YIELD_FOOD);
 		iTotalMod += iBuildingMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_BUILDINGS", iBuildingMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_GA_CITY", iBuildingMod);
 	}
 	if (GET_PLAYER(getOwner()).isGoldenAge() && GET_PLAYER(getOwner()).getGoldenAgeYieldMod(YIELD_FOOD) != 0)
 	{
 		int iPolicyMod = GET_PLAYER(getOwner()).getGoldenAgeYieldMod(YIELD_FOOD);
 		iTotalMod += iPolicyMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_POLICIES", iPolicyMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_GA_PLAYER", iPolicyMod);
 	}
 	if (GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeYieldModifier(YIELD_FOOD) != 0)
 	{
 		int iTraitMod = GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeYieldModifier(YIELD_FOOD);
 		iTotalMod += iTraitMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_TRAITS", iTraitMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_GA_TRAIT", iTraitMod);
 	}
 
 	int iSupply = GET_PLAYER(getOwner()).GetNumUnitsOutOfSupply();
@@ -16432,31 +16426,29 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 		int iSupplyMod = GET_PLAYER(getOwner()).GetUnitGrowthMaintenanceMod();
 		iTotalMod += iSupplyMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_YIELD_OVER_SUPPLY", iSupplyMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_OVER_SUPPLY", iSupplyMod);
 	}
 
 	int iGrowthEvent = GetGrowthFromEvent();
 	iTotalMod += iGrowthEvent;
 	if (iGrowthEvent != 0)
 	{
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_EVENT", iGrowthEvent);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_EVENT", iGrowthEvent);
 	}
 
 	int iGrowthTourism = GetGrowthFromTourism();
 	iTotalMod += iGrowthTourism;
 	if (iGrowthTourism != 0)
 	{
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_TOURISM", iGrowthTourism);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_TOURISM", iGrowthTourism);
 	}
 
 	if (IsPuppet())
 	{
-		int iTempMod = GET_PLAYER(getOwner()).GetPuppetYieldPenaltyMod() + GET_PLAYER(getOwner()).GetPlayerTraits()->GetPuppetPenaltyReduction() + /*0*/ GD_INT_GET(PUPPET_GROWTH_MODIFIER);
-		if (iTempMod > 0)
-			iTempMod = 0;
+		int iTempMod = min(0, /*0*/ GD_INT_GET(PUPPET_GROWTH_MODIFIER));
 		iTotalMod += iTempMod;
-		if (iTempMod != 0)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_PUPPET", iTempMod);
+		if (iTempMod < 0)
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_PUPPET", iTempMod);
 	}
 	// Religion growth mod
 	int iReligionGrowthMod = 0;
@@ -16502,7 +16494,7 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 	}
 
 	iTotalMod += iReligionGrowthMod;
-	GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_RELIGION", iReligionGrowthMod);
+	GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_BELIEF", iReligionGrowthMod);
 
 	if (MOD_BALANCE_VP)
 	{
@@ -16526,9 +16518,9 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 		iTotalMod += iHappiness;
 
 		if (iHappiness > 0)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_HAPPY", iHappiness);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_HAPPY", iHappiness);
 		else if (iHappiness < 0)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_UNHAPPY", iHappiness);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_UNHAPPY", iHappiness);
 	}
 	else
 	{
@@ -16537,14 +16529,14 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 		{
 			int iMod = /*-100*/ GD_INT_GET(VERY_UNHAPPY_GROWTH_PENALTY);
 			iTotalMod += iMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_UNHAPPY", iMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_UNHAPPY", iMod);
 		}
 		// Cities grow slower if the player is over his Happiness Limit
 		else if (GET_PLAYER(getOwner()).IsEmpireUnhappy())
 		{
 			int iMod = /*-75*/ GD_INT_GET(UNHAPPY_GROWTH_PENALTY);
 			iTotalMod += iMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_UNHAPPY", iMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_UNHAPPY", iMod);
 		}
 	}
 
@@ -16553,10 +16545,7 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 	{
 		int iMod = /*25*/ GD_INT_GET(WLTKD_GROWTH_MULTIPLIER) + GET_PLAYER(getOwner()).GetPlayerTraits()->GetGrowthBoon();
 		iTotalMod += iMod;
-		if (GET_PLAYER(getOwner()).GetPlayerTraits()->IsExpansionWLTKD())
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_WLTKD_UA", iMod);
-		else
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_WLTKD", iMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_WLTKD", iMod);
 	}
 
 	//Resolution League Bonus	
@@ -16564,7 +16553,7 @@ int CvCity::getGrowthMods(CvString* toolTipSink, int iAssumedLocalHappinessChang
 	{
 		int iMod = GetBaseYieldRateFromLeague(YIELD_FOOD);
 		iTotalMod += iMod;
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_FOODMOD_LEAGUE", iMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GROWTH_MOD_LEAGUE", iMod);
 	}
 
 	return max(-100, iTotalMod);
@@ -23194,7 +23183,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 	int iTempMod = getYieldRateModifier(eIndex);
 	int iModifier = iTempMod;
 	if (toolTipSink)
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_BUILDINGS", iTempMod);
 
 #if defined(MOD_YIELD_MODIFIER_FROM_UNITS)
 	if (MOD_YIELD_MODIFIER_FROM_UNITS)
@@ -23208,7 +23197,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iModifier += iTempMod;
 				if (toolTipSink && iTempMod)
 				{
-					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_UNITPROMOTION", iTempMod);
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_UNIT_PROMOTION", iTempMod);
 				}
 			}
 		}
@@ -23219,13 +23208,13 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 	iTempMod = getResourceYieldRateModifier(eIndex);
 	iModifier += iTempMod;
 	if (toolTipSink)
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_RESOURCES", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_RESOURCES", iTempMod);
 
 	// Empire Happiness Yield Rate Modifier
 	iTempMod = getHappinessModifier(eIndex);
 	iModifier += iTempMod;
 	if (toolTipSink)
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_HAPPINESS", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_UNHAPPINESS", iTempMod);
 
 	// Area Yield Rate Modifier
 	CvArea* pArea = plot()->area();
@@ -23234,14 +23223,14 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 		iTempMod = pArea->getYieldRateModifier(getOwner(), eIndex);
 		iModifier += iTempMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_AREA", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_AREA", iTempMod);
 	}
 
 	// Player Yield Rate Modifier
 	iTempMod = GET_PLAYER(getOwner()).getYieldRateModifier(eIndex);
 	iModifier += iTempMod;
 	if (toolTipSink)
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_PLAYER", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PLAYER", iTempMod);
 
 	// Player Capital Yield Rate Modifier
 	if (isCapital())
@@ -23249,7 +23238,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 		iTempMod = GET_PLAYER(getOwner()).getCapitalYieldRateModifier(eIndex);
 		iModifier += iTempMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_CAPITAL", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_CAPITAL", iTempMod);
 	}
 
 	//Blockade
@@ -23260,14 +23249,14 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iTempMod = GD_INT_GET(BLOCKADE_GOLD_PENALTY);
 			iModifier += iTempMod;
 			if (toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_GOLDMOD_YIELD_BLOCKADE", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NAVAL_BLOCKADE", iTempMod);
 		}
 	}
 
 	iTempMod = GetEventCityYieldModifier(eIndex);
 	iModifier += iTempMod;
 	if (toolTipSink)
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_EVENTMOD", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_EVENT", iTempMod);
 	
 
 	iTempMod = (GetTradeRouteCityMod(eIndex));
@@ -23275,7 +23264,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 	{
 		iModifier += iTempMod;
 		if (toolTipSink)
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_CORPORATION", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_CORPORATION", iTempMod);
 	}
 	if (GetYieldModifierFromHappiness(eIndex) != 0)
 	{
@@ -23309,13 +23298,13 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 	{
 		iTempMod = min(20, (GET_PLAYER(getOwner()).getYieldModifierFromGreatWorks(eIndex) * GetCityBuildings()->GetNumGreatWorks()));
 		iModifier += iTempMod;
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_GREAT_WORKS", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GREAT_WORKS", iTempMod);
 	}
 	if (isCapital() && GET_PLAYER(getOwner()).getYieldModifierFromActiveSpies(eIndex) != 0)
 	{
 		iTempMod = min(30, (GET_PLAYER(getOwner()).getYieldModifierFromActiveSpies(eIndex) * GET_PLAYER(getOwner()).GetSpyPoints(true) / 100));
 		iModifier += iTempMod;
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_SPIES", iTempMod);
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_SPIES", iTempMod);
 	}
 
 	// Golden Age Yield Modifier
@@ -23327,7 +23316,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iTempMod = pYield->getGoldenAgeYieldMod();
 			iModifier += iTempMod;
 			if (toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GA", iTempMod);
 		}
 
 		if (GetGoldenAgeYieldMod(eIndex) != 0)
@@ -23335,7 +23324,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iTempMod = GetGoldenAgeYieldMod(eIndex);
 			iModifier += iTempMod;
 			if (toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_BUILDINGS", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GA_CITY", iTempMod);
 		}
 
 		if (GET_PLAYER(getOwner()).getGoldenAgeYieldMod(eIndex) != 0)
@@ -23343,14 +23332,14 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iTempMod = GET_PLAYER(getOwner()).getGoldenAgeYieldMod(eIndex);
 			iModifier += iTempMod;
 			if (toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_POLICIES", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GA_PLAYER", iTempMod);
 		}
 		if (GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeYieldModifier(eIndex) != 0)
 		{
 			iTempMod = GET_PLAYER(getOwner()).GetPlayerTraits()->GetGoldenAgeYieldModifier(eIndex);
 			iModifier += iTempMod;
 			if (toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_TRAITS", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GA_TRAIT", iTempMod);
 		}
 	}
 
@@ -23374,7 +23363,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = min(iMaxVal, iVal);
 				iModifier += iTempMod;
 				if (toolTipSink)
-					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_BELIEF", iTempMod);
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_BELIEF", iTempMod);
 			}
 		}
 		else
@@ -23386,7 +23375,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = min(iFollowers, iReligionYieldMaxFollowers);
 				iModifier += iTempMod;
 				if (toolTipSink)
-					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_BELIEF", iTempMod);
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_BELIEF", iTempMod);
 			}
 		}
 	}
@@ -23397,7 +23386,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 		iTempMod = GetCityBuildings()->GetCityStateTradeRouteProductionModifier();
 		iModifier += iTempMod;
 		if (toolTipSink) {
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_HANSE", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_MINOR_TRADE_ROUTE", iTempMod);
 		}
 	}
 #if defined(MOD_BALANCE_CORE_RESOURCE_MONOPOLIES)
@@ -23411,7 +23400,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iModifier += iTempMod;
 			if (toolTipSink)
 			{
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_MONOPOLY_RESOURCE", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_MONOPOLY", iTempMod);
 			}
 		}
 	}
@@ -23430,7 +23419,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				{
 					iTempMod = iGoldenAge;
 					iModifier += iTempMod;
-					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_RELIGION", iTempMod);
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_GA_BELIEF", iTempMod);
 				}
 			}
 			int iWLTKD = pReligion->m_Beliefs.GetYieldFromWLTKD(eIndex, getOwner(), GET_PLAYER(getOwner()).getCity(GetID()));
@@ -23440,7 +23429,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				{
 					iTempMod = iWLTKD;
 					iModifier += iTempMod;
-					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_WLTKD_RELIGION", iTempMod);
+					GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_WLTKD_BELIEF", iTempMod);
 				}
 			}
 		}
@@ -23448,36 +23437,42 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 
 	if (GetWeLoveTheKingDayCounter() > 0)
 	{
-		if (GET_PLAYER(getOwner()).GetYieldFromWLTKD(eIndex) + GetYieldFromWLTKD(eIndex) != 0)
+		if (GetYieldFromWLTKD(eIndex) != 0)
 		{
-			iTempMod = (GetYieldFromWLTKD(eIndex) + GET_PLAYER(getOwner()).GetYieldFromWLTKD(eIndex));
+			iTempMod = GetYieldFromWLTKD(eIndex);
 			iModifier += iTempMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_WLTKD", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_WLTKD_CITY", iTempMod);
+		}
+		if (GET_PLAYER(getOwner()).GetYieldFromWLTKD(eIndex) != 0)
+		{
+			iTempMod = GET_PLAYER(getOwner()).GetYieldFromWLTKD(eIndex);
+			iModifier += iTempMod;
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_WLTKD_PLAYER", iTempMod);
 		}
 		if (GET_PLAYER(getOwner()).GetPlayerTraits()->GetWLTKDCulture() != 0 && eIndex == YIELD_CULTURE)
 		{
 			iTempMod = GET_PLAYER(getOwner()).GetPlayerTraits()->GetWLTKDCulture();
 			iModifier += iTempMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_WLTKD_TRAIT", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_WLTKD_TRAIT", iTempMod);
 		}
 	}
 
 	// Trait Yield Rate Modifier per Follower
 	if (eIndex == YIELD_FOOD && eMajority != NO_RELIGION)
 	{
-		iTempMod = 0;
 		int iFollowers = GetCityReligions()->GetNumFollowers(eMajority);
 		if (GET_PLAYER(getOwner()).GetPlayerTraits()->IsPopulationBoostReligion() && eMajority == GET_PLAYER(getOwner()).GetReligions()->GetStateReligion(true))
 		{
-			iTempMod += iFollowers * /*0*/ GD_INT_GET(BALANCE_FOLLOWER_FOOD_BONUS);
+			iTempMod = iFollowers * /*0*/ GD_INT_GET(BALANCE_FOLLOWER_FOOD_BONUS);
 			iModifier += iTempMod;
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_TRAIT", iTempMod);
 		}
 		if (GetFoodBonusPerCityMajorityFollower() > 0)
 		{
-			iTempMod += iFollowers * GetFoodBonusPerCityMajorityFollower();
+			iTempMod = iFollowers * GetFoodBonusPerCityMajorityFollower();
 			iModifier += iTempMod;
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_CITY", iTempMod);
 		}
-		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_FOLLOWERS", iTempMod);
 	}
 
 	// Puppet
@@ -23491,7 +23486,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = 0;
 			iModifier += iTempMod;
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			break;
 
 		case YIELD_GOLD:
@@ -23500,7 +23495,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = 0;
 			iModifier += iTempMod;
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			break;
 
 		case YIELD_PRODUCTION:
@@ -23509,7 +23504,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = 0;
 			iModifier += iTempMod;
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			break;
 
 		case YIELD_TOURISM:
@@ -23518,7 +23513,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = 0;
 			iModifier += iTempMod;
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			break;
 
 		case YIELD_GOLDEN_AGE_POINTS:
@@ -23527,7 +23522,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 				iTempMod = 0;
 			iModifier += iTempMod;
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			break;
 
 		case YIELD_CULTURE: // taken from getJONSCulturePerTurn
@@ -23539,7 +23534,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			// EUI should be fixed and this re-enabled.
 			/*
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			*/
 			break;
 
@@ -23554,7 +23549,7 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			iModifier += iTempMod;
 
 			if (iTempMod != 0 && toolTipSink)
-				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_PUPPET", iTempMod);
+				GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_PUPPET", iTempMod);
 			*/
 			break;
 
@@ -23576,15 +23571,14 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 	// Culture specific modifiers taken from getJONSCulturePerTurn
 	if (eIndex == YIELD_CULTURE)
 	{
-		// getCultureRateModifier() is just the culture specific building modifiers
+		// TODO: merge into getYieldRateModifier(); shouldn't be using this text key
 		iTempMod = getCultureRateModifier();
 		iModifier += iTempMod;
 		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_BUILDING_CITY", iTempMod);
 
-		// Player modifier
+		// TODO: merge into CvPlayer::getYieldRateModifier(); shouldn't be using this text key
 		iTempMod = GET_PLAYER(getOwner()).GetJONSCultureCityModifier();
 		iModifier += iTempMod;
-		// we'll use the same tooltip as for Building_GlobalYieldModifiers
 		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_YIELD_PLAYER", iTempMod);
 
 		// Wonder here?
@@ -23593,14 +23587,14 @@ int CvCity::getBaseYieldRateModifier(YieldTypes eIndex, int iExtra, CvString* to
 			// policy that grants culture modifier from each wonder (field CultureWonderMultiplier)
 			iTempMod = GET_PLAYER(getOwner()).GetCultureWonderMultiplier();
 			iModifier += iTempMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_WONDER_POLICY", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_WORLD_WONDER", iTempMod);
 		}
 
 		if (MOD_BALANCE_VP && GET_PLAYER(getOwner()).IsLeagueAid())
 		{
 			iTempMod = GET_PLAYER(getOwner()).GetLeagueCultureCityModifier();
 			iModifier += iTempMod;
-			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_PRODMOD_LEAGUE", iTempMod);
+			GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_MOD_LEAGUE", iTempMod);
 		}
 	}
 
@@ -23779,7 +23773,7 @@ int CvCity::getBaseYieldRate(const YieldTypes eYield, CvString* tooltipSink) con
 	int iTempYield = GetBaseYieldRateFromGreatWorks(eYield);
 	iYield += iTempYield;
 	if (tooltipSink)
-		GC.getGame().BuildProdModHelpText(tooltipSink, "TXT_KEY_YIELD_FROM_ART_CBP", iTempYield, szIconString);
+		GC.getGame().BuildProdModHelpText(tooltipSink, "TXT_KEY_YIELD_FROM_GREAT_WORKS", iTempYield, szIconString);
 
 	iTempYield = GetBaseYieldRateFromTerrain(eYield);
 	iYield += iTempYield;
@@ -26712,49 +26706,10 @@ void CvCity::changeProductionToYieldModifier(YieldTypes eIndex, int iChange)
 int CvCity::GetTradeYieldModifier(YieldTypes eIndex, CvString* toolTipSink) const
 {
 	int iReturnValue = GET_PLAYER(m_eOwner).GetTrade()->GetTradeValuesAtCityTimes100(this, eIndex);
+	const char* szIconString = GC.getYieldInfo(eIndex)->getIconString();
 	if (toolTipSink)
-	{
-		if (iReturnValue != 0)
-		{
-			switch (eIndex)
-			{
-			case YIELD_FOOD:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_FOOD_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_PRODUCTION:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_PRODUCTION_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_GOLD:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_GOLD_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_SCIENCE:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_SCIENCE_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_CULTURE:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_CULTURE_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_FAITH:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_FAITH_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_TOURISM:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_TOURISM_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			case YIELD_GOLDEN_AGE_POINTS:
-				*toolTipSink += "[NEWLINE][BULLET]";
-				*toolTipSink += GetLocalizedText("TXT_KEY_GOLDEN_AGE_POINTS_FROM_TRADE_ROUTES", iReturnValue / 100.0f);
-				break;
-			default:
-				UNREACHABLE(); // All other yields cannot be acquired from trade.
-			}
-		}
-	}
+		GC.getGame().BuildProdModHelpText(toolTipSink, "TXT_KEY_YIELD_FROM_TRADE_ROUTES", iReturnValue / 100.0f, szIconString);
+
 	return iReturnValue;
 }
 

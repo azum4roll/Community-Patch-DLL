@@ -6249,6 +6249,8 @@ CvString CvCityCulture::GetTourismTooltip()
 	iGWTourism += ((m_pCity->GetCityBuildings()->GetGreatWorksTourismModifier() + kCityPlayer.GetGreatWorksTourismModifierGlobal()) * iGWTourism / 100);
 	szRtnValue = GetLocalizedText("TXT_KEY_CO_CITY_TOURISM_GREAT_WORKS", iGWTourism, m_pCity->GetCityCulture()->GetNumGreatWorks());
 
+	const char* szIconString = GC.getYieldInfo(YIELD_TOURISM)->getIconString();
+
 	int iThemingBonuses = m_pCity->GetCityBuildings()->GetCurrentThemingBonuses(YIELD_CULTURE);
 	if (iThemingBonuses != 0)
 	{
@@ -6257,11 +6259,7 @@ CvString CvCityCulture::GetTourismTooltip()
 	}
 
 	int iTraitBonuses = m_pCity->GetYieldPerTurnFromTraits(YIELD_TOURISM);
-	if (iTraitBonuses != 0)
-	{
-		szRtnValue += "[NEWLINE][NEWLINE]";
-		szRtnValue += GetLocalizedText("TXT_KEY_CO_CITY_TOURISM_TRAIT_BONUSES", iTraitBonuses);
-	}
+	GC.getGame().BuildProdModHelpText(&szRtnValue, "TXT_KEY_YIELD_FROM_TRAIT_BONUS", iTraitBonuses, szIconString);
 
 	// Landmarks, Wonders, Natural Wonders, Improvements
 	int iTileTourism = 0;
@@ -6399,7 +6397,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_BUILDINGS", iTempMod);
 	}
 
 	CvPlot* pCityPlot = m_pCity->plot();
@@ -6416,7 +6414,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_UNITPROMOTION", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_UNIT_PROMOTION", iTempMod);
 		}
 	}
 
@@ -6431,7 +6429,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_RESOURCES", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_RESOURCES", iTempMod);
 	}
 
 	iTempMod = m_pCity->getHappinessModifier(YIELD_TOURISM);
@@ -6445,7 +6443,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_HAPPINESS", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_UNHAPPINESS", iTempMod);
 	}
 
 	CvArea* pArea =m_pCity->plot()->area();
@@ -6462,7 +6460,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_AREA", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_AREA", iTempMod);
 		}
 	}
 
@@ -6477,7 +6475,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_PLAYER", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_PLAYER", iTempMod);
 	}
 
 	if (m_pCity->isCapital())
@@ -6493,7 +6491,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_CAPITAL", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_CAPITAL", iTempMod);
 		}
 	}
 
@@ -6509,7 +6507,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_CORPORATION", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_CORPORATION", iTempMod);
 	}
 
 	iTempMod = m_pCity->GetYieldModifierFromHappiness(YIELD_TOURISM);
@@ -6579,7 +6577,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_GREAT_WORKS", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_GREAT_WORKS", iTempMod);
 	}
 	iTempMod = min(30, (kCityPlayer.getYieldModifierFromActiveSpies(YIELD_TOURISM) * kCityPlayer.GetSpyPoints(true) / 100));
 	if (iTempMod != 0)
@@ -6592,7 +6590,7 @@ CvString CvCityCulture::GetTourismTooltip()
 			}
 			bHasCityModTooltip = true;
 		}
-		szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_SPIES", iTempMod);
+		szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_SPIES", iTempMod);
 	}
 #endif
 
@@ -6613,7 +6611,7 @@ CvString CvCityCulture::GetTourismTooltip()
 					}
 					bHasCityModTooltip = true;
 				}
-				szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE", iTempMod);
+				szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_GA", iTempMod);
 			}
 		}
 #if defined(MOD_BALANCE_CORE)
@@ -6628,7 +6626,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_BUILDINGS", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_GA_CITY", iTempMod);
 		}
 
 		iTempMod = kCityPlayer.getGoldenAgeYieldMod(YIELD_TOURISM);
@@ -6642,7 +6640,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_POLICIES", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_GA_PLAYER", iTempMod);
 		}
 #endif
 	}
@@ -6671,7 +6669,7 @@ CvString CvCityCulture::GetTourismTooltip()
 					}
 					bHasCityModTooltip = true;
 				}
-				szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_BELIEF", iTempMod);
+				szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_NUM_FOLLOWERS", iTempMod);
 			}
 		}
 		else
@@ -6691,7 +6689,7 @@ CvString CvCityCulture::GetTourismTooltip()
 						}
 						bHasCityModTooltip = true;
 					}
-					szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_BELIEF", iTempMod);
+					szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_NUM_FOLLOWERS", iTempMod);
 				}
 			}
 		}
@@ -6712,7 +6710,7 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_BELIEF", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_MONOPOLY", iTempMod);
 		}
 	}
 
@@ -6738,7 +6736,7 @@ CvString CvCityCulture::GetTourismTooltip()
 							}
 							bHasCityModTooltip = true;
 						}
-						szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_RELIGION", iTempMod);
+						szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_GA_BELIEF", iTempMod);
 					}
 				}
 			}
@@ -6758,7 +6756,7 @@ CvString CvCityCulture::GetTourismTooltip()
 							}
 							bHasCityModTooltip = true;
 						}
-						szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_WLTKD_RELIGION", iTempMod);
+						szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_WLTKD_BELIEF", iTempMod);
 					}
 				}
 			}
@@ -6779,13 +6777,13 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_TOURISM_MOD_HOLY_CITY", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_WORLD_RELIGION", iTempMod);
 		}
 	}
 
 	if (m_pCity->GetWeLoveTheKingDayCounter() > 0)
 	{
-		iTempMod = (m_pCity->GetYieldFromWLTKD(YIELD_TOURISM) + kCityPlayer.GetYieldFromWLTKD(YIELD_TOURISM));
+		iTempMod = m_pCity->GetYieldFromWLTKD(YIELD_TOURISM);
 		if (iTempMod != 0)
 		{
 			if (!bHasCityModTooltip)
@@ -6796,7 +6794,20 @@ CvString CvCityCulture::GetTourismTooltip()
 				}
 				bHasCityModTooltip = true;
 			}
-			szRtnValue += GetLocalizedText("TXT_KEY_PRODMOD_WLTKD", iTempMod);
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_WLTKD_CITY", iTempMod);
+		}
+		iTempMod = kCityPlayer.GetYieldFromWLTKD(YIELD_TOURISM);
+		if (iTempMod != 0)
+		{
+			if (!bHasCityModTooltip)
+			{
+				if (!szRtnValue.empty())
+				{
+					szRtnValue += "[NEWLINE]";
+				}
+				bHasCityModTooltip = true;
+			}
+			szRtnValue += GetLocalizedText("TXT_KEY_YIELD_MOD_WLTKD_PLAYER", iTempMod);
 		}
 	}
 

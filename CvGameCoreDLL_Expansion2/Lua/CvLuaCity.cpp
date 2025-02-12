@@ -2092,8 +2092,8 @@ int CvLuaCity::lGetYieldModifierTooltip(lua_State* L)
 	if(eYield == YIELD_FOOD)
 	{	
 		int iExcessNoMod = pkCity->foodDifference(true);
-		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_FOODMOD_EATEN_FOOD", pkCity->foodConsumption());
-		GC.getGame().BuildProdModHelpText(&toolTip, iExcessNoMod >= 0 ? "TXT_KEY_FOODMOD_EXCESS_FOOD_POSITIVE" : "TXT_KEY_FOODMOD_EXCESS_FOOD_NEGATIVE", iExcessNoMod);
+		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_EATEN_FOOD", pkCity->foodConsumption());
+		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_EXCESS_FOOD", iExcessNoMod);
 		pkCity->GetTradeYieldModifier(YIELD_FOOD, &toolTip);
 		pkCity->foodDifferenceTimes100(false, &toolTip);
 	}
