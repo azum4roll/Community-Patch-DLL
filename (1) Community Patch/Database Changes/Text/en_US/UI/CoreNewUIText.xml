@@ -173,51 +173,278 @@
 			<Text>{1_Num} [ICON_GOLDEN_AGE] Golden Age Points</Text>
 		</Row>
 
-		<!-- Buildings -->
+		<!-- Info tooltip -->
+		<!-- Common -->
+		<Row Tag="TXT_KEY_INVESTED">
+			<Text>[COLOR_POSITIVE_TEXT] (INVESTED)[ENDCOLOR]</Text>
+		</Row>
+		<!-- Unit -->
+		<Row Tag="TXT_KEY_PRODUCTION_AIR_DEFENSE">
+			<Text>[ICON_AIRSTRIKE_DEFENSE] Air Strike Defense: {1_Num}</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIT_FREE_PROMOTIONS">
+			<Text>Free Promotions:</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIT_BUILD_NON_IMPROVEMENTS">
+			<Text>Build Actions:</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIT_BUILD_IMPROVEMENTS">
+			<Text>Improvements:</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIT_FREE_RESOURCE">
+			<Text>When Expended: +{1_Num} {2_ResIcon} {3_Res:textkey}</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_REQUIRED_BUILDINGS">
+			<Text>Required Buildings: [COLOR_YIELD_FOOD]{1_Buildings}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_REQUIRED_BUILDINGS_PURCHASE">
+			<Text>Required Buildings for Purchase: [COLOR_YIELD_FOOD]{1_Buildings}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_REQUIRED_BUILDINGS_INVEST">
+			<Text>Required Buildings for Investment: [COLOR_YIELD_FOOD]{1_Buildings}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_PREREQ_TECH">
+			<Text>Prerequisite Tech: [COLOR_CYAN]{1_Tech:textkey}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_OBSOLETE_TECH">
+			<Text>Becomes Obsolete With: [COLOR_CYAN]{1_Tech:textkey}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIQUE_UNIT">
+			<Text>{1_CivAdj} Unique [COLOR_YELLOW]{2_Unit:textkey}[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_UNIQUE_UNIT_NO_DEFAULT">
+			<Text>{1_CivAdj} Unique Unit</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_TOTAL_RESOURCES_REQUIRED">
+			<Text>[ICON_BULLET] Access required: {1_NumResource} {2_ResIcon} {3_Res:textkey}</Text>
+		</Row>
+		<!-- Building -->
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_YIELD_CHANGE">
+			<Text>{1_YieldIcon} {2_Yield:textkey}: {3: number "'+'##";"'-'##"}</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_YIELD_MODIFIER">
+			<Text>{1_YieldIcon} {2_Yield:textkey}: {3: number "'+'##";"'-'##"}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FOOD_MODIFIER">
+			<Text>[ICON_FOOD] Food: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_CULTURE_MODIFIER">
+			<Text>[ICON_CULTURE] Culture: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_FAITH_MODIFIER">
+			<Text>[ICON_PEACE] Faith: +{1_Num}%</Text>
+		</Row>
+		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_DEFENSE_MODIFIER">
+			<Text>[ICON_STRENGTH] Defense: {1: number "'+'##";"'-'##"}%</Text>
+		</Row>
 		<Row Tag="TXT_KEY_PRODUCTION_BUILDING_DAMAGE_REDUCTION">
-			<Text>Damage Reduction: +{1_Num}</Text>
+			<Text>[ICON_STRENGTH] Damage Reduction: {1: number "'+'##";"'-'##"}</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BUILDING_EVENT_MODIFIER">
+			<Text>{1: number "'+'##";"'-'##"}% {2_Icon} {3_Name} from Active Events</Text>
+		</Row>
+		<Row Tag="TXT_KEY_BUILDING_CORP_GP_CHANGE">
+			<Text>Additional +{1_Num}% [ICON_GREAT_PEOPLE] Great Person Rate from Corporation</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POLICY_NEEDED_LABEL">
+			<Text>Policies Required: [COLOR_MAGENTA]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POPULATION_NATIONAL_NEEDED_LABEL">
+			<Text>National Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
+		</Row>
+		<Row Tag="TXT_KEY_TT_NUM_POPULATION_LOCAL_NEEDED_LABEL">
+			<Text>Local Population Required: [COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] (Have: {2_Num})</Text>
+		</Row>
+		<!-- Process -->
+		<Row Tag="TXT_KEY_TT_PROCESS_LEAGUE_PROJECT_HELP">
+			<Text>Contribute this City's [ICON_PRODUCTION] Production towards the {1_ProjName:textkey} project. Cost goes up based on the number of players in the game, and the current Era.</Text>
+		</Row>
+		<!-- Yield -->
+		<Row Tag="TXT_KEY_YIELD_FROM_GREAT_WORKS">
+			<Text>{1_Num} {2_IconString} from [ICON_GREAT_WORK] Great Works and Themes</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_TRAIT_BONUS">
+			<Text>{1_Num} {2_IconString} from Trait</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_EMPIRE_POP">
+			<Text>{1:number "#.##"} {2_IconString} from National [ICON_CITIZEN] Population</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_PIETY">
+			<Text>{1_Num} {2_IconString} from following the [ICON_RELIGION] Primary Religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_PROCESS">
+			<Text>{1:number "#.##"} {2_IconString} from [ICON_SWAP] Process</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_TRADE_ROUTES">
+			<Text>{1:number "#.##"} {2_IconString} from [ICON_INTERNATIONAL_TRADE] Trade Routes</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_CONNECTION">
+			<Text>{1:number "#.##"} {2_IconString} from [ICON_CONNECTED] City Connection</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_INDUSTRIAL_CITY_CONNECTION">
+			<Text>{1:number "#.##"} {2_IconString} from [ICON_INDUSTRIAL_CONNECTED] Industrial City Connection</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_UNITS">
+			<Text>{1:number "#.##"} {2_IconString} from Unit Garrison</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_CITY_YIELDS">
+			<Text>{1:number "#.##"} {2_IconString} from Yield Conversion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_CS_ALLIANCE">
+			<Text>{1:number "#.##"} {2_IconString} from [ICON_CITY_STATE] City-States</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_CORPORATIONS">
+			<Text>{1_Num} {2_IconString} from Corporation</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_FROM_EVENTS">
+			<Text>{1_Num} {2_IconString} from Active Events</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_POST_MODIFIER">
+			<Text>{1: number "'[COLOR_POSITIVE_TEXT]'#.##";"'[COLOR_NEGATIVE_TEXT]-'#.##"} {2_IconString} after Modifiers[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_EATEN_FOOD">
+			<Text>[NEWLINE][ICON_BULLET][COLOR_NEGATIVE_TEXT]-{1_Num}[ENDCOLOR] [ICON_FOOD] eaten by [ICON_CITIZEN] Citizens</Text>
+		</Row>
+		<Row Tag="TXT_KEY_EXCESS_FOOD">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'[COLOR_POSITIVE_TEXT]'#.##";"'[COLOR_NEGATIVE_TEXT]-'#.##"}[ENDCOLOR] excess [ICON_FOOD] before Modifiers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_BELIEF">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_RELIGION] Religious Beliefs</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_CAPITAL">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_CAPITAL] Capital from Policies</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_EVENT">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Active Events</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_GA_CITY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Buildings)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_GA_PLAYER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Policies)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_GA_TRAIT">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Unique Ability)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_PLAYER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Policies</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_PUPPET">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_PUPPET] Puppet City</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_TOURISM">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_INTERNATIONAL_TRADE] Trade Routes (Cultural Influence)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_UNHAPPY">
+			<Text>[NEWLINE][ICON_BULLET]{1_Num}% from [ICON_HAPPINESS_3] [COLOR_NEGATIVE_TEXT]Unhappiness[ENDCOLOR]</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GROWTH_MOD_WLTKD">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_HAPPINESS_1] "We Love the King Day"</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_AREA">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Area Bonus</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_BUILDINGS">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Buildings</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_CAPITAL">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_CAPITAL] Capital from Policies</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_CONQUEST">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from City Conquest ({2_Num} {2_Num: plural 1?Turn; other?Turns;} remaining)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_CORPORATION">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_INTERNATIONAL_TRADE] Trade Routes with [ICON_FRANCHISE] Established Franchise</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_EVENT">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Active Events</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GA">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Base)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GA_BELIEF">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Religious Beliefs)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GA_CITY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Buildings)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GA_PLAYER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Policies)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GA_TRAIT">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Golden Age (Unique Ability)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_GREAT_WORKS">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Great Works</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_MINOR_TRADE_ROUTE">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_INTERNATIONAL_TRADE] Trade Routes with [ICON_CITY_STATE] City-States</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_MONOPOLY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Resource Monopoly</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_NAVAL_BLOCKADE">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_BLOCKADED] Naval Blockade</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_BELIEF">
+			<Text>[NEWLINE][ICON_BULLET]+{1_Num}% from Number of Followers (Religious Beliefs)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_CITY">
+			<Text>[NEWLINE][ICON_BULLET]+{1_Num}% from Number of Followers (Buildings)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_NUM_FOLLOWERS_TRAIT">
+			<Text>[NEWLINE][ICON_BULLET]+{1_Num}% from Number of Followers (Unique Ability)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_NUM_SPECIALISTS">
+			<Text>[NEWLINE][ICON_BULLET]+{1_Num}% from Number of Specialists</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_OCCUPIED_POLICY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_OCCUPIED] Occupied City from Policies</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_PLAYER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Empire Bonuses</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_PUPPET">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_PUPPET] Puppet City</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_PUPPET_POLICY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for [ICON_PUPPET] Puppet City (Policies for [ICON_PRODUCTION] Production)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_RAILROAD_CONNECTION">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Railroad Connection</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_RESOURCES">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Local Resources</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_SPIES">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Active Spies</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_UNHAPPINESS">
+			<Text>[NEWLINE][ICON_BULLET]{1_Num}% from [ICON_HAPPINESS_3] Unhappiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_UNIT_PROMOTION">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from Unit Garrison</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WLTKD_BELIEF">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_HAPPINESS_1] "We Love the King Day" (Religious Beliefs)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WLTKD_CITY">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_HAPPINESS_1] "We Love the King Day" (Buildings)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WLTKD_PLAYER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_HAPPINESS_1] "We Love the King Day" (Policies)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WLTKD_TRAIT">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from [ICON_HAPPINESS_1] "We Love the King Day" (Unique Ability)</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WORLD_RELIGION">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% for Holy City of the World Religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_YIELD_MOD_WORLD_WONDER">
+			<Text>[NEWLINE][ICON_BULLET]{1: number "'+'##";"'-'##"}% from having [ICON_WONDER] World Wonders</Text>
 		</Row>
 
 		<!-- City screen/banner -->
-		<Row Tag="TXT_KEY_FOODMOD_EATEN_FOOD">
-			<Text>[NEWLINE][ICON_BULLET][COLOR_NEGATIVE_TEXT]-{1_Num}[ENDCOLOR] [ICON_FOOD] eaten by [ICON_CITIZEN] Citizens</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_EXCESS_FOOD_POSITIVE">
-			<Text>[NEWLINE][ICON_BULLET][COLOR_POSITIVE_TEXT]{1_Num}[ENDCOLOR] excess [ICON_FOOD] before modifiers</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_EXCESS_FOOD_NEGATIVE">
-			<Text>[NEWLINE][ICON_BULLET][COLOR_NEGATIVE_TEXT]{1_Num}[ENDCOLOR] excess [ICON_FOOD] before modifiers</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_PUPPET">
-			<Text>[NEWLINE][ICON_BULLET][ICON_PUPPET] Modifier for Puppet: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_POLICIES">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE] Golden Age Modifier (Policies): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_BUILDINGS">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE] Golden Age Modifier (Buildings): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_YIELD_GOLDEN_AGE_TRAITS">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE] Golden Age Modifier (Traits): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_TOURISM">
-			<Text>[NEWLINE][ICON_BULLET][ICON_TOURISM] Tourism Modifier (Trade Routes): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_EVENT">
-			<Text>[NEWLINE][ICON_BULLET][ICON_CITIZEN] Event Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_WLTKD_UA">
-			<Text>[NEWLINE][ICON_BULLET][ICON_HAPPINESS_1] "We Love the King Day" Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FOODMOD_YIELD_OVER_SUPPLY">
-			<Text>[NEWLINE][ICON_BULLET][ICON_SILVER_FIST] Growth [COLOR_NEGATIVE_TEXT]Penalty[ENDCOLOR] (Over Supply Cap): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_PUPPET_POLICY">
-			<Text>[NEWLINE][ICON_BULLET]Modifier for [ICON_PUPPET] Puppet from Policies: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_OCCUPIED_POLICY">
-			<Text>[NEWLINE][ICON_BULLET]Modifier for [ICON_OCCUPIED] Occupied from Policies: {1_Num}%</Text>
-		</Row>
 		<Row Tag="TXT_KEY_PRODMOD_UNIT_CLASS">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Unit Class: {1_Num}%</Text>
 		</Row>
@@ -227,35 +454,14 @@
 		<Row Tag="TXT_KEY_PRODMOD_RELIGION_UNIT">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Military Units from Religion: {1_Num}%</Text>
 		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_EVENTMOD">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from local Event: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_NUM_SPECIALISTS">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Number of Specialists: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_UNITPROMOTION">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Unit Garrison: {1_Num}%</Text>
-		</Row>
 		<Row Tag="TXT_KEY_PRODMOD_UNIT_CORPORATION">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Unit from Corporation: {1_Num}%</Text>
 		</Row>
 		<Row Tag="TXT_KEY_PRODMOD_CONQUEST_BUILDINGS_PRIOR_ERAS">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Past Era Buildings: {1_Num}%</Text>
 		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_MONOPOLY_RESOURCE">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Resource Monopoly: {1_Num}%</Text>
-		</Row>
 		<Row Tag="TXT_KEY_PRODMOD_WONDER_UNITPROMOTION">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Wonders from Unit Garrison: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_CORPORATION">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Corporation: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Conquest {2_Num}: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_TRAIT_BONUS_CONQUEST_TURNS">
-			<Text>({1_Num} {1_Num: plural 1?Turn; other?Turns;} remaining)</Text>
 		</Row>
 		<Row Tag="TXT_KEY_PRODMOD_WONDER_IMPROVEMENT">
 			<Text>[NEWLINE][ICON_BULLET]Modifier for Wonders from Improvements: {1_Num}%</Text>
@@ -281,47 +487,8 @@
 		<Row Tag="TXT_KEY_PRODMOD_WONDER_TO_BUILDING_FROM_CITY_TRAIT">
 			<Text>[NEWLINE][ICON_BULLET]Trait Wonder Production Modifier for Buildings from City: {1_Num}%</Text>
 		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_BUILDINGS">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE]Golden Age Modifier (Buildings): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_POLICIES">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE]Golden Age Modifier (Policies): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_RELIGION">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE]Golden Age Modifier (Beliefs): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_GOLDEN_AGE_TRAITS">
-			<Text>[NEWLINE][ICON_BULLET][ICON_GOLDEN_AGE]Golden Age Modifier (Traits): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_WLTKD">
-			<Text>[NEWLINE][ICON_BULLET]"We Love the King Day" Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_WLTKD_RELIGION">
-			<Text>[NEWLINE][ICON_BULLET]"We Love the King Day" Modifier (Beliefs): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_WLTKD_TRAIT">
-			<Text>[NEWLINE][ICON_BULLET]"We Love the King Day" Modifier (Player): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_GREAT_WORKS">
-			<Text>[NEWLINE][ICON_BULLET]Great Works Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_SPIES">
-			<Text>[NEWLINE][ICON_BULLET]Active Spies Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODMOD_YIELD_FOLLOWERS">
-			<Text>[NEWLINE][ICON_BULLET]Religious Followers Modifier: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_GOLDMOD_YIELD_BLOCKADE">
-			<Text>[NEWLINE][ICON_BULLET]Modifier from Water Blockade (Enemy Naval Units adjacent to City): {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_CULTURE_FROM_EMPIRE_POPULATION">
-			<Text>{1_Num} [ICON_CULTURE] from [ICON_CITIZEN] Population in Empire</Text>
-		</Row>
-		<Row Tag="TXT_KEY_FAITH_FROM_EMPIRE_POP">
-			<Text>{1_Num} [ICON_PEACE] from [ICON_CITIZEN] Population in Empire</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_ART_CBP_FAITH">
-			<Text>{1_Num} [ICON_PEACE] from Great Works and Themes</Text>
+		<Row Tag="TXT_KEY_SCIENCE_YIELD_FROM_LEAGUE_ART">
+			<Text>{1_Num} [ICON_RESEARCH] added by [ICON_GREAT_WORK] Great Works</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CO_CITY_TOURISM_GENERAL">
 			<Text>{1_Num} [ICON_TOURISM] Tourism from City</Text>
@@ -329,29 +496,8 @@
 		<Row Tag="TXT_KEY_CO_CITY_TOURISM_POLICY_AESTHETICS">
 			<Text>{1_Num} [ICON_TOURISM] Tourism from [ICON_WONDER] World Wonders</Text>
 		</Row>
-		<Row Tag="TXT_KEY_CO_CITY_TOURISM_TRAIT_BONUSES">
-			<Text>{1_Num} [ICON_TOURISM] Tourism from your Civilization Trait</Text>
-		</Row>
 		<Row Tag="TXT_KEY_CO_CITY_TOURISM_GA_BONUS">
 			<Text>{1_Num} [ICON_TOURISM] Tourism from {2_Num}% of the [ICON_CULTURE] Culture of your [ICON_CAPITAL] Capital</Text>
-		</Row>
-		<Row Tag="TXT_KEY_TOURISM_MOD_HOLY_CITY">
-			<Text>[NEWLINE][ICON_BULLET]Modifier for Holy City of the World Religion: {1_Num}%</Text>
-		</Row>
-		<Row Tag="TXT_KEY_TOURISM_FROM_TRADE_ROUTES">
-			<Text>{1_perTurn:number "#.##"} [ICON_TOURISM] from Trade Routes established with this city</Text>
-		</Row>
-		<Row Tag="TXT_KEY_GOLDEN_AGE_POINTS_FROM_TRADE_ROUTES">
-			<Text>{1_perTurn:number "#.##"} [ICON_GOLDEN_AGE] from Trade Routes established with this city</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_ART_CBP">
-			<Text>{1_Num} {2_IconString} from Great Works and Themes</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_TRAIT_BONUS">
-			<Text>{1_Num} {2_IconString} from Trait</Text>
-		</Row>
-		<Row Tag="TXT_KEY_YIELD_FROM_EMPIRE_POP_EXTRA">
-			<Text>{1_Num} extra {2_IconString} from [ICON_CITIZEN] Population in Empire</Text>
 		</Row>
 		<Row Tag="TXT_KEY_RELIGIOUS_PRESSURE_STRING_EXTENDED">
 			<Text>({1_Pressure} Pressure, +{2_PressurePerTurn} per Turn)</Text>
@@ -415,9 +561,6 @@
 		</Row>
 		<Row Tag="TXT_KEY_COOLDOWN_X_TURNS_REMAINING_FAITH_LOCAL">
 			<Text>[NEWLINE]You recently made a [ICON_PEACE] Faith purchase in this city, and must wait for {1_Num} more {1_Num: plural 1?turn; other?turns;} to do so again.</Text>
-		</Row>
-		<Row Tag="TXT_KEY_PRODUCTION_TOTAL_RESOURCES_REQUIRED">
-			<Text>[ICON_BULLET] Access required:</Text>
 		</Row>
 		<!-- Happiness -->
 		<Row Tag="TXT_KEY_POTENTIAL_HAPPINESS_GROWTH">

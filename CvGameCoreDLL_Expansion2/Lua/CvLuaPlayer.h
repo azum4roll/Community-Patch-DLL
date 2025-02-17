@@ -455,6 +455,16 @@ protected:
 	LUAAPIEXTN(GetDominationResistance, int);
 	LUAAPIEXTN(GetCivOpinion, int);
 	LUAAPIEXTN(GetMajorityReligion, int);
+
+	LUAAPIEXTN(GetCivilizationBuilding, BuildingClassTypes);
+
+	LUAAPIEXTN(GetTradeGold, UnitTypes);
+	LUAAPIEXTN(GetDiscoverScience, UnitTypes);
+	LUAAPIEXTN(GetTreatiseCulture, UnitTypes);
+	LUAAPIEXTN(GetBlastGAP, UnitTypes);
+	LUAAPIEXTN(GetBlastTourism, UnitTypes);
+	LUAAPIEXTN(GetBlastTourismTurns, UnitTypes);
+
 	//JFD
 	LUAAPIEXTN(GetWLTKDResourceTT, int);
 	LUAAPIEXTN(GetNumNationalWonders, int);

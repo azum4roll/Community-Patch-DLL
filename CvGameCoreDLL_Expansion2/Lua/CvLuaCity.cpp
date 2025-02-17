@@ -699,6 +699,10 @@ void CvLuaCity::PushMethods(lua_State* L, int t)
 	Method(SetSappedTurns);
 	Method(ChangeSappedTurns);
 
+	Method(GetBuildingTypeFromClass);
+
+	Method(GetHurryProduction);
+
 #if defined(MOD_BALANCE_CORE_EVENTS)
 	Method(GetDisabledTooltip);
 	Method(GetScaledEventChoiceValue);
@@ -2094,8 +2098,8 @@ int CvLuaCity::lGetYieldModifierTooltip(lua_State* L)
 	if(eYield == YIELD_FOOD)
 	{	
 		int iExcessNoMod = pkCity->foodDifference(true);
-		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_FOODMOD_EATEN_FOOD", pkCity->foodConsumption());
-		GC.getGame().BuildProdModHelpText(&toolTip, iExcessNoMod >= 0 ? "TXT_KEY_FOODMOD_EXCESS_FOOD_POSITIVE" : "TXT_KEY_FOODMOD_EXCESS_FOOD_NEGATIVE", iExcessNoMod);
+		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_EATEN_FOOD", pkCity->foodConsumption());
+		GC.getGame().BuildProdModHelpText(&toolTip, "TXT_KEY_EXCESS_FOOD", iExcessNoMod);
 		pkCity->GetTradeYieldModifier(YIELD_FOOD, &toolTip);
 		pkCity->foodDifferenceTimes100(false, &toolTip);
 	}
@@ -6372,6 +6376,20 @@ int CvLuaCity::lChangeSappedTurns(lua_State* L)
 	const int iValue = lua_tointeger(L, 2);
 	pkCity->ChangeSappedTurns(iValue);
 	return 1;
+}
+
+int CvLuaCity::lGetBuildingTypeFromClass(lua_State* L)
+{
+	CvCity* pCity = GetInstance(L);
+	const BuildingClassTypes eBuildingClass = static_cast<BuildingClassTypes>(lua_tointeger(L, 2));
+	const bool bFallback = luaL_optbool(L, 3, false);
+	lua_pushinteger(L, pCity->GetBuildingTypeFromClass(eBuildingClass, bFallback));
+	return 1;
+}
+
+int CvLuaCity::lGetHurryProduction(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvCity::GetHurryProduction);
 }
 
 #if defined(MOD_BALANCE_CORE_JFD)

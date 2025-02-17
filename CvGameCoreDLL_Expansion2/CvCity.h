@@ -1867,6 +1867,8 @@ public:
 	BuildingTypes GetBuildingTypeFromClass(const BuildingClassTypes eBuildingClass, const bool bFallback = false) const;
 	void AddFreeCapitalBuildings(const bool bRemoveFromCurrent = false);
 
+	int GetHurryProduction(UnitTypes eUnit) const;
+
 	bool IsNukeKillable(int iNukeLevel);
 
 protected:

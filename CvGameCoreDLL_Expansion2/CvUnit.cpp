@@ -1132,11 +1132,11 @@ void CvUnit::initWithNameOffset(int iID, UnitTypes eUnit, int iNameOffset, UnitA
 	// Instant Yields/Bonuses on Expend
 	if (getUnitInfo().GetOneShotTourism() > 0)
 	{
-		SetTourismBlastStrength(getBlastTourism());
+		SetTourismBlastStrength(kPlayer.GetBlastTourism(getUnitType()));
 	}
 	if (getUnitInfo().GetTourismBonusTurns() > 0)
 	{
-		SetTourismBlastLength(getBlastTourismTurns());
+		SetTourismBlastLength(kPlayer.GetBlastTourismTurns(getUnitType()));
 	}
 	if (getUnitInfo().GetBaseBeakersTurnsToCount() > 0)
 	{
@@ -1152,7 +1152,7 @@ void CvUnit::initWithNameOffset(int iID, UnitTypes eUnit, int iNameOffset, UnitA
 	}
 	if (getUnitInfo().GetBaseCultureTurnsToCount() > 0)
 	{
-		SetCultureBlastStrength(getGivePoliciesCulture());
+		SetCultureBlastStrength(kPlayer.GetTreatiseCulture(getUnitType()));
 	}
 	if (getUnitInfo().GetBaseTurnsForGAPToCount() > 0)
 	{
@@ -11810,54 +11810,17 @@ bool CvUnit::canHurry(const CvPlot* pPlot, bool bTestVisible) const
 }
 
 //	--------------------------------------------------------------------------------
-int CvUnit::getMaxHurryProduction(CvCity* pCity) const
-{
-	int iProduction = 0;
-
-	// Get base value from unit
-	iProduction = m_pUnitInfo->GetBaseHurry();
-	// Scale it by the Era Scaler (starts at Renaissance)
-	if (MOD_GP_ERA_SCALING)
-	{
-		int EraModifiers[6] = { 100, 200, 250, 400, 475, 575 };
-		int iIndex = MAX(0, GET_PLAYER(getOwner()).GetCurrentEra() - 2);
-		iProduction = iProduction * EraModifiers[iIndex] / 100;
-	}
-	// Add production from population (does not scale with era)
-	iProduction += (m_pUnitInfo->GetHurryMultiplier() * pCity->getPopulation());
-
-	// Add production from average empire city production (does not scale with era)
-	CvPlayer* pPlayer = &GET_PLAYER(getOwner());
-	if (pPlayer)
-		iProduction += pPlayer->getYieldPerTurnHistory(YIELD_PRODUCTION, m_pUnitInfo->GetBaseProductionTurnsToCount());
-
-	if (iProduction == 0)
-		return 0;
-
-	// Scale production with number of manufactories
-	if (MOD_BALANCE_CORE_NEW_GP_ATTRIBUTES)
-		iProduction = GetScaleAmount(iProduction);
-
-	// scale with game speed
-	iProduction = iProduction * GC.getGame().getGameSpeedInfo().getUnitHurryPercent() / 100;
-	// scale with player traits/policies etc.
-	iProduction = iProduction * (100 + GET_PLAYER(getOwner()).GetGreatEngineerHurryMod()) / 100;
-	
-	return MAX(0, iProduction);
-}
-
-//	--------------------------------------------------------------------------------
 int CvUnit::getHurryProduction(const CvPlot* pPlot) const
 {
 	CvCity* pCity = GET_PLAYER(getOwner()).getCity(m_iOriginCity);
 	
-	if (pCity == NULL)
+	if (!pCity)
 		pCity = pPlot->getEffectiveOwningCity();
 
-	if(pCity == NULL)
+	if (!pCity)
 		return 0;
 
-	return MAX(0, getMaxHurryProduction(pCity));
+	return pCity->GetHurryProduction(getUnitType());
 }
 
 //	--------------------------------------------------------------------------------
@@ -12859,7 +12822,7 @@ int CvUnit::getGAPBlast()
 			iValue = GD_INT_GET(GOLDEN_AGE_BASE_THRESHOLD_HAPPINESS) / 2;
 
 		// Modify based on game speed
-		iValue *= GC.getGame().getGameSpeedInfo().getInstantYieldPercent();
+		iValue *= GC.getGame().getGameSpeedInfo().getGreatPeoplePercent();
 		iValue /= 100;
 	}
 	return iValue;
@@ -12978,40 +12941,6 @@ bool CvUnit::canGivePolicies(const CvPlot* /*pPlot*/, bool /*bTestVisible*/) con
 }
 
 //	--------------------------------------------------------------------------------
-int CvUnit::getGivePoliciesCulture()
-{
-	int iValue = 0;
-#if !defined(MOD_BALANCE_CORE)
-	CvPlot* pPlot = plot();
-	if(canGivePolicies(pPlot))
-#endif
-	{
-		CvPlayerAI& kPlayer = GET_PLAYER(getOwner());
-
-		// Culture boost based on previous turns
-		int iPreviousTurnsToCount = getUnitInfo().GetBaseCultureTurnsToCount();
-		if (iPreviousTurnsToCount != 0)
-		{
-			// Calculate boost
-			iValue = kPlayer.getYieldPerTurnHistory(YIELD_CULTURE, iPreviousTurnsToCount);
-		}
-
-		if (MOD_BALANCE_CORE_NEW_GP_ATTRIBUTES && getUnitInfo().GetScaleFromNumGWs() > 0)
-		{
-			int iNumGreatWorks = kPlayer.GetCulture()->GetNumGreatWorks();
-			iNumGreatWorks = (iNumGreatWorks * getUnitInfo().GetScaleFromNumGWs());
-			iValue *= (iNumGreatWorks + 100);
-			iValue /= 100;
-		}
-
-		// Modify based on game speed
-		iValue *= GC.getGame().getGameSpeedInfo().getCulturePercent();
-		iValue /= 100;
-	}
-	return iValue;
-}
-
-//	--------------------------------------------------------------------------------
 bool CvUnit::givePolicies()
 {
 	VALIDATE_OBJECT();
@@ -13100,74 +13029,6 @@ bool CvUnit::canBlastTourism(const CvPlot* pPlot, bool bTestVisible) const
 	return kTileOwner.isAlive() && !kTileOwner.isMinorCiv() && eOwner != getOwner();
 }
 
-//	--------------------------------------------------------------------------------
-int CvUnit::getBlastTourism()
-{
-	CvPlayer* pPlayer = &GET_PLAYER(getOwner());
-	if (!pPlayer)
-		return 0;
-
-	if (!canBlastTourism(plot()))
-	{
-		return 0;
-	}
-
-	// Get base multiplier from unit
-	int iMultiplier = getUnitInfo().GetOneShotTourism();
-
-	if (iMultiplier <= 0)
-		return 0;
-
-	int iTourism = 0;
-	
-	if(MOD_BALANCE_CORE_NEW_GP_ATTRIBUTES)
-	{
-		// Tourism boost based on previous turns (no base value)
-		iTourism = pPlayer->getYieldPerTurnHistory(YIELD_TOURISM, iMultiplier);
-
-		// scale with number of great works
-		CvCity *pLoopCity = NULL;
-		int iLoop = 0;
-		for(pLoopCity = pPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pPlayer->nextCity(&iLoop))
-		{
-			iMultiplier += pLoopCity->GetCityBuildings()->GetNumGreatWorks(CvTypes::getGREAT_WORK_SLOT_MUSIC());
-		}
-	}
-	else
-	{
-		iTourism = iMultiplier * pPlayer->GetCulture()->GetTourism() / 100;
-	}
-
-	// Scale by game speed
-	iTourism *= GC.getGame().getGameSpeedInfo().getCulturePercent();
-	iTourism /= 100;
-
-	return max(iTourism, /*100*/ GD_INT_GET(MINIMUM_TOURISM_BLAST_STRENGTH));
-}
-
-int CvUnit::getBlastTourismTurns()
-{
-	// Get Base number of turns from unit
-	int iNumTurns = m_pUnitInfo->GetTourismBonusTurns();
-
-	CvPlayer* pPlayer = &GET_PLAYER(getOwner());
-	if (pPlayer)
-	{
-		// scale with number of great works of music
-		CvCity* pLoopCity = NULL;
-		int iLoop = 0;
-		for (pLoopCity = pPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pPlayer->nextCity(&iLoop))
-		{
-			iNumTurns += pLoopCity->GetCityBuildings()->GetNumGreatWorks(CvTypes::getGREAT_WORK_SLOT_MUSIC());
-		}
-	}
-
-	// scale with game speed
-	iNumTurns *= GC.getGame().getGameSpeedInfo().getTrainPercent();
-	iNumTurns /= 100;
-
-	return iNumTurns;
-}
 //	--------------------------------------------------------------------------------
 bool CvUnit::blastTourism()
 {

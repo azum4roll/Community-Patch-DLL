@@ -505,7 +505,6 @@ public:
 	bool DoRushBuilding();
 
 	bool canHurry(const CvPlot* pPlot, bool bTestVisible = false) const;
-	int getMaxHurryProduction(CvCity* pCity) const;
 	int getHurryProduction(const CvPlot* pPlot) const;
 	bool hurry();
 
@@ -536,12 +535,9 @@ public:
 	bool goldenAge();
 
 	bool canGivePolicies(const CvPlot* pPlot, bool bTestVisible = false) const;
-	int getGivePoliciesCulture();
 	bool givePolicies();
 
 	bool canBlastTourism(const CvPlot* pPlot, bool bTestVisible = false) const;
-	int getBlastTourism();
-	int getBlastTourismTurns();
 	bool blastTourism();
 
 	bool canBuild(const CvPlot* pPlot, BuildTypes eBuild, bool bTestVisible = false, bool bTestGold = true, bool bTestEra = false) const;

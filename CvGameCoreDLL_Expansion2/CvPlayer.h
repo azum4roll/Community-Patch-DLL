@@ -2405,7 +2405,7 @@ public:
 	int getReplayDataValue(const CvString& strDataset, unsigned int uiTurn) const;
 	void setReplayDataValue(const CvString& strDataset, unsigned int uiTurn, int iValue);
 
-	int getYieldPerTurnHistory(YieldTypes eYield, int iNumTurns, bool bIgnoreInstant = false);
+	int getYieldPerTurnHistory(YieldTypes eYield, int iNumTurns, bool bIgnoreInstant = false) const;
 	void UpdateUnitClassTrainingAllowedAnywhere(UnitClassTypes eUnitClass);
 	set<UnitClassTypes> GetUnitClassTrainingAllowedAnywhere() const;
 	void updateYieldPerTurnHistory();
@@ -2884,6 +2884,14 @@ public:
 	void SetVassalLevy(bool bValue);
 	bool IsUnitValidForVassalLevy(UnitTypes eUnit, const CvTeam& kTeam, const CvCity* pMasterCity, bool bCheckMasterTech = true) const;
 
+	int GetScaleAmount(const CvUnitEntry* pkUnitInfo, int iAmount) const;
+	int GetTradeGold(UnitTypes eUnit) const;
+	int GetDiscoverScience(UnitTypes eUnit) const;
+	int GetTreatiseCulture(UnitTypes eUnit) const;
+	int GetBlastGAP(UnitTypes eUnit) const;
+	int GetBlastTourism(UnitTypes eUnit) const;
+	int GetBlastTourismTurns(UnitTypes eUnit) const;
+
 	int GetCityDistancePathLength( const CvPlot* pPlot ) const;
 	CvCity* GetClosestCityByPathLength( const CvPlot* pPlot) const;
 	int GetCityDistanceInPlots(const CvPlot* pPlot) const;
@@ -3016,9 +3024,9 @@ protected:
 	int m_iCenterOfMassY;
 	int m_iReformationFollowerReduction;
 	bool m_bIsReformation;
-	std::vector<int> m_viInstantYieldsTotal;
-	std::tr1::unordered_map<YieldTypes, int> m_miLocalInstantYieldsTotal;
-	std::tr1::unordered_map<YieldTypes, std::vector<int>> m_aiYieldHistory;
+	vector<int> m_viInstantYieldsTotal;
+	vector<int> m_viLocalInstantYieldsTotal;
+	vector<vector<int>> m_vviYieldHistory;
 	set<UnitClassTypes> m_sUnitClassTrainingAllowedAnywhere;
 	int m_iUprisingCounter;
 	int m_iExtraHappinessPerLuxury;
@@ -3883,9 +3891,9 @@ SYNC_ARCHIVE_VAR(int, m_iCenterOfMassX)
 SYNC_ARCHIVE_VAR(int, m_iCenterOfMassY)
 SYNC_ARCHIVE_VAR(int, m_iReformationFollowerReduction)
 SYNC_ARCHIVE_VAR(bool, m_bIsReformation)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_viInstantYieldsTotal)
-SYNC_ARCHIVE_VAR(SYNC_ARCHIVE_VAR_TYPE(std::tr1::unordered_map<YieldTypes, int>), m_miLocalInstantYieldsTotal)
-SYNC_ARCHIVE_VAR(SYNC_ARCHIVE_VAR_TYPE(std::tr1::unordered_map<YieldTypes, std::vector<int>>), m_aiYieldHistory)
+SYNC_ARCHIVE_VAR(vector<int>, m_viInstantYieldsTotal)
+SYNC_ARCHIVE_VAR(vector<int>, m_viLocalInstantYieldsTotal)
+SYNC_ARCHIVE_VAR(SYNC_ARCHIVE_VAR_TYPE(vector<vector<int>>), m_vviYieldHistory)
 SYNC_ARCHIVE_VAR(set<UnitClassTypes>, m_sUnitClassTrainingAllowedAnywhere)
 SYNC_ARCHIVE_VAR(int, m_iUprisingCounter)
 SYNC_ARCHIVE_VAR(int, m_iExtraHappinessPerLuxury)

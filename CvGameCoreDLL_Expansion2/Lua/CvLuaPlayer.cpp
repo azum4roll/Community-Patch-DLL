@@ -1333,6 +1333,16 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 	Method(DoForceDefPact);
 	Method(GetCivOpinion);
 	Method(GetMajorityReligion);
+
+	Method(GetCivilizationBuilding);
+
+	Method(GetTradeGold);
+	Method(GetDiscoverScience);
+	Method(GetTreatiseCulture);
+	Method(GetBlastGAP);
+	Method(GetBlastTourism);
+	Method(GetBlastTourismTurns);
+
 	//JFD
 	Method(GetWLTKDResourceTT);
 	Method(GetNumNationalWonders);
@@ -17093,6 +17103,45 @@ int CvLuaPlayer::lSetStateReligion(lua_State* L)
 	pkPlayer->GetReligions()->SetStateReligionOverride(eReligion);
 	return 1;
 }
+
+int CvLuaPlayer::lGetCivilizationBuilding(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	int iBuildingClass = lua_tointeger(L, 2);
+	lua_pushinteger(L, pPlayer->getCivilizationInfo().getCivilizationBuildings(iBuildingClass));
+	return 1;
+}
+
+int CvLuaPlayer::lGetTradeGold(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetTradeGold);
+}
+
+int CvLuaPlayer::lGetDiscoverScience(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetDiscoverScience);
+}
+
+int CvLuaPlayer::lGetTreatiseCulture(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetTreatiseCulture);
+}
+
+int CvLuaPlayer::lGetBlastGAP(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetBlastGAP);
+}
+
+int CvLuaPlayer::lGetBlastTourism(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetBlastTourism);
+}
+
+int CvLuaPlayer::lGetBlastTourismTurns(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayer::GetBlastTourismTurns);
+}
+
 int CvLuaPlayer::lGetPiety(lua_State* L)
 {
 	CvPlayer* pkPlayer = GetInstance(L);
