@@ -4620,10 +4620,6 @@ int CityStrategyAIHelpers::GetBuildingGrandStrategyValue(CvCity *pCity, Building
 
 	//Let's look at building special traits.
 
-	if(pkBuildingInfo->IsDiplomaticVoting())
-	{
-		iDiploValue += 100;
-	}
 	if(pkBuildingInfo->GetVotesPerGPT() > 0)
 	{
 		iDiploValue += 100;
@@ -5388,15 +5384,7 @@ int CityStrategyAIHelpers::GetBuildingBasicValue(CvCity *pCity, BuildingTypes eB
 			}
 		}
 	}
-	if(pkBuildingInfo->GetCultureRateModifier() > 0)
-	{
-		iValue += (pkBuildingInfo->GetCultureRateModifier() + pCity->getCultureRateModifier()) * kPlayer.GetNumPolicies();
-	}
-	//this is super useful!
-	if(pkBuildingInfo->GetGlobalCultureRateModifier() > 0)
-	{
-		iValue += pkBuildingInfo->GetGlobalCultureRateModifier() * (kPlayer.getNumCities() + kPlayer.GetNumPolicies());
-	}
+
     if(kPlayer.GetPlayerTraits()->GetWonderProductionToBuildingDiscount(eBuilding) > 0)
     {
 		iValue += kPlayer.GetPlayerTraits()->GetWonderProductionToBuildingDiscount(eBuilding);

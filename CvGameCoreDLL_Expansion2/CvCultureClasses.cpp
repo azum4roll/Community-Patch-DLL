@@ -4885,7 +4885,7 @@ CvString CvPlayerCulture::GetTourismModifierWithTooltip(PlayerTypes eTargetPlaye
 	// Technologies
 	if (m_pPlayer->GetInfluenceSpreadModifier() > 0 && kTargetPlayer.IsNullifyInfluenceModifier())
 	{
-		szRtnValue += "[COLOR_NEGATIVE_TEXT]" + GetLocalizedText("TXT_KEY_CO_PLAYER_GREAT_FIREWALL", -m_pPlayer->GetInfluenceSpreadModifier()) + "[ENDCOLOR]";
+		szRtnValue += "[COLOR_NEGATIVE_TEXT]" + GetLocalizedText("TXT_KEY_CO_PLAYER_TOURISM_THEIR_BUILDINGS", m_pPlayer->GetInfluenceSpreadModifier()) + "[ENDCOLOR]";
 	}
 
 	return szRtnValue;

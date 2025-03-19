@@ -643,6 +643,7 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 
 	Method(GetLevelExperienceModifier);
 
+	Method(GetCultureBombBoost);
 	Method(GetCultureBombTimer);
 	Method(GetConversionTimer);
 
@@ -1350,6 +1351,17 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 	Method(DoForceDefPact);
 	Method(GetCivOpinion);
 	Method(GetMajorityReligion);
+
+	Method(GetCivilizationBuilding);
+
+	Method(GetTradeGold);
+	Method(GetTradeWLTKDTurns);
+	Method(GetDiscoverScience);
+	Method(GetTreatiseCulture);
+	Method(GetBlastGAP);
+	Method(GetBlastTourism);
+	Method(GetBlastTourismTurns);
+
 	//JFD
 	Method(GetWLTKDResourceTT);
 	Method(GetNumNationalWonders);
@@ -3466,7 +3478,9 @@ int CvLuaPlayer::lGetCulturePerTurnFromBonusTurns(lua_State* L)
 //int GetCultureCityModifier();
 int CvLuaPlayer::lGetCultureCityModifier(lua_State* L)
 {
-	return BasicLuaMethod(L, &CvPlayerAI::GetJONSCultureCityModifier);
+	CvPlayer* pPlayer = GetInstance(L);
+	lua_pushinteger(L, pPlayer->getYieldRateModifier(YIELD_CULTURE));
+	return 1;
 }
 
 //------------------------------------------------------------------------------
@@ -8261,6 +8275,9 @@ int CvLuaPlayer::lGetLevelExperienceModifier(lua_State* L)
 {
 	return BasicLuaMethod(L, &CvPlayerAI::getLevelExperienceModifier);
 }
+
+LUAAPIIMPL(Player, GetCultureBombBoost)
+
 //------------------------------------------------------------------------------
 //int getCultureBombTimer();
 int CvLuaPlayer::lGetCultureBombTimer(lua_State* L)
@@ -17324,6 +17341,23 @@ int CvLuaPlayer::lSetStateReligion(lua_State* L)
 	pkPlayer->GetReligions()->SetStateReligionOverride(eReligion);
 	return 1;
 }
+
+int CvLuaPlayer::lGetCivilizationBuilding(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	int iBuildingClass = lua_tointeger(L, 2);
+	lua_pushinteger(L, pPlayer->getCivilizationInfo().getCivilizationBuildings(iBuildingClass));
+	return 1;
+}
+
+LUAAPIIMPL(Player, GetTradeGold)
+LUAAPIIMPL(Player, GetTradeWLTKDTurns)
+LUAAPIIMPL(Player, GetDiscoverScience)
+LUAAPIIMPL(Player, GetTreatiseCulture)
+LUAAPIIMPL(Player, GetBlastGAP)
+LUAAPIIMPL(Player, GetBlastTourism)
+LUAAPIIMPL(Player, GetBlastTourismTurns)
+
 int CvLuaPlayer::lGetPiety(lua_State* L)
 {
 	CvPlayer* pkPlayer = GetInstance(L);
