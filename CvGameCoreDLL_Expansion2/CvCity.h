@@ -656,8 +656,6 @@ public:
 
 	int GetJONSCulturePerTurnFromLeagues() const;
 
-	int getCultureRateModifier() const;
-	void changeCultureRateModifier(int iChange);
 #if defined(MOD_BALANCE_CORE_POLICIES)
 	int getBuildingClassCultureChange(BuildingClassTypes eIndex) const;
 	void changeBuildingClassCultureChange(BuildingClassTypes eIndex, int iChange);
@@ -1555,7 +1553,6 @@ public:
 
 	bool canRangeStrike() const;
 	bool CanRangeStrikeNow() const;
-	bool IsHasBuildingThatAllowsRangeStrike() const;
 
 	bool canRangeStrikeAt(int iX, int iY) const;
 	CityTaskResult rangeStrike(int iX, int iY);
@@ -1870,6 +1867,8 @@ public:
 	BuildingTypes GetBuildingTypeFromClass(const BuildingClassTypes eBuildingClass, const bool bFallback = false) const;
 	void AddFreeCapitalBuildings(const bool bRemoveFromCurrent = false);
 
+	int GetHurryProduction(UnitTypes eUnit) const;
+
 	bool IsNukeKillable(int iNukeLevel);
 
 protected:
@@ -1908,7 +1907,6 @@ protected:
 	int m_iCityBuildingRangeStrikeModifier;
 	int m_iGarrisonRangedAttackModifier;
 #endif
-	int m_iCultureRateModifier;
 	int m_iNumWorldWonders;
 	int m_iNumTeamWonders;
 	int m_iNumNationalWonders;
@@ -2345,7 +2343,6 @@ SYNC_ARCHIVE_VAR(int, m_iCityBuildingBombardRange)
 SYNC_ARCHIVE_VAR(int, m_iCityIndirectFire)
 SYNC_ARCHIVE_VAR(int, m_iCityBuildingRangeStrikeModifier)
 SYNC_ARCHIVE_VAR(int, m_iGarrisonRangedAttackModifier)
-SYNC_ARCHIVE_VAR(int, m_iCultureRateModifier)
 SYNC_ARCHIVE_VAR(int, m_iNumWorldWonders)
 SYNC_ARCHIVE_VAR(int, m_iNumTeamWonders)
 SYNC_ARCHIVE_VAR(int, m_iNumNationalWonders)

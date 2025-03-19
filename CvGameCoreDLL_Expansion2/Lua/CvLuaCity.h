@@ -705,6 +705,10 @@ protected:
 	static int lSetSappedTurns(lua_State* L);
 	static int lChangeSappedTurns(lua_State* L);
 
+	LUAAPIEXTN(GetBuildingTypeFromClass, int, BuildingClassTypes, bool = false);
+
+	LUAAPIEXTN(GetHurryProduction, int, UnitTypes);
+
 #if defined(MOD_BALANCE_CORE_EVENTS)
 	static int lGetDisabledTooltip(lua_State* L);
 	static int lGetScaledEventChoiceValue(lua_State* L);

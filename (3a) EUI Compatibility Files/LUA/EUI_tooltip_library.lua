@@ -914,7 +914,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		if(city and building.GPRateModifierPerXFranchises ~= 0) then
 			local iCorpGPChange = city:GetGPRateModifierPerXFranchises();
 			if iCorpGPChange ~=0 then
-				tips:insert( L( "TXT_KEY_PEDIA_CORP_GP_CHANGE", iCorpGPChange))
+				tips:insert( L( "TXT_KEY_BUILDING_CORP_GP_CHANGE", iCorpGPChange))
 			end
 		end
 
@@ -1449,7 +1449,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		end
 		if(iNumPolicies > 0) then
 			local iNumHave = activePlayer:GetNumPolicies(true);
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POLICY_NEEDED_LABEL", iNumPolicies, iNumHave))
+			tips:insert(L("TXT_KEY_PRODUCTION_BUILDING_NUM_POLICY_NEEDED", iNumPolicies, iNumHave))
 		end
 	end
 
@@ -1458,14 +1458,14 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 		local iNumNationalPop = activePlayer:GetScalingNationalPopulationRequired(buildingID);
 		if(iNumNationalPop > 0) then
 			local iNumHave = activePlayer:GetTotalPopulation();
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POPULATION_NATIONAL_NEEDED_LABEL", iNumNationalPop, iNumHave))
+			tips:insert(L("TXT_KEY_PRODUCTION_BUILDING_NUM_POPULATION_NATIONAL_NEEDED", iNumNationalPop, iNumHave))
 		end
 	end
 	local iNumLocalPop = building.LocalPopRequired;
 	if(iNumLocalPop > 0) then
 		if (city) then
 			local iNumHave = city:GetPopulation();
-			tips:insert(L("TXT_KEY_PEDIA_NUM_POPULATION_LOCAL_NEEDED_LABEL", iNumLocalPop, iNumHave))
+			tips:insert(L("TXT_KEY_PRODUCTION_BUILDING_NUM_POPULATION_LOCAL_NEEDED", iNumLocalPop, iNumHave))
 		end
 	end
 
@@ -1792,7 +1792,7 @@ end
 -- ===========================================================================
 -- Help text for Projects
 -- ===========================================================================
-local function GetHelpTextForProject( projectID, city )
+local function GetHelpTextForProject( projectID, _, city )
 	local project = GameInfo.Projects[ projectID ]
 
 	local productionCost = 0;
@@ -1928,7 +1928,7 @@ local function GetYieldTooltip( city, yieldID, baseYield, totalYield, yieldIconS
 
 	-- Yield from Great Works
 	if(yieldID ~= YieldTypes.YIELD_CULTURE) then
-		tips:insertLocalizedBulletIfNonZero("TXT_KEY_YIELD_FROM_ART_CBP", city:GetBaseYieldRateFromGreatWorks( yieldID ), yieldIconString)
+		tips:insertLocalizedBulletIfNonZero("TXT_KEY_YIELD_FROM_GREAT_WORKS", city:GetBaseYieldRateFromGreatWorks( yieldID ), yieldIconString)
 	end
 	
 	if(yieldID ~= YieldTypes.YIELD_CULTURE) then

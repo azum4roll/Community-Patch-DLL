@@ -66,7 +66,7 @@ function GetHelpTextForUnit(iUnitID, bIncludeRequirementsInfo, pCity)
 	local iAirStrength = pUnitInfo.BaseLandAirDefense;
 	if (iAirStrength ~= 0) then
 		strHelpText = strHelpText .. "[NEWLINE]";
-		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_AIR_STRENGTH", iAirStrength);
+		strHelpText = strHelpText .. Locale.ConvertTextKey("TXT_KEY_PRODUCTION_UNIT_AIR_DEFENSE", iAirStrength);
 	end
 	
 	-- Resource Requirements
@@ -214,7 +214,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			end
 			if(iNumPolicies > 0) then
 				local iNumHave = pActivePlayer:GetNumPolicies(true);
-				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PEDIA_NUM_POLICY_NEEDED_LABEL", iNumPolicies, iNumHave));
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_NUM_POLICY_NEEDED", iNumPolicies, iNumHave));
 				bFirst = false;
 			end
 		end
@@ -224,7 +224,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 			local iNumNationalPop = pActivePlayer:GetScalingNationalPopulationRequired(iBuildingID);
 			if(iNumNationalPop > 0) then
 				local iNumHave = pActivePlayer:GetTotalPopulation();
-				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PEDIA_NUM_POPULATION_NATIONAL_NEEDED_LABEL", iNumNationalPop, iNumHave));
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_NUM_POPULATION_NATIONAL_NEEDED", iNumNationalPop, iNumHave));
 				bFirst = false;
 			end
 		end
@@ -233,7 +233,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 		if(iNumLocalPop > 0) then
 			if (pCity) then
 				local iNumHave = pCity:GetPopulation();
-				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PEDIA_NUM_POPULATION_LOCAL_NEEDED_LABEL", iNumLocalPop, iNumHave));
+				table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_NUM_POPULATION_LOCAL_NEEDED", iNumLocalPop, iNumHave));
 				bFirst = false;
 			end
 		end
@@ -618,7 +618,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 		if iCorpGPChange ~=0 then
 			iCorpGPChange = pCity:GetGPRateModifierPerXFranchises();
 			if iCorpGPChange ~=0 then
-				local localizedText = Locale.ConvertTextKey("TXT_KEY_PEDIA_CORP_GP_CHANGE", iCorpGPChange);
+				local localizedText = Locale.ConvertTextKey("TXT_KEY_BUILDING_CORP_GP_CHANGE", iCorpGPChange);
 				table.insert(lines, localizedText);
 			end
 		end
@@ -726,7 +726,7 @@ end
 
 
 -- PROJECT
-function GetHelpTextForProject(iProjectID, pCity, bIncludeRequirementsInfo)
+function GetHelpTextForProject(iProjectID, bIncludeRequirementsInfo, pCity)
 	local pProjectInfo = GameInfo.Projects[iProjectID];
 	
 	local pActivePlayer = Players[Game.GetActivePlayer()];
