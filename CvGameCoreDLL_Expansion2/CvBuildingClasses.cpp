@@ -2003,6 +2003,13 @@ bool CvBuildingEntry::CacheResults(Database::Results& kResults, CvDatabaseUtilit
 	m_piGlobalYieldModifier[YIELD_CULTURE] += m_iGlobalCultureRateModifier;
 	m_piInstantYield[YIELD_GOLD] += m_iGold;
 
+	// Slow, but specialist entries (and GC.getNumSpecialistInfos()) aren't available yet
+	int iNumSpecialists = kUtility.MaxRows("Specialists");
+	for (int iI = 0; iI < iNumSpecialists; iI++)
+	{
+		m_ppaiSpecialistYieldChange[iI][YIELD_CULTURE] += m_iSpecialistExtraCulture;
+	}
+
 	return true;
 }
 
@@ -2164,12 +2171,6 @@ int CvBuildingEntry::GetSpecialistType() const
 int CvBuildingEntry::GetSpecialistCount() const
 {
 	return m_iSpecialistCount;
-}
-
-/// Extra culture from every specialist
-int CvBuildingEntry::GetSpecialistExtraCulture() const
-{
-	return m_iSpecialistExtraCulture;
 }
 
 /// How many GPP does this Building provide (linked to the SpecialistType)
