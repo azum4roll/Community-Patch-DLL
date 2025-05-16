@@ -3795,7 +3795,6 @@ int CityStrategyAIHelpers::GetBuildingYieldValue(CvCity *pCity, BuildingTypes eB
 				if (eYield == YIELD_CULTURE)
 				{
 					iSpecialistYield += pkSpecialistInfo->getCulturePerTurn();
-					iSpecialistYield += kPlayer.GetSpecialistCultureChange();
 				}
 
 				// Laborers don't get any non-specific specialist boosts

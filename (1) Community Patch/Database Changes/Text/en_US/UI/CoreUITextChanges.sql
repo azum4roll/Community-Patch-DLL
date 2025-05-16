@@ -90,15 +90,19 @@ WHERE Tag = 'TXT_KEY_CIV5_RUSSIA_TEXT_5';
 -- Info tooltip
 ------------------------------------------------
 
--- Unit
+-- Common
 UPDATE Language_en_US
-SET Text = 'Required: {1_NumResource} {2_ResIcon} {3_Res:textkey}'
+SET Text = 'Resources Required: {1_NumResource} {2_ResIcon} {3_Res:textkey}'
 WHERE Tag = 'TXT_KEY_PRODUCTION_RESOURCES_REQUIRED';
 
 -- Building
 UPDATE Language_en_US
-SET Text = '[ICON_STRENGTH] City Strength: {1: number "''+''##;''-''##"}'
+SET Text = '[ICON_STRENGTH] City Strength: {2_Sign}{1_Num}'
 WHERE Tag = 'TXT_KEY_PRODUCTION_BUILDING_DEFENSE';
+
+UPDATE Language_en_US
+SET Text = '[ICON_STRENGTH] Hit Points: {2_Sign}{1_Num}'
+WHERE Tag = 'TXT_KEY_PRODUCTION_BUILDING_HITPOINTS';
 
 -- Yield
 UPDATE Language_en_US
