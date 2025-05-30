@@ -372,6 +372,9 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 	Method(GetMinimumFaithNextGreatProphet);
 	Method(HasReligionInMostCities);
 	Method(DoesUnitPassFaithPurchaseCheck);
+	Method(GetNumFollowerPrimaryReligion);
+	Method(GetNumGlobalFollowerPrimaryReligion);
+	Method(GetReformationFollowerReduction);
 
 	// Happiness
 
@@ -1868,25 +1871,14 @@ int CvLuaPlayer::lGetResourcesFromFranchises(lua_State* L)
 	CvPlayerAI* pkPlayer = GetInstance(L);
 	const ResourceTypes eResource = (ResourceTypes)lua_tointeger(L, 2);
 
-	int iResult = 0;
-	const CvCity* pLoopCity;
-	int iLoop;
-	for (pLoopCity = pkPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pkPlayer->nextCity(&iLoop))
+	fraction fResult = 0;
+	int iLoop = 0;
+	for (const CvCity* pLoopCity = pkPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pkPlayer->nextCity(&iLoop))
 	{
-		if (pLoopCity != NULL)
-		{
-			if (pLoopCity->GetResourceQuantityPerXFranchises(eResource) > 0)
-			{
-				int iFranchises = pkPlayer->GetCorporations()->GetNumFranchises();
-				if (iFranchises > 0)
-				{
-					iResult += (iFranchises / pLoopCity->GetResourceQuantityPerXFranchises(eResource));
-				}
-			}
-		}
+		fResult += pLoopCity->GetResourceQuantityPerXFranchises(eResource) * pkPlayer->GetCorporations()->GetNumFranchises();
 	}
 
-	lua_pushinteger(L, iResult);
+	lua_pushinteger(L, fResult.Truncate());
 	return 1;
 }
 // -----------------------------------------------------------------------------
@@ -4397,6 +4389,28 @@ int CvLuaPlayer::lDoesUnitPassFaithPurchaseCheck(lua_State* L)
 
 	return 1;
 }
+//------------------------------------------------------------------------------
+// int GetNumFollowerPrimaryReligion()
+int CvLuaPlayer::lGetNumFollowerPrimaryReligion(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	ReligionTypes ePrimaryReligion = pPlayer->GetReligions()->GetOwnedReligion();
+
+	// 0 if ePrimaryReligion == NO_RELIGION
+	lua_pushinteger(L, pPlayer->GetReligions()->GetNumDomesticFollowers(ePrimaryReligion));
+	return 1;
+}
+//------------------------------------------------------------------------------
+// int GetNumGlobalFollowerPrimaryReligion()
+int CvLuaPlayer::lGetNumGlobalFollowerPrimaryReligion(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	ReligionTypes ePrimaryReligion = pPlayer->GetReligions()->GetOwnedReligion();
+	lua_pushinteger(L, ePrimaryReligion != NO_RELIGION ? GC.getGame().GetGameReligions()->GetNumFollowers(ePrimaryReligion) : 0);
+	return 1;
+}
+//------------------------------------------------------------------------------
+LUAAPIIMPL(Player, GetReformationFollowerReduction)
 //------------------------------------------------------------------------------
 //int GetHappiness();
 int CvLuaPlayer::lGetHappiness(lua_State* L)

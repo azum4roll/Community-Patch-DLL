@@ -5875,14 +5875,10 @@ int CvLuaCity::lGetResourceQuantityPerXFranchises(lua_State* L)
 	CvCity* pkCity = GetInstance(L);
 	const int iResource = lua_tointeger(L, 2);
 	int iFranchises = GET_PLAYER(pkCity->getOwner()).GetCorporations()->GetNumFranchises();
-	int iCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
-	int iResult = 0;
-	if(iCorpResource > 0)
-	{
-		iResult = (iFranchises / iCorpResource);
-	}
+	fraction fCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
+	fraction fResult = fCorpResource * iFranchises;
 
-	lua_pushinteger(L, iResult);
+	lua_pushinteger(L, fResult.Truncate());
 	return 1;
 }
 int CvLuaCity::lGetGPRateModifierPerXFranchises(lua_State* L)

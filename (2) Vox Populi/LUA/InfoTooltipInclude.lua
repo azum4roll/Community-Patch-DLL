@@ -264,23 +264,23 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 -- VP -- Global Average Modifiers
 	local iBasicNeedsMedianModifierBuilding = Game.GetBasicNeedsMedianModifierBuilding(iBuildingID); 
 	if (iBasicNeedsMedianModifierBuilding ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER", iBasicNeedsMedianModifierBuilding));
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER", iBasicNeedsMedianModifierBuilding));
 	end
 	local iGoldMedianModifierBuilding = Game.GetGoldMedianModifierBuilding(iBuildingID); 
 	if (iGoldMedianModifierBuilding ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_GOLD_MEDIAN_MODIFIER", iGoldMedianModifierBuilding));
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD_MEDIAN_MODIFIER", iGoldMedianModifierBuilding));
 	end
 	local iScienceMedianModifierBuilding = Game.GetScienceMedianModifierBuilding(iBuildingID); 
 	if (iScienceMedianModifierBuilding ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_SCIENCE_MEDIAN_MODIFIER", iScienceMedianModifierBuilding));
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE_MEDIAN_MODIFIER", iScienceMedianModifierBuilding));
 	end
 	local iCultureMedianModifierBuilding = Game.GetCultureMedianModifierBuilding(iBuildingID); 
 	if (iCultureMedianModifierBuilding ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_CULTURE_MEDIAN_MODIFIER", iCultureMedianModifierBuilding));
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_CULTURE_MEDIAN_MODIFIER", iCultureMedianModifierBuilding));
 	end
 	local iReligiousUnrestModifierBuilding = Game.GetReligiousUnrestModifierBuilding(iBuildingID); 
 	if (iReligiousUnrestModifierBuilding ~= 0) then
-		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_RELIGIOUS_UNREST_MODIFIER", iReligiousUnrestModifierBuilding));
+		table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_RELIGIOUS_UNREST_MODIFIER", iReligiousUnrestModifierBuilding));
 	end
 
 	local iBasicNeedsMedianModifierBuildingGlobal = Game.GetBasicNeedsMedianModifierBuildingGlobal(iBuildingID); 
@@ -311,7 +311,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iNewMedian = pCity:GetTheoreticalNewBasicNeedsMedian(iBuildingID) / 100;
 				local iOldMedian = pCity:GetBasicNeedsMedian() / 100;
 				if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_BASIC_NEEDS_NEW_MEDIAN", iNewMedian, iOldMedian));
+					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_BASIC_NEEDS_NEW_MEDIAN", iNewMedian, iOldMedian));
 				end
 			end
 			local iGoldMedianModifier = iGoldMedianModifierBuilding + iGoldMedianModifierBuildingGlobal;
@@ -319,7 +319,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iNewMedian = pCity:GetTheoreticalNewGoldMedian(iBuildingID) / 100;
 				local iOldMedian = pCity:GetGoldMedian() / 100;
 				if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_GOLD_NEW_MEDIAN", iNewMedian, iOldMedian));
+					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_GOLD_NEW_MEDIAN", iNewMedian, iOldMedian));
 				end
 			end
 			local iScienceMedianModifier = iScienceMedianModifierBuilding + iScienceMedianModifierBuildingGlobal;
@@ -327,7 +327,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iNewMedian = pCity:GetTheoreticalNewScienceMedian(iBuildingID) / 100;
 				local iOldMedian = pCity:GetScienceMedian() / 100;
 				if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_SCIENCE_NEW_MEDIAN", iNewMedian, iOldMedian));
+					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_SCIENCE_NEW_MEDIAN", iNewMedian, iOldMedian));
 				end
 			end
 			local iCultureMedianModifier = iCultureMedianModifierBuilding + iCultureMedianModifierBuildingGlobal;
@@ -335,7 +335,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iNewMedian = pCity:GetTheoreticalNewCultureMedian(iBuildingID) / 100;
 				local iOldMedian = pCity:GetCultureMedian() / 100;
 				if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_CULTURE_NEW_MEDIAN", iNewMedian, iOldMedian));
+					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_CULTURE_NEW_MEDIAN", iNewMedian, iOldMedian));
 				end
 			end
 			local iReligiousUnrestModifier = iReligiousUnrestModifierBuilding + iReligiousUnrestModifierBuildingGlobal;
@@ -343,7 +343,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iNewUnhappyPerPop = pCity:GetTheoreticalNewReligiousUnrestPerMinorityFollower(iBuildingID) / 100;
 				local iOldUnhappyPerPop = pCity:GetReligiousUnrestPerMinorityFollower(iBuildingID) / 100;
 				if (iNewUnhappyPerPop ~= 0 and iOldUnhappyPerPop ~= 0) then
-					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD", iNewUnhappyPerPop, iOldUnhappyPerPop));
+					table.insert(lines, Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD", iNewUnhappyPerPop, iOldUnhappyPerPop));
 				end
 			end
 		end
@@ -665,7 +665,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 				local iAmount = GameDefines.BALANCE_BUILDING_INVESTMENT_BASELINE;
 				iAmount = (iAmount * -1);
 				local iWonderAmount = (iAmount / 2);
-				local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_INVESTMENT_BUILDING", iAmount, iWonderAmount);
+				local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_INVESTMENT", iAmount, iWonderAmount);
 				-- Separator
 				strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
 				strHelpText = strHelpText .. localizedText;
@@ -674,7 +674,7 @@ function GetHelpTextForBuilding(iBuildingID, bExcludeName, bExcludeHeader, bNoMa
 					-- Separator
 					local iCost = pCity:GetWorldWonderCost(iBuildingID);
 					if(iCost > 0) then
-						local localizedText = Locale.ConvertTextKey("TXT_KEY_WONDER_COST_INCREASE_METRIC", iCost);
+						local localizedText = Locale.ConvertTextKey("TXT_KEY_PRODUCTION_BUILDING_WONDER_COST_INCREASE_METRIC", iCost);
 						strHelpText = strHelpText .. "[NEWLINE]----------------[NEWLINE]";
 						strHelpText = strHelpText .. localizedText;
 					end

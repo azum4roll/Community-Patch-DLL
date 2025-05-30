@@ -358,6 +358,9 @@ protected:
 	static int lGetMinimumFaithNextGreatProphet(lua_State* L);
 	static int lHasReligionInMostCities(lua_State* L);
 	static int lDoesUnitPassFaithPurchaseCheck(lua_State* L);
+	LUAAPIEXTN(GetNumFollowerPrimaryReligion, int);
+	LUAAPIEXTN(GetNumGlobalFollowerPrimaryReligion, int);
+	LUAAPIEXTN(GetReformationFollowerReduction, int);
 
 	static int lGetHappiness(lua_State* L);
 	static int lSetHappiness(lua_State* L);

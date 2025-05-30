@@ -920,23 +920,23 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 
 		local iBasicNeedsMedianModifierBuilding = Game.GetBasicNeedsMedianModifierBuilding(buildingID)
 		if (iBasicNeedsMedianModifierBuilding ~= 0) then
-			tips:insert( L( "TXT_KEY_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER", iBasicNeedsMedianModifierBuilding))
+			tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_BASIC_NEEDS_MEDIAN_MODIFIER", iBasicNeedsMedianModifierBuilding))
 		end
 		local iGoldMedianModifierBuilding = Game.GetGoldMedianModifierBuilding(buildingID)
 		if (iGoldMedianModifierBuilding ~= 0) then
-			tips:insert( L( "TXT_KEY_BUILDING_GOLD_MEDIAN_MODIFIER", iGoldMedianModifierBuilding))
+			tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_GOLD_MEDIAN_MODIFIER", iGoldMedianModifierBuilding))
 		end
 		local iScienceMedianModifierBuilding = Game.GetScienceMedianModifierBuilding(buildingID)
 		if (iScienceMedianModifierBuilding ~= 0) then
-			tips:insert( L( "TXT_KEY_BUILDING_SCIENCE_MEDIAN_MODIFIER", iScienceMedianModifierBuilding))
+			tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_SCIENCE_MEDIAN_MODIFIER", iScienceMedianModifierBuilding))
 		end
 		local iCultureMedianModifierBuilding = Game.GetCultureMedianModifierBuilding(buildingID) 
 		if (iCultureMedianModifierBuilding ~= 0) then
-			tips:insert( L( "TXT_KEY_BUILDING_CULTURE_MEDIAN_MODIFIER", iCultureMedianModifierBuilding))
+			tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_CULTURE_MEDIAN_MODIFIER", iCultureMedianModifierBuilding))
 		end
 		local iReligiousUnrestModifierBuilding = Game.GetReligiousUnrestModifierBuilding(buildingID)
 		if (iReligiousUnrestModifierBuilding ~= 0) then
-			tips:insert( L( "TXT_KEY_BUILDING_RELIGIOUS_UNREST_MODIFIER", iReligiousUnrestModifierBuilding))
+			tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_RELIGIOUS_UNREST_MODIFIER", iReligiousUnrestModifierBuilding))
 		end
 
 		local iBasicNeedsMedianModifierBuildingGlobal = Game.GetBasicNeedsMedianModifierBuildingGlobal(buildingID)
@@ -967,7 +967,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					local iNewMedian = city:GetTheoreticalNewBasicNeedsMedian(buildingID) / 100;
 					local iOldMedian = city:GetBasicNeedsMedian() / 100;
 					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-						tips:insert( L( "TXT_KEY_BUILDING_BASIC_NEEDS_NEW_MEDIAN", iNewMedian, iOldMedian))
+						tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_BASIC_NEEDS_NEW_MEDIAN", iNewMedian, iOldMedian))
 					end
 				end
 				local iGoldMedianModifier = iGoldMedianModifierBuilding + iGoldMedianModifierBuildingGlobal;
@@ -975,7 +975,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					local iNewMedian = city:GetTheoreticalNewGoldMedian(buildingID) / 100;
 					local iOldMedian = city:GetGoldMedian() / 100;
 					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-						tips:insert( L( "TXT_KEY_BUILDING_GOLD_NEW_MEDIAN", iNewMedian, iOldMedian))
+						tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_GOLD_NEW_MEDIAN", iNewMedian, iOldMedian))
 					end
 				end
 				local iScienceMedianModifier = iScienceMedianModifierBuilding + iScienceMedianModifierBuildingGlobal;
@@ -983,7 +983,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					local iNewMedian = city:GetTheoreticalNewScienceMedian(buildingID) / 100;
 					local iOldMedian = city:GetScienceMedian() / 100;
 					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-						tips:insert( L( "TXT_KEY_BUILDING_SCIENCE_NEW_MEDIAN", iNewMedian, iOldMedian))
+						tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_SCIENCE_NEW_MEDIAN", iNewMedian, iOldMedian))
 					end
 				end
 				local iCultureMedianModifier = iCultureMedianModifierBuilding + iCultureMedianModifierBuildingGlobal;
@@ -991,7 +991,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					local iNewMedian = city:GetTheoreticalNewCultureMedian(buildingID) / 100;
 					local iOldMedian = city:GetCultureMedian() / 100;
 					if (iNewMedian ~= 0 and iOldMedian ~= 0) then
-						tips:insert( L( "TXT_KEY_BUILDING_CULTURE_NEW_MEDIAN", iNewMedian, iOldMedian))
+						tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_CULTURE_NEW_MEDIAN", iNewMedian, iOldMedian))
 					end
 				end
 				local iReligiousUnrestModifier = iReligiousUnrestModifierBuilding + iReligiousUnrestModifierBuildingGlobal;
@@ -999,7 +999,7 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					local iNewUnhappyPerPop = city:GetTheoreticalNewReligiousUnrestPerMinorityFollower(buildingID) / 100;
 					local iOldUnhappyPerPop = city:GetReligiousUnrestPerMinorityFollower(buildingID) / 100;
 					if (iNewUnhappyPerPop ~= 0 and iOldUnhappyPerPop ~= 0) then
-						tips:insert( L( "TXT_KEY_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD", iNewUnhappyPerPop, iOldUnhappyPerPop))
+						tips:insert( L( "TXT_KEY_PRODUCTION_BUILDING_RELIGIOUS_UNREST_NEW_THRESHOLD", iNewUnhappyPerPop, iOldUnhappyPerPop))
 					end
 				end
 			end
@@ -1586,14 +1586,14 @@ local function GetHelpTextForBuilding( buildingID, bExcludeName, bExcludeHeader,
 					iAmount = (iAmount * -1);
 					local iWonderAmount = (iAmount / 2);
 					if(iAmount > 0) and not OptionsManager.IsNoBasicHelp() then -- condensedhelp
-						tips:append( ( "[NEWLINE]" .. L("TXT_KEY_PRODUCTION_INVESTMENT_BUILDING", iAmount, iWonderAmount) ) )
+						tips:append( ( "[NEWLINE]" .. L("TXT_KEY_PRODUCTION_BUILDING_INVESTMENT", iAmount, iWonderAmount) ) )
 					end
 				end
 				if(city:IsWorldWonder(buildingID)) then
 					local iCost = city:GetWorldWonderCost(buildingID);
 					if(iCost > 0) then
 						-- Separator
-						tips:append( ( "[NEWLINE]" .. L("TXT_KEY_WONDER_COST_INCREASE_METRIC", iCost)) )
+						tips:append( ( "[NEWLINE]" .. L("TXT_KEY_PRODUCTION_BUILDING_WONDER_COST_INCREASE_METRIC", iCost)) )
 					end
 				end
 			end
