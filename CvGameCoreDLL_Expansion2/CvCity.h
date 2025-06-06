@@ -1321,9 +1321,8 @@ public:
 	void UpdateYieldFromCorporationFranchises(YieldTypes eIndex);
 	void SetYieldChangeFromCorporationFranchises(YieldTypes eIndex, int iTotal);
 
-	int GetResourceQuantityPerXFranchises(ResourceTypes eResource) const;
-	void ChangeResourceQuantityPerXFranchises(ResourceTypes eResource, int iChange);
-	void SetResourceQuantityPerXFranchises(ResourceTypes eResource, int iValue);
+	fraction GetResourceQuantityPerXFranchises(ResourceTypes eResource) const;
+	void ChangeResourceQuantityPerXFranchises(ResourceTypes eResource, fraction fChange);
 
 	int GetResourceQuantityFromPOP(ResourceTypes eResource) const;
 	void ChangeResourceQuantityFromPOP(ResourceTypes eResource, int iChange);
@@ -2119,7 +2118,7 @@ protected:
 	std::vector<int> m_aiBaseYieldRateFromCSAlliance;
 	std::vector<int> m_aiBaseYieldRateFromCSFriendship;
 	std::vector<int> m_aiYieldFromMinors;
-	std::vector<int> m_aiResourceQuantityPerXFranchises;
+	std::vector<fraction> m_afResourceQuantityPerXFranchises;
 	std::vector<int> m_aiYieldChangeFromCorporationFranchises;
 	std::vector<int> m_aiResourceQuantityFromPOP;
 	int m_iLandTourismBonus;
@@ -2174,8 +2173,6 @@ protected:
 	int m_iDamageTakenLastTurn;
 #endif
 
-	std::vector<int> m_paiNoResource;
-	std::vector<int> m_paiFreeResource;
 	std::vector<int> m_paiNumResourcesLocal;
 	std::vector<int> m_paiNumUnimprovedResourcesLocal;
 	std::vector<int> m_paiProjectProduction;
@@ -2538,7 +2535,7 @@ SYNC_ARCHIVE_VAR(std::vector<int>, m_aiBaseYieldRateFromReligion)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiBaseYieldRateFromCSAlliance)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiBaseYieldRateFromCSFriendship)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldFromMinors)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_aiResourceQuantityPerXFranchises)
+SYNC_ARCHIVE_VAR(std::vector<fraction>, m_afResourceQuantityPerXFranchises)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiYieldChangeFromCorporationFranchises)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_aiResourceQuantityFromPOP)
 SYNC_ARCHIVE_VAR(int, m_iLandTourismBonus)
@@ -2581,8 +2578,6 @@ SYNC_ARCHIVE_VAR(std::vector<int>, m_paiImprovementCount)
 SYNC_ARCHIVE_VAR(CvString, m_strScriptData)
 SYNC_ARCHIVE_VAR(int, m_iDamageTakenThisTurn)
 SYNC_ARCHIVE_VAR(int, m_iDamageTakenLastTurn)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_paiNoResource)
-SYNC_ARCHIVE_VAR(std::vector<int>, m_paiFreeResource)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_paiNumResourcesLocal)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_paiNumUnimprovedResourcesLocal)
 SYNC_ARCHIVE_VAR(std::vector<int>, m_paiProjectProduction)

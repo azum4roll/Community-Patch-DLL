@@ -437,7 +437,6 @@ CvPlayer::CvPlayer() :
 , m_iTurnsSinceSettledLastCity()
 , m_iNumNaturalWondersDiscoveredInArea()
 , m_iStrategicResourceMod()
-, m_iSpecialistCultureChange()
 , m_iGreatPeopleSpawnCounter()
 , m_iFreeTechCount()
 , m_iMedianTechPercentage(50)
@@ -1671,7 +1670,6 @@ void CvPlayer::uninit()
 	m_iTurnsSinceSettledLastCity = -1;
 	m_iNumNaturalWondersDiscoveredInArea = 0;
 	m_iStrategicResourceMod = 0;
-	m_iSpecialistCultureChange = 0;
 	m_iGreatPeopleSpawnCounter = -1;
 	m_iFreeTechCount = 0;
 	m_iMedianTechPercentage = 50;
@@ -13907,7 +13905,7 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, const std::vector<int>& vPr
 	}
 
 	ResourceTypes eResource = (ResourceTypes)pBuildingInfo.GetResourceType();
-	if (MOD_BALANCE_CORE && eResource != NO_RESOURCE)
+	if (eResource != NO_RESOURCE)
 	{
 		if (getNumResourceTotal(eResource, true) <= 0)
 		{
@@ -13915,18 +13913,13 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, const std::vector<int>& vPr
 		}
 	}
 
-	if (!(currentTeam.GetTeamTechs()->HasTech((TechTypes)(pBuildingInfo.GetPrereqAndTech()))))
+	if (!HasTech(static_cast<TechTypes>(pBuildingInfo.GetPrereqAndTech())))
 		return false;
 
-	for(iI = 0; iI < /*3*/ GD_INT_GET(NUM_BUILDING_AND_TECH_PREREQS); iI++)
+	for (iI = 0; iI < /*3*/ GD_INT_GET(NUM_BUILDING_AND_TECH_PREREQS); iI++)
 	{
-		if(pBuildingInfo.GetPrereqAndTechs(iI) != NO_TECH)
-		{
-			if(!(currentTeam.GetTeamTechs()->HasTech((TechTypes)(pBuildingInfo.GetPrereqAndTechs(iI)))))
-			{
-				return false;
-			}
-		}
+		if (!HasTech(static_cast<TechTypes>(pBuildingInfo.GetPrereqAndTechs(iI))))
+			return false;
 	}
 
 	if (currentTeam.isObsoleteBuilding(eBuilding))
@@ -14120,7 +14113,7 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, const std::vector<int>& vPr
 						CvCity* pHolyCity = pReligion->GetHolyCity();
 						if (pHolyCity == NULL)
 						{
-							pHolyCity = GET_PLAYER(GetID()).getCapitalCity();
+							pHolyCity = getCapitalCity();
 						}
 						int iReligionPolicyReduction = pReligion->m_Beliefs.GetPolicyReductionWonderXFollowerCities(GetID(), pHolyCity);
 						if (iReligionPolicyReduction > 0)
@@ -14146,7 +14139,7 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, const std::vector<int>& vPr
 									CvCity* pHolyCity = pReligion->GetHolyCity();
 									if (pHolyCity == NULL)
 									{
-										pHolyCity = GET_PLAYER(GetID()).getCapitalCity();
+										pHolyCity = getCapitalCity();
 									}
 									iNumPoliciesNeeded -= pReligion->m_Beliefs.GetIgnorePolicyRequirementsAmount(eEra, GetID(), pHolyCity);
 								}
@@ -14182,64 +14175,51 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, const std::vector<int>& vPr
 		//Requires a certain religion follower size, either nationally or globally.
 		if (MOD_BALANCE_CORE_FOLLOWER_POP_WONDER)
 		{
-			CvGameReligions* pReligions = GC.getGame().GetGameReligions();
 			ReligionTypes eOwnedReligion = GetReligions()->GetOwnedReligion();
-			if (eOwnedReligion != NO_RELIGION)
+			if (pkBuildingInfo->GetNationalFollowerPopRequired() > 0 || pkBuildingInfo->GetGlobalFollowerPopRequired() > 0)
 			{
-				const CvReligion* pReligion = pReligions->GetReligion(eOwnedReligion, GetID());
-				if (pReligion)
+				if (eOwnedReligion == NO_RELIGION)
+				{
+					if (!toolTipSink)
+						return false;
+
+					GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_BUILDING_NEED_PRIMARY_RELIGION");
+				}
+				else
 				{
 					if (pkBuildingInfo->GetNationalFollowerPopRequired() > 0)
 					{
-						CvCity* pHolyCity = pReligion->GetHolyCity();
-						if (pHolyCity == NULL)
+						int iPopRequired = pkBuildingInfo->GetNationalFollowerPopRequired();
+						int iCurrentPop = GetReligions()->GetNumDomesticFollowers(eOwnedReligion);
+						if (iCurrentPop < iPopRequired)
 						{
-							pHolyCity = GET_PLAYER(GetID()).getCapitalCity();
-						}
-						if (pReligion->m_Beliefs.IsBuildingClassEnabled(eBuildingClass, GetID(), pHolyCity, true))
-						{
-							int iPopRequired = pkBuildingInfo->GetNationalFollowerPopRequired();
-							int iLoop = 0;
-							int iCurrentPop = 0;
-							for (CvCity* pLoopCity = GET_PLAYER(GetID()).firstCity(&iLoop); pLoopCity != NULL; pLoopCity = GET_PLAYER(GetID()).nextCity(&iLoop))
-							{
-								iCurrentPop += pLoopCity->GetCityReligions()->GetNumFollowers(eOwnedReligion);
-							}
-							if (iCurrentPop < iPopRequired)
-							{
-								GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_BUILDING_NEED_FOLLOWER_POP", pkBuildingInfo->GetTextKey(), "", iPopRequired - iCurrentPop);
-								if (toolTipSink == NULL)
-									return false;
-							}
+							if (!toolTipSink)
+								return false;
+
+							GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_BUILDING_NEED_FOLLOWER_POP", "", "", iPopRequired - iCurrentPop);
 						}
 					}
-					if(pkBuildingInfo->GetGlobalFollowerPopRequired() > 0)
+
+					if (pkBuildingInfo->GetGlobalFollowerPopRequired() > 0)
 					{
-						CvCity* pHolyCity = pReligion->GetHolyCity();
-						if (pHolyCity == NULL)
+						int iPopRequiredPercent = pkBuildingInfo->GetGlobalFollowerPopRequired();
+						iPopRequiredPercent -= GetReformationFollowerReduction();
+						if (GC.getMap().getWorldInfo().getReformationPercent() > 0)
 						{
-							pHolyCity = GET_PLAYER(GetID()).getCapitalCity();
+							iPopRequiredPercent *= GC.getMap().getWorldInfo().getReformationPercent();
+							iPopRequiredPercent /= 100;
 						}
-						if (pReligion->m_Beliefs.IsBuildingClassEnabled(eBuildingClass, GetID(), pHolyCity))
+
+						int iCurrentPop = GC.getGame().GetGameReligions()->GetNumFollowers(eOwnedReligion);
+						int iCurrentPopPercent = (iCurrentPop * 100) / GC.getGame().getTotalPopulation();
+
+						if (iCurrentPopPercent < iPopRequiredPercent)
 						{
-							int iPopRequiredPercent = pkBuildingInfo->GetGlobalFollowerPopRequired();
-							iPopRequiredPercent -= GetReformationFollowerReduction();
-							if (GC.getMap().getWorldInfo().getReformationPercent() > 0)
-							{
-								iPopRequiredPercent *= GC.getMap().getWorldInfo().getReformationPercent();
-								iPopRequiredPercent /= 100;
-							}
+							if (!toolTipSink)
+								return false;
 
-							int iCurrentPop = pReligions->GetNumFollowers(eOwnedReligion);
-							int iCurrentPopPercent = (iCurrentPop * 100) / GC.getGame().getTotalPopulation();
-
-							if (iCurrentPopPercent < iPopRequiredPercent)
-							{
-								int iPercentage = iPopRequiredPercent - iCurrentPopPercent;
-								GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_BUILDING_NEED_GLOBAL_FOLLOWER_POP", pkBuildingInfo->GetTextKey(), "", iPercentage);
-								if (toolTipSink == NULL)
-									return false;
-							}
+							int iPercentage = iPopRequiredPercent - iCurrentPopPercent;
+							GC.getGame().BuildCannotPerformActionHelpText(toolTipSink, "TXT_KEY_NO_ACTION_BUILDING_NEED_GLOBAL_FOLLOWER_POP", "", "", iPercentage);
 						}
 					}
 				}
@@ -15286,14 +15266,7 @@ int CvPlayer::getBuildingClassPrereqBuilding(BuildingTypes eBuilding, BuildingCl
 		iPrereqs *= (getBuildingClassCount(eBuildingClass) + iExtra + 1);
 	}
 
-	bool OCC = GC.getGame().isOption(GAMEOPTION_ONE_CITY_CHALLENGE);
-	if (OCC && isHuman())
-	{
-		iPrereqs = std::min(1, iPrereqs);
-	}
-
-	//Poor Venice got ignored here...
-	if (OCC || GET_PLAYER(GetID()).GetPlayerTraits()->IsNoAnnexing())
+	if ((GC.getGame().isOption(GAMEOPTION_ONE_CITY_CHALLENGE) && isHuman()) || GET_PLAYER(GetID()).GetPlayerTraits()->IsNoAnnexing())
 	{
 		iPrereqs = std::min(1, iPrereqs);
 	}
@@ -15487,7 +15460,7 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, bool bFirst
 	{
 		ChangeTRVisionBoost(pBuildingInfo->GetTRVisionBoost() * iChange);
 	}
-	if(pBuildingInfo->GetVotesPerGPT() != 0)
+	if(pBuildingInfo->GetVotesPerGPT() > 0)
 	{
 		ChangeVotesPerGPT(pBuildingInfo->GetVotesPerGPT() * iChange);
 	}
@@ -15604,7 +15577,6 @@ void CvPlayer::processBuilding(BuildingTypes eBuilding, int iChange, bool bFirst
 	changeGoldenAgeModifier(pBuildingInfo->GetGoldenAgeModifier() * iChange);
 	changeFreeExperience(pBuildingInfo->GetGlobalFreeExperience() * iChange);
 	changeWorkerSpeedModifier(pBuildingInfo->GetWorkerSpeedModifier() * iChange);
-	ChangeSpecialistCultureChange(pBuildingInfo->GetSpecialistExtraCulture() * iChange);
 	changeBorderObstacleCount(pBuildingInfo->IsPlayerBorderObstacle() * iChange);
 
 	changeBorderGainlessPillageCount(pBuildingInfo->IsPlayerBorderGainlessPillage() * iChange);
@@ -17548,53 +17520,6 @@ int CvPlayer::GetCulturePerTechResearched() const
 void CvPlayer::ChangeCulturePerTechResearched(int iChange)
 {
 	m_iCulturePerTechResearched += iChange;
-}
-
-/// Specialist Culture Modifier
-int CvPlayer::GetSpecialistCultureChange() const
-{
-	return m_iSpecialistCultureChange;
-}
-
-/// Specialist Culture Modifier
-void CvPlayer::ChangeSpecialistCultureChange(int iChange)
-{
-	if(iChange != 0)
-	{
-		int iLoop = 0;
-		int iTotalCulture = 0;
-
-		// Undo old culture
-		for(CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-		{
-			for(int iSpecialistLoop = 0; iSpecialistLoop < GC.getNumSpecialistInfos(); iSpecialistLoop++)
-			{
-				SpecialistTypes eSpecialist = (SpecialistTypes) iSpecialistLoop;
-				int iSpecialistCount = pLoopCity->GetCityCitizens()->GetSpecialistCount(eSpecialist);
-				iTotalCulture += (iSpecialistCount * pLoopCity->GetCultureFromSpecialist(eSpecialist));
-			}
-
-			pLoopCity->ChangeBaseYieldRateFromSpecialists(YIELD_CULTURE, -iTotalCulture);
-		}
-
-		// CHANGE VALUE
-		m_iSpecialistCultureChange += iChange;
-
-		iTotalCulture = 0;
-
-		// Apply new culture
-		for(CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-		{
-			for(int iSpecialistLoop = 0; iSpecialistLoop < GC.getNumSpecialistInfos(); iSpecialistLoop++)
-			{
-				SpecialistTypes eSpecialist = (SpecialistTypes) iSpecialistLoop;
-				int iSpecialistCount = pLoopCity->GetCityCitizens()->GetSpecialistCount(eSpecialist);
-				iTotalCulture += (iSpecialistCount * pLoopCity->GetCultureFromSpecialist(eSpecialist));
-			}
-
-			pLoopCity->ChangeBaseYieldRateFromSpecialists(YIELD_CULTURE, iTotalCulture);
-		}
-	}
 }
 
 /// Cities remaining to get a free culture building
@@ -36850,24 +36775,18 @@ int CvPlayer::getNumResourcesFromOther(ResourceTypes eIndex) const
 
 	CvResourceInfo *pkResource = GC.getResourceInfo(eIndex);
 
-	// exists?
-	if (pkResource == NULL) { return 0;}
-
 	int iTotalNumResource = m_paiNumResourceFromTiles[eIndex];
-	iTotalNumResource += m_paiNumResourceFromBuildings[eIndex];
+	iTotalNumResource += getNumResourceFromBuildings(eIndex);
 
 	// Additional resources from Corporation
 	CorporationTypes eCorporation = GetCorporations()->GetFoundedCorporation();
 	if (eCorporation != NO_CORPORATION)
 	{
 		CvCorporationEntry* pkCorporationInfo = GC.getCorporationInfo(eCorporation);
-		if (pkCorporationInfo)
+		int iFreeResource = pkCorporationInfo->GetNumFreeResource(eIndex);
+		if (iFreeResource > 0)
 		{
-			int iFreeResource = pkCorporationInfo->GetNumFreeResource(eIndex);
-			if (iFreeResource > 0)
-			{
-				iTotalNumResource += iFreeResource;
-			}
+			iTotalNumResource += iFreeResource;
 		}
 	}
 
@@ -36885,49 +36804,30 @@ int CvPlayer::getNumResourcesFromOther(ResourceTypes eIndex) const
 	//GP resources? ie. Admiral, Diplomat
 	iTotalNumResource += getResourceFromGP(eIndex);
 
-	if (pkResource->getResourceUsage() == RESOURCEUSAGE_STRATEGIC)
+	int iLoop = 0;
+	int iCityPOPResource = 0;
+	fraction fCityFranchiseResource = 0;
+	for (const CvCity* pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
 	{
-		const CvCity* pLoopCity = NULL;
-		int iLoop = 0;
-		int iCityPOPResource = 0;
-		for (pLoopCity = firstCity(&iLoop); pLoopCity != NULL; pLoopCity = nextCity(&iLoop))
-		{
-			if (pLoopCity != NULL)
-			{
-				if (pLoopCity->GetResourceQuantityPerXFranchises(eIndex) > 0)
-				{
-					int iFranchises = GetCorporations()->GetNumFranchises();
-					if (iFranchises > 0)
-					{
-						iTotalNumResource += (iFranchises / pLoopCity->GetResourceQuantityPerXFranchises(eIndex));
-					}
-				}
-
-				if (pLoopCity->GetResourceQuantityFromPOP(eIndex) > 0)
-				{
-					iCityPOPResource += (pLoopCity->getPopulation() * pLoopCity->GetResourceQuantityFromPOP(eIndex));
-				}
-			}
-		}
-
-		iTotalNumResource += iCityPOPResource / 100;
-
-		if (GetStrategicResourceMod() != 0)
-		{
-			iTotalNumResource *= 100 + GetStrategicResourceMod();
-			iTotalNumResource /= 100;
-		}
+		fCityFranchiseResource += pLoopCity->GetResourceQuantityPerXFranchises(eIndex) * GetCorporations()->GetNumFranchises();
+		iCityPOPResource += pLoopCity->getPopulation() * pLoopCity->GetResourceQuantityFromPOP(eIndex);
 	}
 
-	if (MOD_BALANCE_CORE)
+	iTotalNumResource += fCityFranchiseResource.Truncate();
+	iTotalNumResource += iCityPOPResource / 100;
+
+	if (pkResource->getResourceUsage() == RESOURCEUSAGE_STRATEGIC)
 	{
-		iTotalNumResource *= 100 + getResourceModFromReligion(eIndex);
+		iTotalNumResource *= 100 + GetStrategicResourceMod();
 		iTotalNumResource /= 100;
 	}
 
+	iTotalNumResource *= 100 + getResourceModFromReligion(eIndex);
+	iTotalNumResource /= 100;
+
 	//And remove the starter. Added in beginning to factor in multiplicative modifiers.
 	iTotalNumResource -= m_paiNumResourceFromTiles[eIndex];
-	iTotalNumResource -= m_paiNumResourceFromBuildings[eIndex];
+	iTotalNumResource -= getNumResourceFromBuildings(eIndex);
 
 	return iTotalNumResource;
 }
@@ -36944,11 +36844,6 @@ int CvPlayer::getNumResourceTotal(ResourceTypes eIndex, bool bIncludeImport) con
 {
 	ASSERT_DEBUG(eIndex >= 0, "eIndex is expected to be non-negative (invalid Index)");
 	ASSERT_DEBUG(eIndex < GC.getNumResourceInfos(), "eIndex is expected to be within maximum bounds (invalid Index)");
-
-	CvResourceInfo *pkResource = GC.getResourceInfo(eIndex);
-
-	// exists?
-	if (pkResource == NULL) { return 0;}
 
 	int iTotalNumResource = m_paiNumResourceFromTiles[eIndex];
 	iTotalNumResource += m_paiNumResourceFromBuildings[eIndex];
@@ -43175,7 +43070,6 @@ void CvPlayer::Serialize(Player& player, Visitor& visitor)
 	visitor(player.m_iTurnsSinceSettledLastCity);
 	visitor(player.m_iNumNaturalWondersDiscoveredInArea);
 	visitor(player.m_iStrategicResourceMod);
-	visitor(player.m_iSpecialistCultureChange);
 	visitor(player.m_iGreatPeopleSpawnCounter);
 	visitor(player.m_iFreeTechCount);
 	visitor(player.m_iMedianTechPercentage);

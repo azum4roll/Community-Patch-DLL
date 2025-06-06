@@ -300,6 +300,7 @@ void CvLuaCity::PushMethods(lua_State* L, int t)
 	Method(IsThemingBonusPossible);
 	Method(GetThemingBonus);
 	Method(GetThemingTooltip);
+	Method(GetThemingBonusMultiplier);
 
 	Method(GetFaithPerTurn);
 	Method(GetFaithPerTurnFromBuildings);
@@ -3468,6 +3469,13 @@ int CvLuaCity::lGetThemingTooltip(lua_State* L)
 	lua_pushstring(L, toolTip.c_str());
 	return 1;
 }
+
+int CvLuaCity::lGetThemingBonusMultiplier(lua_State * L)
+{
+	CvCity* pCity = GetInstance(L);
+	lua_pushnumber(L, pCity->GetCityCulture()->GetThemingBonusMultiplierTimes10000() / 10000.0);
+	return 1;
+}
 //------------------------------------------------------------------------------
 //int GetFaithPerTurn() const;
 //LEGACY METHOD, use getYieldRateTimes100(YIELD_FAITH) instead
@@ -5875,14 +5883,10 @@ int CvLuaCity::lGetResourceQuantityPerXFranchises(lua_State* L)
 	CvCity* pkCity = GetInstance(L);
 	const int iResource = lua_tointeger(L, 2);
 	int iFranchises = GET_PLAYER(pkCity->getOwner()).GetCorporations()->GetNumFranchises();
-	int iCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
-	int iResult = 0;
-	if(iCorpResource > 0)
-	{
-		iResult = (iFranchises / iCorpResource);
-	}
+	fraction fCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
+	fraction fResult = fCorpResource * iFranchises;
 
-	lua_pushinteger(L, iResult);
+	lua_pushinteger(L, fResult.Truncate());
 	return 1;
 }
 int CvLuaCity::lGetGPRateModifierPerXFranchises(lua_State* L)

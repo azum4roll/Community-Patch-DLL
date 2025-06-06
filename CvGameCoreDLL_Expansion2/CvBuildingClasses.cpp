@@ -2003,6 +2003,13 @@ bool CvBuildingEntry::CacheResults(Database::Results& kResults, CvDatabaseUtilit
 	m_piGlobalYieldModifier[YIELD_CULTURE] += m_iGlobalCultureRateModifier;
 	m_piInstantYield[YIELD_GOLD] += m_iGold;
 
+	// Slow, but specialist entries (and GC.getNumSpecialistInfos()) aren't available yet
+	int iNumSpecialists = kUtility.MaxRows("Specialists");
+	for (int iI = 0; iI < iNumSpecialists; iI++)
+	{
+		m_ppaiSpecialistYieldChange[iI][YIELD_CULTURE] += m_iSpecialistExtraCulture;
+	}
+
 	return true;
 }
 
@@ -2164,12 +2171,6 @@ int CvBuildingEntry::GetSpecialistType() const
 int CvBuildingEntry::GetSpecialistCount() const
 {
 	return m_iSpecialistCount;
-}
-
-/// Extra culture from every specialist
-int CvBuildingEntry::GetSpecialistExtraCulture() const
-{
-	return m_iSpecialistExtraCulture;
 }
 
 /// How many GPP does this Building provide (linked to the SpecialistType)
@@ -4382,7 +4383,7 @@ int CvBuildingEntry::GetDomainProductionModifier(int i) const
 	return m_piDomainProductionModifier ? m_piDomainProductionModifier[i] : -1;
 }
 
-/// BuildingClasses that may no longer be constructed after this Building is built in a City
+/// BuildingClasses that block the construction of this Building if built in a City
 int CvBuildingEntry::GetLockedBuildingClasses(int i) const
 {
 	ASSERT_DEBUG(i < GC.getNumBuildingClassInfos(), "Index out of bounds");
@@ -6806,32 +6807,19 @@ void CvCityBuildings::ChangeGreatWorksTourismModifier(int iChange)
 int CvCityBuildings::GetCurrentThemingBonuses(YieldTypes eYield) const
 {
 	int iTotal = 0;
-	for(std::vector<BuildingTypes>::const_iterator iI=m_buildingsThatExistAtLeastOnce.begin(); iI!=m_buildingsThatExistAtLeastOnce.end(); ++iI)
+	for (std::vector<BuildingTypes>::const_iterator it = m_buildingsThatExistAtLeastOnce.begin(); it != m_buildingsThatExistAtLeastOnce.end(); ++it)
 	{
-		CvBuildingEntry *pkBuilding = GC.getBuildingInfo(*iI);
-		if (pkBuilding)
+		CvBuildingEntry* pkBuildingInfo = GC.getBuildingInfo(*it);
+		ASSERT_DEBUG(pkBuildingInfo);
+		if (eYield == pkBuildingInfo->GetGreatWorkYieldType() || eYield == YIELD_TOURISM)
 		{
-			if (pkBuilding->GetGreatWorkYieldType() == eYield || eYield == YIELD_TOURISM)
-			{
-				int iIndex = GetThemingBonusIndex(*iI);
-				if (iIndex < 0)
-					continue;
-				
-				CvThemingBonusInfo* pkThemingBonus = pkBuilding->GetThemingBonusInfo(iIndex);
-				ASSERT_DEBUG(pkThemingBonus);
-				int iBonus = pkThemingBonus->GetBonus();
-				int iModifier = m_pCity->GetPlayer()->GetPlayerPolicies()->GetNumericModifier(POLICYMOD_THEMING_BONUS);
-
-				if (m_pCity->isCapital())
-					iModifier += m_pCity->GetPlayer()->GetPlayerTraits()->GetCapitalThemingBonusModifier();
-
-				iBonus = iBonus * (100 + iModifier) / 100;
-
-				if (MOD_API_ACHIEVEMENTS && m_pCity->GetPlayer()->isHuman() && !GC.getGame().isGameMultiPlayer() && iBonus >= 16)
-					gDLL->UnlockAchievement(ACHIEVEMENT_XP2_40);
-
-				iTotal += iBonus;
-			}
+			int iIndex = GetThemingBonusIndex(*it);
+			if (iIndex == -1)
+				continue;
+			
+			CvThemingBonusInfo* pkThemingBonus = pkBuildingInfo->GetThemingBonusInfo(iIndex);
+			ASSERT_DEBUG(pkThemingBonus);
+			iTotal += pkThemingBonus->GetBonus() * m_pCity->GetCityCulture()->GetThemingBonusMultiplierTimes10000() / 10000;
 		}
 	}
 
