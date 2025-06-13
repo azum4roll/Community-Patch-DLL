@@ -162,7 +162,6 @@ public:
 
 	int GetSpecialistType() const;
 	int GetSpecialistCount() const;
-	int GetSpecialistExtraCulture() const;
 	int GetGreatPeopleRateChange() const;
 	GreatWorkSlotType GetGreatWorkSlotType() const;
 	YieldTypes GetGreatWorkYieldType() const;

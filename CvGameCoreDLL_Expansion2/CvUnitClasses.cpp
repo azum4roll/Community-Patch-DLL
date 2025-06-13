@@ -158,7 +158,6 @@ CvUnitEntry::CvUnitEntry(void) :
 	m_pbUnitAIType(NULL),
 	m_pbNotUnitAIType(NULL),
 	m_pbBuilds(NULL),
-	m_pbGreatPeoples(NULL),
 	m_pbBuildings(NULL),
 	m_pbBuildingClassRequireds(NULL),
 #if defined(MOD_BALANCE_CORE)
@@ -213,7 +212,6 @@ CvUnitEntry::~CvUnitEntry(void)
 	SAFE_DELETE_ARRAY(m_pbUnitAIType);
 	SAFE_DELETE_ARRAY(m_pbNotUnitAIType);
 	SAFE_DELETE_ARRAY(m_pbBuilds);
-	SAFE_DELETE_ARRAY(m_pbGreatPeoples);
 	SAFE_DELETE_ARRAY(m_pbBuildings);
 	SAFE_DELETE_ARRAY(m_pbBuildingClassRequireds);
 #if defined(MOD_BALANCE_CORE)
@@ -496,7 +494,6 @@ bool CvUnitEntry::CacheResults(Database::Results& kResults, CvDatabaseUtility& k
 	kUtility.PopulateArrayByExistence(m_pbNotUnitAIType, "UnitAIInfos", "Unit_NotAITypes", "UnitAIType", "UnitType", szUnitType);
 
 	kUtility.PopulateArrayByExistence(m_pbBuilds, "Builds", "Unit_Builds", "BuildType", "UnitType", szUnitType);
-	kUtility.PopulateArrayByExistence(m_pbGreatPeoples, "Specialists", "Unit_GreatPersons", "GreatPersonType", "UnitType", szUnitType);
 	kUtility.PopulateArrayByExistence(m_pbBuildings, "Buildings", "Unit_Buildings", "BuildingType", "UnitType", szUnitType);
 	kUtility.PopulateArrayByExistence(m_pbBuildingClassRequireds, "BuildingClasses", "Unit_BuildingClassRequireds", "BuildingClassType", "UnitType", szUnitType);
 #if defined(MOD_BALANCE_CORE)
@@ -1563,14 +1560,6 @@ bool CvUnitEntry::GetBuilds(int i) const
 	ASSERT_DEBUG(i < GC.getNumBuildInfos(), "Index out of bounds");
 	ASSERT_DEBUG(i > -1, "Index out of bounds");
 	return m_pbBuilds ? m_pbBuilds[i] : false;
-}
-
-/// Type(s) of great people represented by this unit
-bool CvUnitEntry::GetGreatPeoples(int i) const
-{
-	ASSERT_DEBUG(i < GC.getNumSpecialistInfos(), "Index out of bounds");
-	ASSERT_DEBUG(i > -1, "Index out of bounds");
-	return m_pbGreatPeoples ? m_pbGreatPeoples[i] : false;
 }
 
 /// Is this unit required to construct a certain building?

@@ -157,6 +157,15 @@ SET Text = 'Your empire can support {1_Num} Units. You are over that limit by {2
 WHERE Tag = 'TXT_KEY_UNIT_SUPPLY_REACHED_TOOLTIP';
 
 ------------------------------------------------
+-- Info tooltip
+------------------------------------------------
+
+-- Building
+UPDATE Language_en_US
+SET Text = '+{1_Num} [ICON_DIPLOMAT] Delegate in the World Congress for every active Defensive Pact with your Empire and every Vassal you currently have'
+WHERE Tag = 'TXT_KEY_PRODUCTION_BUILDING_EXTRA_VOTES_FROM_DP';
+
+------------------------------------------------
 -- City screen/banner
 ------------------------------------------------
 UPDATE Language_en_US

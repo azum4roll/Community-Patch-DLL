@@ -499,9 +499,6 @@ public:
 	int GetCulturePerTechResearched() const;
 	void ChangeCulturePerTechResearched(int iChange);
 
-	int GetSpecialistCultureChange() const;
-	void ChangeSpecialistCultureChange(int iChange);
-
 	int GetNumCitiesFreeCultureBuilding() const;
 	void ChangeNumCitiesFreeCultureBuilding(int iChange);
 	int GetNumCitiesFreeFoodBuilding() const;
@@ -3437,7 +3434,6 @@ protected:
 	int m_iTurnsSinceSettledLastCity;
 	int m_iNumNaturalWondersDiscoveredInArea;
 	int m_iStrategicResourceMod;
-	int m_iSpecialistCultureChange;
 	int m_iGreatPeopleSpawnCounter;
 
 	int m_iFreeTechCount;
@@ -4258,7 +4254,6 @@ SYNC_ARCHIVE_VAR(int, m_iHolyCityID)
 SYNC_ARCHIVE_VAR(int, m_iTurnsSinceSettledLastCity)
 SYNC_ARCHIVE_VAR(int, m_iNumNaturalWondersDiscoveredInArea)
 SYNC_ARCHIVE_VAR(int, m_iStrategicResourceMod)
-SYNC_ARCHIVE_VAR(int, m_iSpecialistCultureChange)
 SYNC_ARCHIVE_VAR(int, m_iGreatPeopleSpawnCounter)
 SYNC_ARCHIVE_VAR(int, m_iFreeTechCount)
 SYNC_ARCHIVE_VAR(int, m_iMedianTechPercentage)

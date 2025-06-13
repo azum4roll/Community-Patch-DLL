@@ -295,6 +295,7 @@ protected:
 	static int lIsThemingBonusPossible(lua_State* L);
 	static int lGetThemingBonus(lua_State* L);
 	static int lGetThemingTooltip(lua_State* L);
+	static int lGetThemingBonusMultiplier(lua_State* L);
 
 	static int lGetFaithPerTurn(lua_State* L);
 	static int lGetFaithPerTurnFromBuildings(lua_State* L);

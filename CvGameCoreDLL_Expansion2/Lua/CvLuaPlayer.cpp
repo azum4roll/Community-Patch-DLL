@@ -372,6 +372,9 @@ void CvLuaPlayer::PushMethods(lua_State* L, int t)
 	Method(GetMinimumFaithNextGreatProphet);
 	Method(HasReligionInMostCities);
 	Method(DoesUnitPassFaithPurchaseCheck);
+	Method(GetNumFollowerPrimaryReligion);
+	Method(GetNumGlobalFollowerPrimaryReligion);
+	Method(GetReformationFollowerReduction);
 
 	// Happiness
 
@@ -1868,25 +1871,14 @@ int CvLuaPlayer::lGetResourcesFromFranchises(lua_State* L)
 	CvPlayerAI* pkPlayer = GetInstance(L);
 	const ResourceTypes eResource = (ResourceTypes)lua_tointeger(L, 2);
 
-	int iResult = 0;
-	const CvCity* pLoopCity;
-	int iLoop;
-	for (pLoopCity = pkPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pkPlayer->nextCity(&iLoop))
+	fraction fResult = 0;
+	int iLoop = 0;
+	for (const CvCity* pLoopCity = pkPlayer->firstCity(&iLoop); pLoopCity != NULL; pLoopCity = pkPlayer->nextCity(&iLoop))
 	{
-		if (pLoopCity != NULL)
-		{
-			if (pLoopCity->GetResourceQuantityPerXFranchises(eResource) > 0)
-			{
-				int iFranchises = pkPlayer->GetCorporations()->GetNumFranchises();
-				if (iFranchises > 0)
-				{
-					iResult += (iFranchises / pLoopCity->GetResourceQuantityPerXFranchises(eResource));
-				}
-			}
-		}
+		fResult += pLoopCity->GetResourceQuantityPerXFranchises(eResource) * pkPlayer->GetCorporations()->GetNumFranchises();
 	}
 
-	lua_pushinteger(L, iResult);
+	lua_pushinteger(L, fResult.Truncate());
 	return 1;
 }
 // -----------------------------------------------------------------------------
@@ -2080,10 +2072,21 @@ int CvLuaPlayer::lKillUnits(lua_State* L)
 //------------------------------------------------------------------------------
 int CvLuaPlayer::lGetSpecificUnitType(lua_State* L)
 {
-	CvPlayerAI* pkPlayer = GetInstance(L);
+	CvPlayer* pPlayer = GetInstance(L);
 	CvString strType = lua_tostring(L, 2);
-	
-	const UnitTypes eUnitType = pkPlayer->GetSpecificUnitType(strType, true);
+	const bool bCivOverrideOnly = luaL_optbool(L, 3, false);
+	UnitTypes eUnitType;
+	UnitClassTypes eUnitClass = static_cast<UnitClassTypes>(GC.getInfoTypeForString(strType, true));
+	if (bCivOverrideOnly)
+	{
+		CvCivilizationInfo* pCivInfo = GC.getCivilizationInfo(pPlayer->getCivilizationType());
+		eUnitType = pCivInfo ? pCivInfo->getCivilizationUnits(eUnitClass) : NO_UNIT;
+	}
+	else
+	{
+		eUnitType = pPlayer->GetSpecificUnitType(eUnitClass);
+	}
+
 	lua_pushinteger(L, eUnitType);
 	return 1;
 }
@@ -4397,6 +4400,28 @@ int CvLuaPlayer::lDoesUnitPassFaithPurchaseCheck(lua_State* L)
 
 	return 1;
 }
+//------------------------------------------------------------------------------
+// int GetNumFollowerPrimaryReligion()
+int CvLuaPlayer::lGetNumFollowerPrimaryReligion(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	ReligionTypes ePrimaryReligion = pPlayer->GetReligions()->GetOwnedReligion();
+
+	// 0 if ePrimaryReligion == NO_RELIGION
+	lua_pushinteger(L, pPlayer->GetReligions()->GetNumDomesticFollowers(ePrimaryReligion));
+	return 1;
+}
+//------------------------------------------------------------------------------
+// int GetNumGlobalFollowerPrimaryReligion()
+int CvLuaPlayer::lGetNumGlobalFollowerPrimaryReligion(lua_State* L)
+{
+	CvPlayer* pPlayer = GetInstance(L);
+	ReligionTypes ePrimaryReligion = pPlayer->GetReligions()->GetOwnedReligion();
+	lua_pushinteger(L, ePrimaryReligion != NO_RELIGION ? GC.getGame().GetGameReligions()->GetNumFollowers(ePrimaryReligion) : 0);
+	return 1;
+}
+//------------------------------------------------------------------------------
+LUAAPIIMPL(Player, GetReformationFollowerReduction)
 //------------------------------------------------------------------------------
 //int GetHappiness();
 int CvLuaPlayer::lGetHappiness(lua_State* L)

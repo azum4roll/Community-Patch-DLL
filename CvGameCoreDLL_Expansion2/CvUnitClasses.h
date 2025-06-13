@@ -230,7 +230,6 @@ public:
 	bool GetUnitAIType(int i) const;
 	bool GetNotUnitAIType(int i) const;
 	bool GetBuilds(int i) const;
-	bool GetGreatPeoples(int i) const;
 	bool GetBuildings(int i) const;
 	bool GetBuildingClassRequireds(int i) const;
 	int GetScalingFromOwnedImprovements(int i) const;
@@ -450,7 +449,6 @@ private:
 	bool* m_pbUnitAIType;
 	bool* m_pbNotUnitAIType;
 	bool* m_pbBuilds;
-	bool* m_pbGreatPeoples;
 	bool* m_pbBuildings;
 	bool* m_pbBuildingClassRequireds;
 #if defined(MOD_BALANCE_CORE)

@@ -300,6 +300,7 @@ void CvLuaCity::PushMethods(lua_State* L, int t)
 	Method(IsThemingBonusPossible);
 	Method(GetThemingBonus);
 	Method(GetThemingTooltip);
+	Method(GetThemingBonusMultiplier);
 
 	Method(GetFaithPerTurn);
 	Method(GetFaithPerTurnFromBuildings);
@@ -1613,6 +1614,19 @@ int CvLuaCity::lGetBuildingYieldRateTimes100(lua_State* L)
 	iYieldTimes100 += pkBuildingInfo->GetYieldPerFriend(eYield) * kPlayer.GetNumCSFriends() * 100;
 	iYieldTimes100 += pkBuildingInfo->GetYieldPerAlly(eYield) * kPlayer.GetNumCSAllies() * 100;
 	iYieldTimes100 += pkBuildingInfo->GetYieldChangePerMonopoly(eYield) * kPlayer.GetNumGlobalMonopolies() * 100;
+	iYieldTimes100 += (pkBuildingInfo->GetYieldChangePerBuilding(eYield) * pCity->GetCityBuildings()->GetNumBuildings() * 100).Truncate();
+
+	int iYieldPerReligion = pkBuildingInfo->GetYieldChangePerReligion(eYield);
+	if (iYieldPerReligion != 0)
+	{
+		iYieldTimes100 += iYieldPerReligion * pCity->GetCityReligions()->GetNumReligionsWithFollowers();
+	}
+
+	int iYieldPerLocalTheme = pkBuildingInfo->GetYieldChangesPerLocalTheme(eYield);
+	if (iYieldPerLocalTheme > 0)
+	{
+		iYieldTimes100 += iYieldPerLocalTheme * pCity->GetCityBuildings()->GetTotalNumThemedBuildings() * 100;
+	}
 
 	lua_pushinteger(L, iYieldTimes100);
 	return 1;
@@ -3468,6 +3482,13 @@ int CvLuaCity::lGetThemingTooltip(lua_State* L)
 	lua_pushstring(L, toolTip.c_str());
 	return 1;
 }
+
+int CvLuaCity::lGetThemingBonusMultiplier(lua_State * L)
+{
+	CvCity* pCity = GetInstance(L);
+	lua_pushnumber(L, pCity->GetCityCulture()->GetThemingBonusMultiplierTimes10000() / 10000.0);
+	return 1;
+}
 //------------------------------------------------------------------------------
 //int GetFaithPerTurn() const;
 //LEGACY METHOD, use getYieldRateTimes100(YIELD_FAITH) instead
@@ -4704,17 +4725,8 @@ int CvLuaCity::lGetYieldFromYieldPerBuildingTimes100(lua_State* L)
 {
 	CvCity* pkCity = GetInstance(L);
 	const YieldTypes eIndex = (YieldTypes)lua_tointeger(L, 2);
-	if (eIndex == YIELD_CULTURE || eIndex == YIELD_FAITH)
-	{
-		// these yields don't support decimal values
-		const int iResult = (pkCity->GetYieldPerBuilding(eIndex) * pkCity->GetCityBuildings()->GetNumBuildings()).Truncate() * 100;
-		lua_pushinteger(L, iResult);
-	}
-	else
-	{
-		const int iResult = (pkCity->GetYieldPerBuilding(eIndex) * pkCity->GetCityBuildings()->GetNumBuildings() * 100).Truncate();
-		lua_pushinteger(L, iResult);
-	}
+	const int iResult = (pkCity->GetYieldPerBuilding(eIndex) * pkCity->GetCityBuildings()->GetNumBuildings() * 100).Truncate();
+	lua_pushinteger(L, iResult);
 	return 1;
 }
 
@@ -5875,14 +5887,10 @@ int CvLuaCity::lGetResourceQuantityPerXFranchises(lua_State* L)
 	CvCity* pkCity = GetInstance(L);
 	const int iResource = lua_tointeger(L, 2);
 	int iFranchises = GET_PLAYER(pkCity->getOwner()).GetCorporations()->GetNumFranchises();
-	int iCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
-	int iResult = 0;
-	if(iCorpResource > 0)
-	{
-		iResult = (iFranchises / iCorpResource);
-	}
+	fraction fCorpResource = pkCity->GetResourceQuantityPerXFranchises((ResourceTypes)iResource);
+	fraction fResult = fCorpResource * iFranchises;
 
-	lua_pushinteger(L, iResult);
+	lua_pushinteger(L, fResult.Truncate());
 	return 1;
 }
 int CvLuaCity::lGetGPRateModifierPerXFranchises(lua_State* L)
