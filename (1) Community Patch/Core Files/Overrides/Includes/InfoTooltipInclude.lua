@@ -18,6 +18,7 @@ local MOD_GLOBAL_GREATWORK_YIELDTYPES = GameInfo.CustomModOptions{Name = "GLOBAL
 local MOD_RELIGION_CONVERSION_MODIFIERS = GameInfo.CustomModOptions{Name = "RELIGION_CONVERSION_MODIFIERS"}().Value == 1;
 local MOD_BALANCE_CORE_WONDER_COST_INCREASE = GameInfo.CustomModOptions{Name = "BALANCE_CORE_WONDER_COST_INCREASE"}().Value == 1;
 local MOD_BALANCE_CORE_SPIES = GameInfo.CustomModOptions{Name = "BALANCE_CORE_SPIES"}().Value == 1;
+local MOD_BALANCE_CORE_SETTLERS_CONSUME_POP = GameInfo.CustomModOptions{Name = "BALANCE_CORE_SETTLERS_CONSUME_POP"}().Value == 1;
 
 -- So is GameDefines
 local CITY_RESOURCE_WLTKD_TURNS = GameInfo.Defines{Name = "CITY_RESOURCE_WLTKD_TURNS"}().Value;
@@ -782,6 +783,7 @@ function GetHelpTextForUnit(eUnit, bIncludeRequirementsInfo, pCity, bExcludeName
 
 	-- Stagnation
 	AddTooltipIfTrue(tStatLines, "TXT_KEY_PRODUCTION_UNIT_STAGNATION", kUnitInfo.Food);
+	AddTooltipIfTrue(tStatLines, "TXT_KEY_PRODUCTION_UNIT_REDUCE_POPULATION", MOD_BALANCE_CORE_SETTLERS_CONSUME_POP and kUnitInfo.Food);
 
 	-- Max HP (show when non-standard only)
 	local iMaxHP = kUnitInfo.MaxHitPoints;
