@@ -2,11 +2,21 @@ include("IconSupport");
 
 -- Check both context global and MapModData for VP object
 if not VP and not (MapModData and MapModData.VP) then
+	-- Need to localize all globals to circumvent their disappearance when entering leader screen
+	local GameInfo = GameInfo;
+	local GameInfoTypes = GameInfoTypes or {};
+	local table = table;
+
+	local IconHookup = IconHookup;
+	local pairs = pairs;
+	local print = print;
+	local error = error;
+	local table_insert = table.insert;
+
 	print("VPUI - Populating VP core library");
+
 	local MOD_BALANCE_CORE_YIELDS = GameInfo.CustomModOptions{Name = "BALANCE_CORE_YIELDS"}().Value == 1;
 	local MOD_BALANCE_CORE_JFD = GameInfo.CustomModOptions{Name = "BALANCE_CORE_JFD"}().Value == 1;
-	local IconHookup = IconHookup;
-	local GameInfoTypes = GameInfoTypes or {};
 
 	local iNumYields = Game and Game.GetNumYieldTypes();
 	if not iNumYields then
@@ -21,7 +31,7 @@ if not VP and not (MapModData and MapModData.VP) then
 	local tYieldInfos = {};
 	for eYield = 0, iNumYields - 1 do
 		local kYieldInfo = GameInfo.Yields[eYield];
-		table.insert(tYieldInfos, {
+		table_insert(tYieldInfos, {
 			ID = eYield,
 			Type = kYieldInfo.Type,
 			IconString = kYieldInfo.IconString,
@@ -76,7 +86,7 @@ if not VP and not (MapModData and MapModData.VP) then
 			for _, strColumn in pairs(tTemplates[strTableName]) do
 				kInfoCopy[strColumn] = kInfo[strColumn];
 			end
-			table.insert(tGameInfos, kInfoCopy);
+			table_insert(tGameInfos, kInfoCopy);
 		end
 	end
 
@@ -92,7 +102,7 @@ if not VP and not (MapModData and MapModData.VP) then
 			for row in GameInfo.Leader_Traits{TraitType = strTraitType} do
 				for row2 in GameInfo.Civilization_Leaders{LeaderheadType = row.LeaderType} do
 					tTraitCivsCache[strTraitType] = tTraitCivsCache[strTraitType] or {};
-					table.insert(tTraitCivsCache[strTraitType], GameInfoTypes[row2.CivilizationType]);
+					table_insert(tTraitCivsCache[strTraitType], GameInfoTypes[row2.CivilizationType]);
 				end
 			end
 		end
@@ -170,7 +180,7 @@ if not VP and not (MapModData and MapModData.VP) then
 
 		tGameInfoCache[strTable] = {};
 		for kInfo in GameInfo[strTable]() do
-			table.insert(tGameInfoCache[strTable], {
+			table_insert(tGameInfoCache[strTable], {
 				ID = kInfo.ID,
 				Type = kInfo.Type,
 				Description = kInfo.Description,
