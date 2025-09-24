@@ -462,15 +462,6 @@ UPDATE Language_en_US
 SET Text = 'This Atomic Era melee unit can use its Survivalism I promotion to help it survive on the front line. When the opportunity presents itself, it can defeat a weakened enemy to earn points toward starting another [ICON_GOLDEN_AGE] Golden Age.'
 WHERE Tag = 'TXT_KEY_UNIT_BRAZILIAN_PRACINHA_STRATEGY';
 
--- Dromon
-UPDATE Language_en_US
-SET Text = 'The Dromon can only be gifted by City-States.'
-WHERE Tag = 'TXT_KEY_UNIT_HELP_BYZANTINE_DROMON';
-
-UPDATE Language_en_US
-SET Text = 'The Dromon performs similarly to the Liburna, but is much more powerful against units. Starts with the [COLOR_POSITIVE_TEXT]Splash I[ENDCOLOR] and [COLOR_POSITIVE_TEXT]Targeting I[ENDCOLOR] Promotions.'
-WHERE Tag = 'TXT_KEY_UNIT_BYZANTINE_DROMON_STRATEGY';
-
 -- Norwegian Ski Infantry
 UPDATE Language_en_US
 SET Text = 'The Norwegian Ski Infantry can only be gifted by City-States.'
@@ -488,6 +479,15 @@ WHERE Tag = 'TXT_KEY_UNIT_HELP_LONGBOWMAN';
 UPDATE Language_en_US
 SET Text = ' The Longbowman has a greater range than the Crossbowman, allowing it to attack enemies three hexes away, often destroying them before they can strike back. Like other ranged units, Longbowmen are vulnerable to melee attack, but have increased [ICON_STRENGTH] against Mounted and Armored Units.'
 WHERE Tag = 'TXT_KEY_UNIT_ENGLISH_LONGBOWMAN_STRATEGY';
+
+-- Mehal Sefari
+UPDATE Language_en_US
+SET Text = 'The Mehal Sefari can only be gifted by City-States.'
+WHERE Tag = 'TXT_KEY_UNIT_HELP_MEHAL_SEFARI';
+
+UPDATE Language_en_US
+SET Text = 'The {TXT_KEY_UNIT_MEHAL_SEFARI} possesses significant combat bonuses when fighting in friendly land, especially when near your [ICON_CAPITAL] Capital.'
+WHERE Tag = 'TXT_KEY_UNIT_MEHAL_SEFARI_STRATEGY';
 
 -- Foreign Legion
 UPDATE Language_en_US
@@ -545,15 +545,6 @@ UPDATE Language_en_US
 SET Text = 'The Zero is unique to the Autocracy Ideology. Requires the Air Supremacy Tenet to be unlocked. The Zero is a moderately-powerful air unit. It is like the standard fighter, except that it gets a significant combat bonus when battling other fighters and [COLOR_POSITIVE_TEXT]does not require the Oil resource[ENDCOLOR]. It can be based in any City you own or aboard an aircraft carrier. It can move from one City to another (or an aircraft carrier) and can perform "missions" within its range of 8 tiles. See the rules on Aircraft for more information.'
 WHERE Tag = 'TXT_KEY_UNIT_JAPANESE_ZERO_STRATEGY';
 
--- Turtle Ship
-UPDATE Language_en_US
-SET Text = 'The Turtle Ship can only be gifted by City-States.'
-WHERE Tag = 'TXT_KEY_CIV5_KOREA_TURTLESHIP_HELP';
-
-UPDATE Language_en_US
-SET Text = 'The Turtle Ship has a more powerful attack than the Caravel, and is extremely difficult to destroy due to its Indomitable promotion. However, while it can end its movement in Ocean tiles, the Turtle Ship still travels at half speed through them.'
-WHERE Tag = 'TXT_KEY_CIV5_KOREA_TURTLESHIP_STRATEGY';
-
 -- Sipahi
 UPDATE Language_en_US
 SET Text = 'The Sipahi can only be gifted by City-States.'
@@ -562,30 +553,3 @@ WHERE Tag = 'TXT_KEY_UNIT_HELP_SIPAHI';
 UPDATE Language_en_US
 SET Text = 'The Sipahi is stronger than the Lancer and has massive flanking bonuses. Pin your opponent''s army down using your Gunpowder Units'' Zone Of Control while attacking with your Sipahi from the side. Defeat weakened units to trigger the Overrun bonus damage, then retreat to safety.'
 WHERE Tag = 'TXT_KEY_UNIT_OTTOMAN_SIPAHI_STRATEGY';
-
--- Ballista
-UPDATE Language_en_US
-SET Text = 'The Ballista can only be gifted by City-States.'
-WHERE Tag = 'TXT_KEY_UNIT_HELP_BALLISTA';
-
-UPDATE Language_en_US
-SET Text = 'The Ballista is an excellent siege weapon. While still very useful against cities, its lack of penalties against land units and free Field I promotion gives it an extra punch against other units. The Ballista is still quite vulnerable to attack, so be sure to protect it with other military units. Moves at half speed in enemy territory, but has normal sight range.'
-WHERE Tag = 'TXT_KEY_UNIT_ROMAN_BALLISTA_STRATEGY';
-
--- Hakkapeliitta
-UPDATE Language_en_US
-SET Text = 'The Hakkapeliitta can only be gifted by City-States.'
-WHERE Tag = 'TXT_KEY_UNIT_HELP_SWEDISH_HAKKAPELIITTA';
-
-UPDATE Language_en_US
-SET Text = 'The Hakkapeliitta is much faster and can see one hex farther than the Lancer. It pillages enemy improvements at no additional cost, so foray into enemy lands to knock out key improvements, using its improved sight and speed to minimize retaliatory attacks. Keep the unit healthy by pillaging and defeating weakened units, as it has lower [ICON_STRENGTH] Combat Strength than its contemporary Lancers.'
-WHERE Tag = 'TXT_KEY_UNIT_SWEDISH_HAKKAPELIITTA_STRATEGY';
-
--- Great Galleass
-UPDATE Language_en_US
-SET Text = 'The Great Galleass can only be gifted by City-States.'
-WHERE Tag = 'TXT_KEY_UNIT_HELP_VENETIAN_GALLEASS';
-
-UPDATE Language_en_US
-SET Text = 'The Great Galleass performs similarly to the Galleass, but is more resilient in battle and has a stronger ranged attack. Starts with the [COLOR_POSITIVE_TEXT]Bombardment I[ENDCOLOR] Promotion.'
-WHERE Tag = 'TXT_KEY_UNIT_VENETIAN_GALLEASS_STRATEGY';
