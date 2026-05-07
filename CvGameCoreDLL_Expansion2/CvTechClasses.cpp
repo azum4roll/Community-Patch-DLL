@@ -1748,13 +1748,17 @@ int CvPlayerTechs::GetResearchCost(TechTypes eTech) const
 	int iResearchMod = std::max(1, m_pPlayer->calculateResearchModifier(eTech));
 	iResearchCost = (iResearchCost * 100) / iResearchMod;
 
-	// Mod for City Count
-	int iCityCountMod = GC.getMap().getWorldInfo().GetNumCitiesTechCostMod();	// Default is 40, gets smaller on larger maps
-	iCityCountMod += m_pPlayer->GetTechCostXCitiesModifier();
-	iCityCountMod *= m_pPlayer->GetNumEffectiveCities(/*bIncludePuppets*/ !MOD_BALANCE_PUPPET_CHANGES);
+	// Mod for City Count: city N adds (iBase*10 - iScaling + iScaling*N) tenths-of-a-percent to cost
+	// e.g. with iBase=5, iScaling=2: city 1 adds 4.8%, city 2 adds 5.0%, city 3 adds 5.2%, ...
+	int iBase = GC.getMap().getWorldInfo().GetNumCitiesTechCostMod();	// Default is 5 in VP, gets smaller on larger maps
+	iBase += m_pPlayer->GetTechCostXCitiesModifier();
+	int iScaling = /*0.2%/city growth, in tenths-of-a-percent*/ GD_INT_GET(NUM_CITIES_COST_MOD_SCALING);
+	int iNumCities = m_pPlayer->GetNumEffectiveCities(/*bIncludePuppets*/ !MOD_BALANCE_PUPPET_CHANGES);
+	int iOffset = iBase * 10 - iScaling;	// flat per-city rate in tenths-of-a-percent (e.g. 48 = 4.8%)
+	int iTotalTimes10 = iOffset * iNumCities + iScaling * iNumCities * (iNumCities + 1) / 2;
 
 	//apply the modifiers
-	iResearchCost = iResearchCost * (100 + iCityCountMod) / 100;
+	iResearchCost = iResearchCost * (1000 + iTotalTimes10) / 1000;
 
 	return iResearchCost;
 }
@@ -2405,12 +2409,15 @@ void CvTeamTechs::SetResearchProgressTimes100(TechTypes eIndex, int iNewValue, P
 		// Player modifiers to cost
 		int iResearchMod = std::max(1, GET_PLAYER(ePlayer).calculateResearchModifier(eIndex));
 		iResearchCost = (iResearchCost * 100) / iResearchMod;
-		int iNumCitiesMod = GC.getMap().getWorldInfo().GetNumCitiesTechCostMod();	// Default is 40, gets smaller on larger maps
-		iNumCitiesMod += GET_PLAYER(ePlayer).GetTechCostXCitiesModifier();
+		// Mod for City Count: city N adds (iBase*10 - iScaling + iScaling*N) tenths-of-a-percent to cost
+		int iBase = GC.getMap().getWorldInfo().GetNumCitiesTechCostMod();	// Default is 5 in VP, gets smaller on larger maps
+		iBase += GET_PLAYER(ePlayer).GetTechCostXCitiesModifier();
+		int iScaling = /*0.2%/city growth, in tenths-of-a-percent*/ GD_INT_GET(NUM_CITIES_COST_MOD_SCALING);
+		int iNumCities = GET_PLAYER(ePlayer).GetNumEffectiveCities(/*bIncludePuppets*/ !MOD_BALANCE_PUPPET_CHANGES);
+		int iOffset = iBase * 10 - iScaling;	// flat per-city rate in tenths-of-a-percent (e.g. 48 = 4.8%)
+		int iTotalTimes10 = iOffset * iNumCities + iScaling * iNumCities * (iNumCities + 1) / 2;
 
-		iNumCitiesMod = iNumCitiesMod * GET_PLAYER(ePlayer).GetNumEffectiveCities(/*bIncludePuppets*/ !MOD_BALANCE_PUPPET_CHANGES);
-
-		iResearchCost = iResearchCost * (100 + iNumCitiesMod) / 100;
+		iResearchCost = iResearchCost * (1000 + iTotalTimes10) / 1000;
 
 		long long iOverflow = iResearchProgress - iResearchCost;
 

@@ -437,6 +437,7 @@ UPDATE Defines SET Value = 50 WHERE Name = 'INQUISITION_EFFECTIVENESS';
 -------------------------------------------------------------------------------------------------------------------
 -- Science/Tech
 -------------------------------------------------------------------------------------------------------------------
+INSERT INTO Defines (Name, Value) VALUES ('NUM_CITIES_COST_MOD_SCALING', 2);
 UPDATE Defines SET Value = 0 WHERE Name = 'SCIENCE_PER_POPULATION';
 UPDATE Defines SET Value = 10 WHERE Name = 'TECH_COST_TOTAL_KNOWN_TEAM_MODIFIER';
 UPDATE Defines SET Value = 80 WHERE Name = 'BARBARIAN_TECH_PERCENT';

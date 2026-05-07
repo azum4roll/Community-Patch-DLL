@@ -325,6 +325,7 @@ void CvLuaGame::RegisterMembers(lua_State* L)
 
 	Method(GetNumCitiesPolicyCostMod);
 	Method(GetNumCitiesTechCostMod);
+	Method(GetNumCitiesCostModScaling);
 	Method(GetNumCitiesTourismCostMod);
 
 	Method(GetBuildingYieldChange);
@@ -2287,6 +2288,12 @@ int CvLuaGame::lIsHideOpinionTable(lua_State* L)
 int CvLuaGame::lGetNumCitiesPolicyCostMod(lua_State* L)
 {
 	lua_pushinteger(L, GC.getMap().getWorldInfo().GetNumCitiesPolicyCostMod());
+	return 1;
+}
+//------------------------------------------------------------------------------
+int CvLuaGame::lGetNumCitiesCostModScaling(lua_State* L)
+{
+	lua_pushinteger(L, GD_INT_GET(NUM_CITIES_COST_MOD_SCALING));
 	return 1;
 }
 //------------------------------------------------------------------------------

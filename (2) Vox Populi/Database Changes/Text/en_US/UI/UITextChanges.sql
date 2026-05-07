@@ -63,8 +63,11 @@ WHERE Tag = 'TXT_KEY_MAYA_DATE_TOOLTIP';
 
 -- Science
 UPDATE Language_en_US
-SET Text = 'Each ([ICON_PUPPET] non-Puppet) City you own will increase Technology costs by {1_Num}%.'
+SET Text = 'Each ([ICON_PUPPET] non-Puppet) City you own increases Technology costs by (4.8 + 0.2 x Cities)%. The 1st City adds {1_Num}%, and your next City will add {2_Str}%.'
 WHERE Tag = 'TXT_KEY_TP_TECH_CITY_COST';
+
+INSERT INTO Language_en_US (Tag, Text) VALUES ('TXT_KEY_TP_TECH_CITY_COST_DETAIL',
+	'[ICON_BULLET]Current research cost: {1_Num} [ICON_RESEARCH] ({2_Num} base + {3_Num} from Cities). Settling a new City will add {4_Num} [ICON_RESEARCH].');
 
 UPDATE Language_en_US
 SET Text = '[ICON_BULLET][COLOR_POSITIVE_TEXT]+{1_Num}[ENDCOLOR] [ICON_RESEARCH] from Policies.'
@@ -76,8 +79,11 @@ WHERE Tag = 'TXT_KEY_TP_SCIENCE_FROM_MINORS';
 
 -- Culture
 UPDATE Language_en_US
-SET Text = 'Each ([ICON_PUPPET] non-Puppet) City you own will increase Social Policy costs by {1_Num}%.'
+SET Text = 'Each ([ICON_PUPPET] non-Puppet) City you own increases Social Policy costs by (4.8 + 0.2 x Cities)%. The 1st City adds {1_Num}%, and your next City will add {2_Str}%.'
 WHERE Tag = 'TXT_KEY_TP_CULTURE_CITY_COST';
+
+INSERT INTO Language_en_US (Tag, Text) VALUES ('TXT_KEY_TP_CULTURE_CITY_COST_DETAIL',
+	'[ICON_BULLET]Next policy cost: {1_Num} [ICON_CULTURE] ({2_Num} base + {3_Num} from Cities). Settling a new City will add {4_Num} [ICON_CULTURE].');
 
 UPDATE Language_en_US
 SET Text = '[ICON_BULLET][COLOR_POSITIVE_TEXT]+{1_Num}[ENDCOLOR] from a temporary Cultural Boost (Turns left: {2_TurnsLeft}).'

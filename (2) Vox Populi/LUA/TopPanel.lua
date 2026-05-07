@@ -668,7 +668,18 @@ function ScienceTipHandler( control )
 		-- Let people know that building more cities makes techs harder to get
 		if (not OptionsManager.IsNoBasicHelp()) then
 			strText = strText .. "[NEWLINE][NEWLINE]";
-			strText = strText .. Locale.ConvertTextKey("TXT_KEY_TP_TECH_CITY_COST", Game.GetNumCitiesTechCostMod());
+			local iBase = Game.GetNumCitiesTechCostMod();
+			local iScaling = Game.GetNumCitiesCostModScaling();
+			local N = math.max(1, pPlayer:GetNumCities() - pPlayer:GetNumPuppetCities());
+			local iNextTechRateTenths = iBase * 10 + iScaling * N;
+			strText = strText .. Locale.ConvertTextKey("TXT_KEY_TP_TECH_CITY_COST", iBase, string.format("%.1f", iNextTechRateTenths / 10));
+			local iTech = pPlayer:GetCurrentResearch();
+			if iTech ~= -1 then
+				local iTotalTimes10 = (iBase * 10 - iScaling) * N + iScaling * N * (N + 1) / 2;
+				local totalCost = pPlayer:GetResearchCost(iTech);
+				local baseCost = math.floor(totalCost * 1000 / (1000 + iTotalTimes10));
+				strText = strText .. "[NEWLINE]" .. Locale.ConvertTextKey("TXT_KEY_TP_TECH_CITY_COST_DETAIL", totalCost, baseCost, totalCost - baseCost, math.floor(baseCost * iNextTechRateTenths / 1000));
+			end
 		end
 	end
 	
@@ -1217,7 +1228,15 @@ function CultureTipHandler( control )
 		-- Let people know that building more cities makes policies harder to get
 		if (not OptionsManager.IsNoBasicHelp()) then
 			strText = strText .. "[NEWLINE][NEWLINE]";
-			strText = strText .. Locale.ConvertTextKey("TXT_KEY_TP_CULTURE_CITY_COST", Game.GetNumCitiesPolicyCostMod());
+			local iBase = Game.GetNumCitiesPolicyCostMod();
+			local iScaling = Game.GetNumCitiesCostModScaling();
+			local N = math.max(1, pPlayer:GetNumCities() - pPlayer:GetNumPuppetCities());
+			local iNextPolicyRateTenths = iBase * 10 + iScaling * N;
+			strText = strText .. Locale.ConvertTextKey("TXT_KEY_TP_CULTURE_CITY_COST", iBase, string.format("%.1f", iNextPolicyRateTenths / 10));
+			local iTotalTimes10 = (iBase * 10 - iScaling) * N + iScaling * N * (N + 1) / 2;
+			local totalCost = pPlayer:GetNextPolicyCost();
+			local baseCost = math.floor(totalCost * 1000 / (1000 + iTotalTimes10));
+			strText = strText .. "[NEWLINE]" .. Locale.ConvertTextKey("TXT_KEY_TP_CULTURE_CITY_COST_DETAIL", totalCost, baseCost, totalCost - baseCost, math.floor(baseCost * iNextPolicyRateTenths / 1000));
 		end
 	end
 	

@@ -930,8 +930,19 @@ g_toolTipHandler.SciencePerTurn = function()-- control )
 
 		-- Let people know that building more cities makes techs harder to get
 		if bnw_mode and g_isBasicHelp then
+			local iBase = Game.GetNumCitiesTechCostMod() * ( 100 + ( civBE_mode and g_activePlayer:GetNumCitiesResearchCostDiscount() or 0 ) ) / 100
+			local iScaling = Game.GetNumCitiesCostModScaling()
+			local N = math.max( 1, g_activePlayer:GetNumCities() - g_activePlayer:GetNumPuppetCities() )
+			local iNextTechRateTenths = iBase * 10 + iScaling * N
 			tips:insert( "" )
-			tips:insert( L( "TXT_KEY_TP_TECH_CITY_COST", Game.GetNumCitiesTechCostMod() * ( 100 + ( civBE_mode and g_activePlayer:GetNumCitiesResearchCostDiscount() or 0 ) ) / 100 ) )
+			tips:insert( L( "TXT_KEY_TP_TECH_CITY_COST", iBase, string.format( "%.1f", iNextTechRateTenths / 10 ) ) )
+			local iTech = g_activePlayer:GetCurrentResearch()
+			if iTech ~= -1 then
+				local iTotalTimes10 = (iBase * 10 - iScaling) * N + iScaling * N * (N + 1) / 2
+				local totalCost = g_activePlayer:GetResearchCost( iTech )
+				local baseCost = math.floor( totalCost * 1000 / (1000 + iTotalTimes10) )
+				tips:insert( L( "TXT_KEY_TP_TECH_CITY_COST_DETAIL", totalCost, baseCost, totalCost - baseCost, math.floor( baseCost * iNextTechRateTenths / 1000 ) ) )
+			end
 		end
 	end
 
@@ -1673,8 +1684,16 @@ g_toolTipHandler.CultureString = function()-- control )
 		-- Let people know that building more cities makes policies harder to get
 
 		if g_isBasicHelp then
+			local iBase = Game.GetNumCitiesPolicyCostMod() * ( 100 + ( civBE_mode and g_activePlayer:GetNumCitiesPolicyCostDiscount() or 0 ) ) / 100
+			local iScaling = Game.GetNumCitiesCostModScaling()
+			local N = math.max( 1, g_activePlayer:GetNumCities() - g_activePlayer:GetNumPuppetCities() )
+			local iNextPolicyRateTenths = iBase * 10 + iScaling * N
 			tips:insert( "" )
-			tips:insert( L("TXT_KEY_TP_CULTURE_CITY_COST", Game.GetNumCitiesPolicyCostMod() * ( 100 + ( civBE_mode and g_activePlayer:GetNumCitiesPolicyCostDiscount() or 0 ) ) / 100 ) )
+			tips:insert( L("TXT_KEY_TP_CULTURE_CITY_COST", iBase, string.format( "%.1f", iNextPolicyRateTenths / 10 ) ) )
+			local iTotalTimes10 = (iBase * 10 - iScaling) * N + iScaling * N * (N + 1) / 2
+			local totalCost = g_activePlayer:GetNextPolicyCost()
+			local baseCost = math.floor( totalCost * 1000 / (1000 + iTotalTimes10) )
+			tips:insert( L("TXT_KEY_TP_CULTURE_CITY_COST_DETAIL", totalCost, baseCost, totalCost - baseCost, math.floor( baseCost * iNextPolicyRateTenths / 1000 ) ) )
 		end
 	end
 

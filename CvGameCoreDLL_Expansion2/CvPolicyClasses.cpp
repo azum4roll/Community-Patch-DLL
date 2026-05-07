@@ -4714,20 +4714,20 @@ int CvPlayerPolicies::GetNextPolicyCost()
 	// Base cost that doesn't get exponent-ed
 	iCost += /*25 in CP, 50 in VP*/ GD_INT_GET(BASE_POLICY_COST);
 
-	// Mod for City Count
-	int iMod = GC.getMap().getWorldInfo().GetNumCitiesPolicyCostMod();	// Default is 40, gets smaller on larger maps
+	// Mod for City Count: city N adds (iBase*10 - iScaling + iScaling*N) tenths-of-a-percent to cost
+	// e.g. with iBase=5, iScaling=2: city 1 adds 4.8%, city 2 adds 5.0%, city 3 adds 5.2%, ...
+	int iBase = GC.getMap().getWorldInfo().GetNumCitiesPolicyCostMod();	// Default is 5 in VP, gets smaller on larger maps
 	int iPolicyModDiscount = m_pPlayer->GetNumCitiesPolicyCostDiscount();
 	if(iPolicyModDiscount != 0)
 	{
-		iMod = iMod * (100 + iPolicyModDiscount);
-		iMod /= 100;
+		iBase = iBase * (100 + iPolicyModDiscount);
+		iBase /= 100;
 	}
-
+	int iScaling = /*0.2%/city growth, in tenths-of-a-percent*/ GD_INT_GET(NUM_CITIES_COST_MOD_SCALING);
 	int iNumCities = m_pPlayer->GetNumEffectiveCities();
-
-	iMod = (iCost * (iNumCities - 1) * iMod);
-	iMod /= 100;
-	iCost += iMod;
+	int iOffset = iBase * 10 - iScaling;	// flat per-city rate in tenths-of-a-percent (e.g. 48 = 4.8%)
+	int iTotalTimes10 = iOffset * iNumCities + iScaling * iNumCities * (iNumCities + 1) / 2;
+	iCost = iCost * (1000 + iTotalTimes10) / 1000;
 
 	// Policy Cost Mod
 	iCost *= (100 + m_pPlayer->getPolicyCostModifier());

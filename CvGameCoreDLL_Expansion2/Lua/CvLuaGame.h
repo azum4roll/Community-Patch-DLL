@@ -309,6 +309,7 @@ protected:
 
 	static int lGetNumCitiesPolicyCostMod(lua_State* L);
 	static int lGetNumCitiesTechCostMod(lua_State* L);
+	static int lGetNumCitiesCostModScaling(lua_State* L);
 
 	static int lGetNumCitiesTourismCostMod(lua_State* L);
 

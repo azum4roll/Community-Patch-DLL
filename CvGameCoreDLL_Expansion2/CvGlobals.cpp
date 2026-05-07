@@ -1688,6 +1688,7 @@ CvGlobals::CvGlobals() :
 	GD_INT_INIT(BLOCKADE_GOLD_PENALTY, 0),
 	GD_INT_INIT(BASE_POLICY_COST, 25),
 	GD_INT_INIT(POLICY_COST_INCREASE_TO_BE_EXPONENTED, 3),
+	GD_INT_INIT(NUM_CITIES_COST_MOD_SCALING, 2),				// per-city cost growth in tenths-of-a-percent (2 = 0.2%); combined with NumCitiesTechCostMod/NumCitiesPolicyCostMod gives city N rate of (base*10 - scaling + scaling*N) tenths-of-a-percent
 	GD_INT_INIT(POLICY_COST_VISIBLE_DIVISOR, 5),
 	GD_INT_INIT(SWITCH_POLICY_BRANCHES_ANARCHY_TURNS, 2),
 	GD_INT_INIT(SWITCH_POLICY_BRANCHES_TENETS_LOST, 2),
