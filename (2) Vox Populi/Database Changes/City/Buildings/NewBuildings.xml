@@ -148,11 +148,18 @@
 			<Description>TXT_KEY_BUILDING_SCRIVENERS_OFFICE</Description>
 			<MaxPlayerInstances>1</MaxPlayerInstances>
 		</Row>
-		<!-- Printing Press -->
+		<!-- Ministerial District -->
 		<Row>
-			<Type>BUILDINGCLASS_PRINTING_PRESS</Type>
-			<DefaultBuilding>BUILDING_PRINTING_PRESS</DefaultBuilding>
-			<Description>TXT_KEY_BUILDING_PRINTING_PRESS</Description>
+			<Type>BUILDINGCLASS_MINISTERIAL_DISTRICT</Type>
+			<DefaultBuilding>BUILDING_MINISTERIAL_DISTRICT</DefaultBuilding>
+			<Description>TXT_KEY_BUILDING_MINISTERIAL_DISTRICT</Description>
+			<MaxPlayerInstances>1</MaxPlayerInstances>
+		</Row>
+		<!-- General Post Office -->
+		<Row>
+			<Type>BUILDINGCLASS_GENERAL_POST_OFFICE</Type>
+			<DefaultBuilding>BUILDING_GENERAL_POST_OFFICE</DefaultBuilding>
+			<Description>TXT_KEY_BUILDING_GENERAL_POST_OFFICE</Description>
 			<MaxPlayerInstances>1</MaxPlayerInstances>
 		</Row>
 		<!-- Foreign Bureau -->
@@ -1411,24 +1418,45 @@
 			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
 			<SpecialistCount>1</SpecialistCount>
 			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>5</ExtraSpies>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>54</PortraitIndex>
 		</Row>
-		<!-- Printing Press -->
+		<!-- Ministerial District -->
 		<Row>
-			<Type>BUILDING_PRINTING_PRESS</Type>
-			<BuildingClass>BUILDINGCLASS_PRINTING_PRESS</BuildingClass>
-			<Description>TXT_KEY_BUILDING_PRINTING_PRESS</Description>
-			<Civilopedia>TXT_KEY_BUILDING_PRINTING_PRESS_TEXT</Civilopedia>
-			<Help>TXT_KEY_BUILDING_PRINTING_PRESS_HELP</Help>
-			<Strategy>TXT_KEY_BUILDING_PRINTING_PRESS_STRATEGY</Strategy>
-			<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
+			<Type>BUILDING_MINISTERIAL_DISTRICT</Type>
+			<BuildingClass>BUILDINGCLASS_MINISTERIAL_DISTRICT</BuildingClass>
+			<Description>TXT_KEY_BUILDING_MINISTERIAL_DISTRICT</Description>
+			<Civilopedia>TXT_KEY_BUILDING_MINISTERIAL_DISTRICT_TEXT</Civilopedia>
+			<Help>TXT_KEY_BUILDING_MINISTERIAL_DISTRICT_HELP</Help>
+			<Strategy>TXT_KEY_BUILDING_MINISTERIAL_DISTRICT_STRATEGY</Strategy>
+			<PrereqTech>TECH_BANKING</PrereqTech>
 			<FreePromotion>PROMOTION_LITERACY</FreePromotion>
 			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
 			<SpecialistCount>1</SpecialistCount>
 			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>10</ExtraSpies>
+			<SpySecurityModifierPerXPop>60</SpySecurityModifierPerXPop>
+			<IconAtlas>NEW_BLDG_ATLAS_DLC</IconAtlas>
+			<PortraitIndex>1</PortraitIndex>
+		</Row>
+		<!-- General Post Office -->
+		<Row>
+			<Type>BUILDING_GENERAL_POST_OFFICE</Type>
+			<BuildingClass>BUILDINGCLASS_GENERAL_POST_OFFICE</BuildingClass>
+			<Description>TXT_KEY_BUILDING_GENERAL_POST_OFFICE</Description>
+			<Civilopedia>TXT_KEY_BUILDING_GENERAL_POST_OFFICE_TEXT</Civilopedia>
+			<Help>TXT_KEY_BUILDING_GENERAL_POST_OFFICE_HELP</Help>
+			<Strategy>TXT_KEY_BUILDING_FGENERAL_POST_OFFICE_STRATEGY</Strategy>
+			<PrereqTech>TECH_MILITARY_SCIENCE</PrereqTech>
+			<FreePromotion>PROMOTION_DIPLOMATIC_IMMUNITY</FreePromotion>
+			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
+			<SpecialistCount>1</SpecialistCount>
+			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>10</ExtraSpies>
+			<CityConnectionTradeRouteModifier>20</CityConnectionTradeRouteModifier>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
-			<PortraitIndex>24</PortraitIndex>
+			<PortraitIndex>55</PortraitIndex>
 		</Row>
 		<!-- Foreign Bureau -->
 		<Row>
@@ -1443,6 +1471,7 @@
 			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
 			<SpecialistCount>1</SpecialistCount>
 			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>10</ExtraSpies>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>44</PortraitIndex>
 		</Row>
@@ -1528,11 +1557,13 @@
 			<Civilopedia>TXT_KEY_BUILDING_BALLHAUSPLATZ_TEXT</Civilopedia>
 			<Help>TXT_KEY_BUILDING_BALLHAUSPLATZ_HELP</Help>
 			<Strategy>TXT_KEY_BUILDING_BALLHAUSPLATZ_STRATEGY</Strategy>
-			<PrereqTech>TECH_PRINTING_PRESS</PrereqTech>
+			<PrereqTech>TECH_BANKING</PrereqTech>
 			<FreePromotion>PROMOTION_LITERACY</FreePromotion>
 			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
 			<SpecialistCount>1</SpecialistCount>
 			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>10</ExtraSpies>
+			<SpySecurityModifierPerXPop>60</SpySecurityModifierPerXPop>
 			<IconAtlas>BUILDING_ATLAS_VP_1</IconAtlas>
 			<PortraitIndex>7</PortraitIndex>
 		</Row>
@@ -1589,8 +1620,14 @@
 			<Civilopedia>TXT_KEY_BUILDING_WHITE_TOWER_TEXT</Civilopedia>
 			<Help>TXT_KEY_BUILDING_WHITE_TOWER_HELP</Help>
 			<Strategy>TXT_KEY_BUILDING_WHITE_TOWER_STRATEGY</Strategy>
-			<PrereqTech>TECH_MACHINERY</PrereqTech>
-			<ArtDefineTag>ART_DEF_BUILDING_IRONWORKS</ArtDefineTag>
+			<PrereqTech>TECH_BANKING</PrereqTech>
+			<PrereqTech>TECH_CIVIL_SERVICE</PrereqTech>
+			<FreePromotion>PROMOTION_LITERACY</FreePromotion>
+			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
+			<SpecialistCount>1</SpecialistCount>
+			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>20</ExtraSpies>
+			<SpySecurityModifierPerXPop>60</SpySecurityModifierPerXPop>
 			<IconAtlas>BUILDING_ATLAS_VP_1</IconAtlas>
 			<PortraitIndex>19</PortraitIndex>
 		</Row>
@@ -1653,6 +1690,7 @@
 			<SpecialistType>SPECIALIST_CIVIL_SERVANT</SpecialistType>
 			<SpecialistCount>1</SpecialistCount>
 			<GreatPeopleRateChange>1</GreatPeopleRateChange>
+			<ExtraSpies>10</ExtraSpies>
 			<IconAtlas>BUILDING_ATLAS_VP_1</IconAtlas>
 			<PortraitIndex>45</PortraitIndex>
 		</Row>
