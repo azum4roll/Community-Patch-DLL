@@ -11892,7 +11892,7 @@ bool CvUnit::trade()
 	// Acquire Influence
 	int iInfluence = getTradeInfluence(pPlot);
 
-	bool bGreatDiplomat = MOD_BALANCE_VP && m_pUnitInfo->GetNumInfPerEra() > 0 && m_pUnitInfo->GetRestingPointChange() != 0;
+	bool bGreatDiplomat = MOD_BALANCE_VP && m_pUnitInfo->GetNumInfPerEra() > 0;
 
 	// Save the original influence of every major civ for ally status change
 	vector<int> viOriginalInfluence;
@@ -11907,7 +11907,7 @@ bool CvUnit::trade()
 			GET_PLAYER(eMinor).GetMinorCivAI()->ChangeRestingPointChange(getOwner(), iRestingPointChange);
 		}
 
-		// Great Diplomat? Reduce everyone else's Influence and raise minimum Influence.
+		// Great Diplomat? Reduce everyone else's Influence.
 		if (bGreatDiplomat)
 		{
 			for (int iPlayerLoop = 0; iPlayerLoop < MAX_MAJOR_CIVS; iPlayerLoop++)
@@ -11926,7 +11926,7 @@ bool CvUnit::trade()
 					if (pNotifications)
 					{
 						Localization::String strText = Localization::Lookup("TXT_KEY_NOTIFICATION_GREAT_DIPLOMAT_OTHER");
-						strText << getNameKey() << iInfluence << GET_PLAYER(eMinor).getNameKey() << kOwner.getCivilizationAdjectiveKey() << iRestingPointChange;
+						strText << getNameKey() << iInfluence << GET_PLAYER(eMinor).getNameKey() << kOwner.getCivilizationAdjectiveKey();
 						Localization::String strSummary = Localization::Lookup("TXT_KEY_NOTIFICATION_GREAT_DIPLOMAT_OTHER_SUMMARY");
 						strSummary << getNameKey() << GET_PLAYER(eMinor).getNameKey();
 						pNotifications->Add(NOTIFICATION_GREAT_PERSON_ACTIVE_PLAYER, strText.toUTF8(), strSummary.toUTF8(), getX(), getY(), getUnitType());
@@ -11937,7 +11937,7 @@ bool CvUnit::trade()
 			if (pNotifications)
 			{
 				Localization::String strText = Localization::Lookup("TXT_KEY_NOTIFICATION_GREAT_DIPLOMAT");
-				strText << getNameKey() << iInfluence << GET_PLAYER(eMinor).getNameKey() << iRestingPointChange;
+				strText << getNameKey() << iInfluence << GET_PLAYER(eMinor).getNameKey();
 				Localization::String strSummary = Localization::Lookup("TXT_KEY_NOTIFICATION_GREAT_DIPLOMAT_SUMMARY");
 				strSummary << getNameKey() << GET_PLAYER(eMinor).getNameKey();
 				pNotifications->Add(NOTIFICATION_GREAT_PERSON_ACTIVE_PLAYER, strText.toUTF8(), strSummary.toUTF8(), getX(), getY(), getUnitType());
