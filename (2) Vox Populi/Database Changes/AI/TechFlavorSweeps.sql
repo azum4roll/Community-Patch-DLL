@@ -168,10 +168,11 @@ VALUES
 	('TECH_CIVIL_SERVICE', 'FLAVOR_WONDER', 5),
 	('TECH_CIVIL_SERVICE', 'FLAVOR_DIPLOMACY', 15),
 
-	('TECH_GUILDS', 'FLAVOR_GOLD', 15), -- Units: Galleass, Buildings: Customs House, Artists' Guild, EastIndia, Wonders: Karlstejn, Yields: Camp & Village +1G
+	('TECH_GUILDS', 'FLAVOR_GOLD', 15), -- Units: Galleass, Buildings: Customs House, Artists' Guild, EastIndia, Wonders: Karlstejn, AlamutFortress Yields: Camp & Village +1G
 	('TECH_GUILDS', 'FLAVOR_CULTURE', 25),
 	('TECH_GUILDS', 'FLAVOR_WONDER', 10),
 	('TECH_GUILDS', 'FLAVOR_NAVAL', 15),
+	('TECH_GUILDS', 'FLAVOR_ESPIONAGE', 15),
 	('TECH_GUILDS', 'FLAVOR_TILE_IMPROVEMENT', 10),
 
 	('TECH_COMPASS', 'FLAVOR_NAVAL', 15), -- Units: Caravel, Explorer, Buildings: Harbor, Ability: +1 TR and higher sea TR range, Yields: Boats +1F
