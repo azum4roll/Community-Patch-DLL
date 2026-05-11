@@ -90,6 +90,7 @@ VALUES
 
 	('TECH_MATHEMATICS', 'FLAVOR_RANGED', 10), -- Units: Skirmisher, Wonders: Hanging Gardens, Roman Forum
 	('TECH_MATHEMATICS', 'FLAVOR_MOBILE', 10),
+	('TECH_MATHEMATICS', 'FLAVOR_ESPIONAGE', 5),
 	('TECH_MATHEMATICS', 'FLAVOR_WONDER', 20),
 
 	('TECH_CONSTRUCTION', 'FLAVOR_PRODUCTION', 15), -- Masonry // Units: Catapult, Buildings: WaterMill, Arena, Wonders: Terracotta, Ability: Faster on Road
@@ -122,6 +123,7 @@ VALUES
 
 	('TECH_ENGINEERING', 'FLAVOR_DEFENSE', 10), -- Buildings: Aqueduct, Wonders: GreatWall, Improvement: Fort, Ability: Bridge over Rivers
 	('TECH_ENGINEERING', 'FLAVOR_GROWTH', 15),
+	('TECH_ENGINEERING', 'FLAVOR_ESPIONAGE', 5),
 	('TECH_ENGINEERING', 'FLAVOR_INFRASTRUCTURE', 10),
 	('TECH_ENGINEERING', 'FLAVOR_WONDER', 10),
 
@@ -208,6 +210,7 @@ VALUES
 	('TECH_GUNPOWDER', 'FLAVOR_OFFENSE', 20),
 	('TECH_GUNPOWDER', 'FLAVOR_RANGED', 10),
 	('TECH_GUNPOWDER', 'FLAVOR_WONDER', 10),
+	('TECH_GUNPOWDER', 'FLAVOR_ESPIONAGE', 10),
 	('TECH_GUNPOWDER', 'FLAVOR_TILE_IMPROVEMENT', 5),
 
 	('TECH_CHEMISTRY', 'FLAVOR_GROWTH', 15), -- Buildings: Grocer, Wonders: Pisa, Yields: Plantation +1G, Fort&Citadel +2S
@@ -314,6 +317,7 @@ VALUES
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_WONDER', 5),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_DIPLOMACY', 10),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_SCIENCE', 15),
+	('TECH_REPLACEABLE_PARTS', 'FLAVOR_ESPIONAGE', 10),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_CULTURE', 5),
 
 	('TECH_COMBUSTION', 'FLAVOR_OFFENSE', 20), -- Units: Landship, Buildings: Arsenal, MineField, Reveals: Oil, Improvement: OilWell, Ability: FasteronRails, ExtendedLandTR, Yield: Mine +1P, Lumber +1P 1G

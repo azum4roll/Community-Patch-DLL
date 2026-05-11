@@ -169,7 +169,8 @@ SET
 	CitySupplyFlat = 5,
 	PurchaseCooldownReduction = 1,
 	PurchaseCooldownReductionCivilian = 3,
-	SpySecurityModifier = 10
+	SpySecurityModifier = 10,
+	ExtraSpies = 5
 WHERE Type = 'BUILDING_PIAZZA_SAN_MARCO';
 
 INSERT INTO Building_YieldChanges
