@@ -220,6 +220,12 @@ INSERT INTO Building_YieldModifiers
 VALUES
 	('BUILDING_GURDWARA', 'YIELD_FOOD', 10);
 
+-- Daoguan
+INSERT INTO Building_YieldChanges
+	(BuildingType, YieldType, Yield)
+VALUES
+	('BUILDING_DAOGUAN', 'YIELD_FAITH', 4);
+
 ----------------------------------------------------------------------------
 -- Reformation Buildings
 ----------------------------------------------------------------------------
