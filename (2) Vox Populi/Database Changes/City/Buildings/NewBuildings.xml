@@ -2371,6 +2371,7 @@
 			<Help>TXT_KEY_BUILDING_CELESTIAL_THRONE_HELP</Help>
 			<Strategy>TXT_KEY_BUILDING_CELESTIAL_THRONE_STRATEGY</Strategy>
 			<IsReformation>true</IsReformation>
+			<ExtraSpies>8</ExtraSpies>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>41</PortraitIndex>
 		</Row>
@@ -2399,6 +2400,7 @@
 			<GreatWorkSlotType>GREAT_WORK_SLOT_LITERATURE</GreatWorkSlotType>
 			<GreatWorkCount>3</GreatWorkCount>
 			<IsReformation>true</IsReformation>
+			<SpySecurityModifierPerXPop>180</SpySecurityModifierPerXPop>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>42</PortraitIndex>
 		</Row>
@@ -2411,6 +2413,7 @@
 			<Help>TXT_KEY_BUILDING_DIVINE_COURT_HELP</Help>
 			<Strategy>TXT_KEY_BUILDING_DIVINE_COURT_STRATEGY</Strategy>
 			<IsReformation>true</IsReformation>
+			<ExtraSpies>5</ExtraSpies>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>43</PortraitIndex>
 		</Row>
@@ -2435,6 +2438,7 @@
 			<Help>TXT_KEY_BUILDING_HOLY_COUNCIL_HELP</Help>
 			<Strategy>TXT_KEY_BUILDING_HOLY_COUNCIL_STRATEGY</Strategy>
 			<IsReformation>true</IsReformation>
+			<GlobalSpySecurityModifier>10</GlobalSpySecurityModifier>
 			<IconAtlas>BUILDING_ATLAS_VP_2</IconAtlas>
 			<PortraitIndex>48</PortraitIndex>
 		</Row>

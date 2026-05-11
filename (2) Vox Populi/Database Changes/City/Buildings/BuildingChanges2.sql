@@ -308,6 +308,12 @@ VALUES
 	('BUILDING_SACRED_GARDEN', 'YIELD_CULTURE', 5),
 	('BUILDING_SACRED_GARDEN', 'YIELD_FAITH', 3);
 
+INSERT INTO Building_YieldFromSpyDefenseOrID
+	(BuildingType, YieldType, Yield)
+SELECT
+	'BUILDING_SACRED_GARDEN', Type, 20
+FROM Yields WHERE ID < 6; -- "all yields"
+
 -- Holy Council
 INSERT INTO Building_YieldChanges
 	(BuildingType, YieldType, Yield)
@@ -322,11 +328,31 @@ VALUES
 	('BUILDING_APOSTOLIC_PALACE', 'YIELD_FAITH', 4),
 	('BUILDING_APOSTOLIC_PALACE', 'YIELD_GOLDEN_AGE_POINTS', 4);
 
+INSERT INTO Building_YieldFromSpyRigElection
+	(BuildingType, YieldType, Yield)
+VALUES
+	('BUILDING_APOSTOLIC_PALACE', 'YIELD_TOURISM', 25);
+
 -- Grand Ossuary
 INSERT INTO Building_YieldChanges
 	(BuildingType, YieldType, Yield)
 VALUES
 	('BUILDING_GRAND_OSSUARY', 'YIELD_FAITH', 10);
+
+INSERT INTO Building_YieldFromSpyDefense
+	(BuildingType, YieldType, Yield)
+VALUES
+	('BUILDING_GRAND_OSSUARY', 'YIELD_CULTURE', 100),
+	('BUILDING_GRAND_OSSUARY', 'YIELD_FAITH', 100);
+
+-- Heavenly Grotto
+
+INSERT INTO Building_YieldFromSpyIdentify
+	(BuildingType, YieldType, Yield)
+VALUES
+	('BUILDING_HEAVENLY_GROTTO', 'YIELD_SCIENCE', 50),
+	('BUILDING_HEAVENLY_GROTTO', 'YIELD_CULTURE', 50),
+	('BUILDING_HEAVENLY_GROTTO', 'YIELD_FAITH', 50);
 
 ----------------------------------------------------------------------------
 -- World Wonders
