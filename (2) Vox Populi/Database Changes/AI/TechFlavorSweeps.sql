@@ -90,7 +90,6 @@ VALUES
 
 	('TECH_MATHEMATICS', 'FLAVOR_RANGED', 10), -- Units: Skirmisher, Wonders: Hanging Gardens, Roman Forum
 	('TECH_MATHEMATICS', 'FLAVOR_MOBILE', 10),
-	('TECH_MATHEMATICS', 'FLAVOR_ESPIONAGE', 5),
 	('TECH_MATHEMATICS', 'FLAVOR_WONDER', 20),
 
 	('TECH_CONSTRUCTION', 'FLAVOR_PRODUCTION', 15), -- Masonry // Units: Catapult, Buildings: WaterMill, Arena, Wonders: Terracotta, Ability: Faster on Road
@@ -123,7 +122,6 @@ VALUES
 
 	('TECH_ENGINEERING', 'FLAVOR_DEFENSE', 10), -- Buildings: Aqueduct, Wonders: GreatWall, Improvement: Fort, Ability: Bridge over Rivers
 	('TECH_ENGINEERING', 'FLAVOR_GROWTH', 15),
-	('TECH_ENGINEERING', 'FLAVOR_ESPIONAGE', 5),
 	('TECH_ENGINEERING', 'FLAVOR_INFRASTRUCTURE', 10),
 	('TECH_ENGINEERING', 'FLAVOR_WONDER', 10),
 
@@ -172,7 +170,6 @@ VALUES
 	('TECH_GUILDS', 'FLAVOR_CULTURE', 25),
 	('TECH_GUILDS', 'FLAVOR_WONDER', 10),
 	('TECH_GUILDS', 'FLAVOR_NAVAL', 15),
-	('TECH_GUILDS', 'FLAVOR_ESPIONAGE', 15),
 	('TECH_GUILDS', 'FLAVOR_TILE_IMPROVEMENT', 10),
 
 	('TECH_COMPASS', 'FLAVOR_NAVAL', 15), -- Units: Caravel, Explorer, Buildings: Harbor, Ability: +1 TR and higher sea TR range, Yields: Boats +1F
@@ -211,7 +208,6 @@ VALUES
 	('TECH_GUNPOWDER', 'FLAVOR_OFFENSE', 20),
 	('TECH_GUNPOWDER', 'FLAVOR_RANGED', 10),
 	('TECH_GUNPOWDER', 'FLAVOR_WONDER', 10),
-	('TECH_GUNPOWDER', 'FLAVOR_ESPIONAGE', 10),
 	('TECH_GUNPOWDER', 'FLAVOR_TILE_IMPROVEMENT', 5),
 
 	('TECH_CHEMISTRY', 'FLAVOR_GROWTH', 15), -- Buildings: Grocer, Wonders: Pisa, Yields: Plantation +1G, Fort&Citadel +2S
@@ -268,7 +264,6 @@ VALUES
 	('TECH_RIFLING', 'FLAVOR_DEFENSE', 10), -- Units: Fusilier, Field Gun, ForeignLegion, Wonders: ChateauDIf, Yields: Camp +1G
 	('TECH_RIFLING', 'FLAVOR_OFFENSE', 20),
 	('TECH_RIFLING', 'FLAVOR_RANGED', 10),
-	('TECH_RIFLING', 'FLAVOR_ESPIONAGE', 20),
 	('TECH_RIFLING', 'FLAVOR_TILE_IMPROVEMENT', 5),
 
 	-------------------------------------------------------
@@ -319,7 +314,6 @@ VALUES
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_WONDER', 5),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_DIPLOMACY', 10),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_SCIENCE', 15),
-	('TECH_REPLACEABLE_PARTS', 'FLAVOR_ESPIONAGE', 10),
 	('TECH_REPLACEABLE_PARTS', 'FLAVOR_CULTURE', 5),
 
 	('TECH_COMBUSTION', 'FLAVOR_OFFENSE', 20), -- Units: Landship, Buildings: Arsenal, MineField, Reveals: Oil, Improvement: OilWell, Ability: FasteronRails, ExtendedLandTR, Yield: Mine +1P, Lumber +1P 1G
@@ -347,7 +341,6 @@ VALUES
 	('TECH_BALLISTICS', 'FLAVOR_MOBILE', 10), -- Units: Artillery, AAGun, LightTank, MachineGun, Wonders: Alcatraz, Buildings: HallofHonor, Ability: EngineeringCorps
 	('TECH_BALLISTICS', 'FLAVOR_RANGED', 30),
 	('TECH_BALLISTICS', 'FLAVOR_ANTIAIR', 10),
-	('TECH_BALLISTICS', 'FLAVOR_ESPIONAGE', 10),
 	('TECH_BALLISTICS', 'FLAVOR_OFFENSE', 10),
 
 	--------------------------------------------------------------
