@@ -263,10 +263,12 @@ VALUES
 	('TECH_STEAM_POWER', 'FLAVOR_WONDER', 10),
 	('TECH_STEAM_POWER', 'FLAVOR_MILITARY_TRAINING', 5),
 
-	('TECH_RIFLING', 'FLAVOR_DEFENSE', 10), -- Units: Fusilier, Field Gun, ForeignLegion, Wonders: ChateauDIf, Yields: Camp +1G
+	('TECH_RIFLING', 'FLAVOR_DEFENSE', 10), -- Units: Fusilier, Field Gun, ForeignLegion, Buildings: Penitentiary, Wonders: ChateauDIf, Yields: Camp +1G
 	('TECH_RIFLING', 'FLAVOR_OFFENSE', 20),
 	('TECH_RIFLING', 'FLAVOR_RANGED', 10),
 	('TECH_RIFLING', 'FLAVOR_TILE_IMPROVEMENT', 5),
+	('TECH_RIFLING', 'FLAVOR_WONDER', 10),
+	('TECH_RIFLING', 'FLAVOR_ESPIONAGE', 15),
 
 	-------------------------------------------------------
 
