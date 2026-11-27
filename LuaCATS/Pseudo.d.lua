@@ -14,6 +14,7 @@
 --- Below refer to the database row IDs
 --- @alias WorldSizeType integer
 --- @alias UnitType integer
+--- @alias EraType integer
 --- @alias TechType integer
 --- @alias YieldType integer
 --- @alias BuildingType integer
@@ -40,6 +41,7 @@
 --- @alias GreatPersonType integer
 --- @alias RegionType integer
 --- @alias NaturalWonderType integer # This corresponds to the Natural_Wonder_Placement table
+--- @alias ArtStyleType integer
 
 --- Usually acceptable values for DLL calls, but may not be valid database row IDs
 

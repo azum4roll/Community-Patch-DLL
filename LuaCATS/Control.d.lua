@@ -21,6 +21,9 @@ function ContextPtr:BuildInstanceForControl(instanceName, controlTable, parentCo
 --- @param controlTable table<string, Control>
 function ContextPtr:BuildInstance(instanceName, controlTable) end
 
+--- TODO docs
+function ContextPtr:IsHotLoad() end
+
 --- @type table<string, Control>
 Controls = {}
 

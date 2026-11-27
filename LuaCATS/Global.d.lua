@@ -227,8 +227,10 @@ function GetVolumeKnobIDFromName(name) end
 
 function ToggleStrategicView() end
 
+--- @param playerID PlayerId
+--- @param unitID UnitId
 --- @return boolean
-function UnitMoving() end
+function UnitMoving(playerID, unitID) end
 
 --- @param path string
 --- @return any

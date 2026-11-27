@@ -450,6 +450,9 @@ function UI.SelectCity(city) end
 function UI.SelectUnit(unit) end
 
 --- TODO docs
+function UI.ClearSelectionList() end
+
+--- TODO docs
 function UI.SendPathfinderUpdate() end
 
 --- TODO docs

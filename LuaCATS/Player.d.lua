@@ -75,3 +75,47 @@ function Player:OwnsReligion() end
 --- Get player's primary religion if they own the holy city, or NO_RELIGION otherwise
 --- @return ReligionType
 function Player:GetOwnedReligion() end
+
+--- Get the RGBA values of player's primary and secondary colors, in the range of 0-1
+--- @return Vector4 vPrimary
+--- @return Vector4 vSecondary
+function Player:GetPlayerColors() end
+
+--- @alias SpyRankKey
+--- | "TXT_KEY_SPY_RANK_0"
+--- | "TXT_KEY_SPY_RANK_1"
+--- | "TXT_KEY_SPY_RANK_2"
+
+--- @alias SpyStateKey
+--- | "TXT_KEY_SPY_STATE_UNASSIGNED"
+--- | "TXT_KEY_SPY_STATE_TRAVELLING"
+--- | "TXT_KEY_SPY_STATE_SURVEILLANCE"
+--- | "TXT_KEY_SPY_STATE_GATHERING_INTEL"
+--- | "TXT_KEY_SPY_STATE_RIGGING_ELECTION"
+--- | "TXT_KEY_SPY_STATE_COUNTER_INTEL"
+--- | "TXT_KEY_SPY_STATE_DEAD"
+--- | "TXT_KEY_SPY_STATE_MAKING_INTRODUCTIONS"
+--- | "TXT_KEY_SPY_STATE_SCHMOOZING"
+
+--- @class SpyInfo
+--- @field AgentID integer
+--- @field CityX integer
+--- @field CityY integer
+--- @field Name string
+--- @field Rank SpyRankKey
+--- @field State SpyStateKey
+--- @field TurnsLeft integer
+--- @field PercentComplete integer
+--- @field NetworkPointsStored integer
+--- @field MaxNetworkPointsStored integer
+--- @field RevealCityScreen boolean?
+--- @field NetworkPointsPerTurn integer
+--- @field NumTurnsMovementBlocked integer
+--- @field SpyFocus integer
+--- @field EstablishedSurveillance boolean
+--- @field IsDiplomat boolean
+--- @field VassalDiplomatPlayer PlayerId
+--- @field Passive boolean
+
+--- @return SpyInfo[]
+function Player:GetEspionageSpies() end
